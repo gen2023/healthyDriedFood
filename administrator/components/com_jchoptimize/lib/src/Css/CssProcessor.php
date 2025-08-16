@@ -185,6 +185,31 @@ class CssProcessor implements LoggerAwareInterface, ContainerAwareInterface, Ser
         );
     }
 
+    public function processDynamicCssFile(string $css): CacheObject
+    {
+        $parser = new Parser();
+        $regularAtRule = new CssSearchObject();
+        $regularAtRule->setCssMatchCriteria('(?=@(?:import|charset))');
+        $regularAtRule->setCssMatch(Parser::cssRegularAtRulesToken());
+        $parser->setCssSearchObject($regularAtRule);
+
+        try {
+            $this->cacheObj->setContents(
+                $this->cleanEmptyMedias(
+                    $parser->processMatchesWithCallback($css, $this->handleAtRulesCallback)
+                )
+            );
+            $this->cacheObj->merge($this->handleAtRulesCallback->getCacheObject());
+        } catch (Exception\PregErrorException $e) {
+            $this->logger?->error(
+                'ProcessDynamicCss file failed - ' . $this->debugUrl . ': ' . $e->getMessage()
+            );
+            $this->cacheObj->setContents($css);
+        }
+
+        return $this->cacheObj;
+    }
+
     /**
      * @throws PregErrorException
      */

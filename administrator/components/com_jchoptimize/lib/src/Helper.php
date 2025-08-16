@@ -288,7 +288,6 @@ class Helper
             try {
                 Folder::create($cacheDir);
             } catch (Exception $e) {
-                $e;
             }
         }
     }

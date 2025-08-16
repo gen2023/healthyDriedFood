@@ -14,7 +14,6 @@
 namespace JchOptimize\Core\Admin;
 
 use _JchOptimizeVendor\V91\GuzzleHttp\Client;
-use _JchOptimizeVendor\V91\GuzzleHttp\RequestOptions;
 use _JchOptimizeVendor\V91\Joomla\DI\Container;
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareInterface;
 use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
@@ -76,17 +75,7 @@ class HtmlCrawler implements LoggerAwareInterface, ContainerAwareInterface
             throw new Exception('Cross origin URLs not allowed');
         }
 
-        $clientOptions = [
-            RequestOptions::COOKIES => false,
-            RequestOptions::CONNECT_TIMEOUT => 10,
-            RequestOptions::TIMEOUT => 10,
-            RequestOptions::ALLOW_REDIRECTS => true,
-            RequestOptions::HEADERS => [
-                'User-Agent' => $_SERVER['HTTP_USER_AGENT'] ?? '*'
-            ]
-        ];
-
-        Crawler::create($clientOptions)
+        Crawler::create(\JchOptimize\Core\Spatie\Crawler::crawlClientOptions())
             ->setCrawlObserver($this->htmlCollector)
             ->setParseableMimeTypes(['text/html'])
             ->ignoreRobots()

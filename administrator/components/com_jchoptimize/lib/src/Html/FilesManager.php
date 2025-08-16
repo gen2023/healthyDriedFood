@@ -106,6 +106,9 @@ class FilesManager implements ContainerAwareInterface
      */
     public int $jsExcludedIndex = 0;
 
+    /**
+     * @var SplObjectStorage<Script, mixed>
+     */
     public SplObjectStorage $deferredScriptStorage;
 
 

@@ -125,6 +125,7 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
     private function handleCss(array $aCssLinksArray, string $section): void
     {
         $cssCacheIds = [];
+        $cssFileInfos = [];
         /**
          * @var  int $cssLinksKey
          * @var  FileInfo[] $cssInfosArray
@@ -147,7 +148,11 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
                 }
 
                 if ($isLastKey && $cssCacheObj->getBelowFoldFontsKeyFrame() !== '') {
-                    $this->addBelowFoldFontsKeyFrames($cssCacheObj);
+                    if (JCH_PRO && $this->params->get('pro_reduce_unused_css', '0')) {
+                        $cssFileInfos[] = $this->getBelowFoldFontsFileInfo($cssCacheObj);
+                    } else {
+                        $this->addBelowFoldFontsKeyFrames($cssCacheObj);
+                    }
                 }
             } else {
                 $this->htmlManager->replaceLinks($element, 'css', $section, $cssLinksKey);
@@ -160,8 +165,8 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
             $this->handleHttp2Preloads($cssCacheObj);
         }
 
-        if (!empty($cssCacheIds)) {
-            $appendedCacheObj = $this->getAppendedFiles($cssCacheIds, [], $appendedCssId, 'css');
+        if (!empty($cssCacheIds) || !empty($cssFileInfos)) {
+            $appendedCacheObj = $this->getAppendedFiles($cssCacheIds, $cssFileInfos, $appendedCssId, 'css');
             $this->htmlManager->loadCssDynamically(
                 $this->htmlManager->getNewCssLink(
                     $this->htmlManager->buildUrl($appendedCssId, 'css', $appendedCacheObj)
@@ -288,11 +293,11 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
         return md5(serialize($arrayKey));
     }
 
-    public function getAppendedFiles(array $ids, array $fileMatches, ?string &$id, string $type = 'js'): CacheObject
+    public function getAppendedFiles(array $ids, array $fileInfos, ?string &$id, string $type = 'js'): CacheObject
     {
         !JCH_DEBUG ?: $this->profiler->start('GetAppendedFiles');
 
-        $args = [$ids, $fileMatches, $type];
+        $args = [$ids, $fileInfos, $type];
         $function = [$this->combiner, 'appendFiles'];
 
         $cachedContents = $this->loadCache($function, $args, $id);
@@ -481,14 +486,20 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
 
     private function addBelowFoldFontsKeyFrames(CacheObject $cssCacheObj): void
     {
+        $fileInfo = $this->getBelowFoldFontsFileInfo($cssCacheObj);
+        $cacheObj = $this->getCombinedFiles([$fileInfo], $id, 'css');
+        $url = $this->htmlManager->buildUrl($id, 'css', $cacheObj);
+        $link = $this->htmlManager->getNewCssLink($url);
+        $this->htmlManager->loadCssAsync($link);
+    }
+
+    private function getBelowFoldFontsFileInfo(CacheObject $cssCacheObj): FileInfo
+    {
         $style = HtmlElementBuilder::style()
             ->addChild($cssCacheObj->getBelowFoldFontsKeyFrame());
         $fileInfo = new FileInfo($style);
         $fileInfo->setAlreadyProcessed(true);
 
-        $cacheObj = $this->getCombinedFiles([$fileInfo], $id, 'css');
-        $url = $this->htmlManager->buildUrl($id, 'css', $cacheObj);
-        $link = $this->htmlManager->getNewCssLink($url);
-        $this->htmlManager->loadCssAsync($link);
+        return $fileInfo;
     }
 }

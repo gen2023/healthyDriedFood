@@ -42,6 +42,7 @@ return [
 	'Joomla\\Component\\JLSitemap\\Site\\' => [JPATH_SITE . '/components/com_jlsitemap/src'],
 	'Joomla\\Component\\Joomlaupdate\\Administrator\\' => [JPATH_ADMINISTRATOR . '/components/com_joomlaupdate/src'],
 	'Joomla\\Component\\Jshopping\\Administrator\\' => [JPATH_ADMINISTRATOR . '/components/com_jshopping'],
+	'Joomla\\Component\\Jshopping\\Api\\' => [JPATH_API . '/components/com_jshopping'],
 	'Joomla\\Component\\Jshopping\\Site\\' => [JPATH_SITE . '/components/com_jshopping'],
 	'Joomla\\Component\\Languages\\Administrator\\' => [JPATH_ADMINISTRATOR . '/components/com_languages/src'],
 	'Joomla\\Component\\Languages\\Api\\' => [JPATH_API . '/components/com_languages/src'],

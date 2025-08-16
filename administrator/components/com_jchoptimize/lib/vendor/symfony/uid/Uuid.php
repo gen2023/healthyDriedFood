@@ -25,13 +25,13 @@ class Uuid extends AbstractUid
     protected const NIL = '00000000-0000-0000-0000-000000000000';
     public function __construct(string $uuid, bool $checkVariant = \false)
     {
-        $type = \preg_match('{^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$}Di', $uuid) ? (int) $uuid[14] : \false;
+        $type = preg_match('{^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$}Di', $uuid) ? (int) $uuid[14] : \false;
         if (\false === $type || (static::TYPE ?: $type) !== $type) {
-            throw new \InvalidArgumentException(\sprintf('Invalid UUID%s: "%s".', static::TYPE ? 'v' . static::TYPE : '', $uuid));
+            throw new \InvalidArgumentException(sprintf('Invalid UUID%s: "%s".', static::TYPE ? 'v' . static::TYPE : '', $uuid));
         }
-        $this->uid = \strtolower($uuid);
+        $this->uid = strtolower($uuid);
         if ($checkVariant && !\in_array($this->uid[19], ['8', '9', 'a', 'b'], \true)) {
-            throw new \InvalidArgumentException(\sprintf('Invalid UUID%s: "%s".', static::TYPE ? 'v' . static::TYPE : '', $uuid));
+            throw new \InvalidArgumentException(sprintf('Invalid UUID%s: "%s".', static::TYPE ? 'v' . static::TYPE : '', $uuid));
         }
     }
     /**
@@ -39,19 +39,19 @@ class Uuid extends AbstractUid
      */
     public static function fromString(string $uuid): parent
     {
-        if (22 === \strlen($uuid) && 22 === \strspn($uuid, BinaryUtil::BASE58[''])) {
-            $uuid = \str_pad(BinaryUtil::fromBase($uuid, BinaryUtil::BASE58), 16, "\x00", \STR_PAD_LEFT);
+        if (22 === \strlen($uuid) && 22 === strspn($uuid, BinaryUtil::BASE58[''])) {
+            $uuid = str_pad(BinaryUtil::fromBase($uuid, BinaryUtil::BASE58), 16, "\x00", \STR_PAD_LEFT);
         }
         if (16 === \strlen($uuid)) {
             // don't use uuid_unparse(), it's slower
-            $uuid = \bin2hex($uuid);
-            $uuid = \substr_replace($uuid, '-', 8, 0);
-            $uuid = \substr_replace($uuid, '-', 13, 0);
-            $uuid = \substr_replace($uuid, '-', 18, 0);
-            $uuid = \substr_replace($uuid, '-', 23, 0);
+            $uuid = bin2hex($uuid);
+            $uuid = substr_replace($uuid, '-', 8, 0);
+            $uuid = substr_replace($uuid, '-', 13, 0);
+            $uuid = substr_replace($uuid, '-', 18, 0);
+            $uuid = substr_replace($uuid, '-', 23, 0);
         } elseif (26 === \strlen($uuid) && Ulid::isValid($uuid)) {
             $ulid = new NilUlid();
-            $ulid->uid = \strtoupper($uuid);
+            $ulid->uid = strtoupper($uuid);
             $uuid = $ulid->toRfc4122();
         }
         if (__CLASS__ !== static::class || 36 !== \strlen($uuid)) {
@@ -83,7 +83,7 @@ class Uuid extends AbstractUid
     final public static function v3(self $namespace, string $name): UuidV3
     {
         // don't use uuid_generate_md5(), some versions are buggy
-        $uuid = \md5(\hex2bin(\str_replace('-', '', $namespace->uid)) . $name, \true);
+        $uuid = md5(hex2bin(str_replace('-', '', $namespace->uid)) . $name, \true);
         return new UuidV3(self::format($uuid, '-3'));
     }
     final public static function v4(): UuidV4
@@ -93,7 +93,7 @@ class Uuid extends AbstractUid
     final public static function v5(self $namespace, string $name): UuidV5
     {
         // don't use uuid_generate_sha1(), some versions are buggy
-        $uuid = \substr(\sha1(\hex2bin(\str_replace('-', '', $namespace->uid)) . $name, \true), 0, 16);
+        $uuid = substr(sha1(hex2bin(str_replace('-', '', $namespace->uid)) . $name, \true), 0, 16);
         return new UuidV5(self::format($uuid, '-5'));
     }
     final public static function v6(): UuidV6
@@ -105,17 +105,17 @@ class Uuid extends AbstractUid
         if (self::NIL === $uuid && \in_array(static::class, [__CLASS__, NilUuid::class], \true)) {
             return \true;
         }
-        if (__CLASS__ === static::class && 'ffffffff-ffff-ffff-ffff-ffffffffffff' === \strtr($uuid, 'F', 'f')) {
+        if (__CLASS__ === static::class && 'ffffffff-ffff-ffff-ffff-ffffffffffff' === strtr($uuid, 'F', 'f')) {
             return \true;
         }
-        if (!\preg_match('{^[0-9a-f]{8}(?:-[0-9a-f]{4}){2}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$}Di', $uuid)) {
+        if (!preg_match('{^[0-9a-f]{8}(?:-[0-9a-f]{4}){2}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$}Di', $uuid)) {
             return \false;
         }
         return __CLASS__ === static::class || static::TYPE === (int) $uuid[14];
     }
     public function toBinary(): string
     {
-        return \uuid_parse($this->uid);
+        return uuid_parse($this->uid);
     }
     public function toRfc4122(): string
     {
@@ -123,7 +123,7 @@ class Uuid extends AbstractUid
     }
     public function compare(AbstractUid $other): int
     {
-        if (\false !== ($cmp = \uuid_compare($this->uid, $other->uid))) {
+        if (\false !== $cmp = uuid_compare($this->uid, $other->uid)) {
             return $cmp;
         }
         return parent::compare($other);
@@ -131,9 +131,9 @@ class Uuid extends AbstractUid
     private static function format(string $uuid, string $version): string
     {
         $uuid[8] = $uuid[8] & "?" | "\x80";
-        $uuid = \substr_replace(\bin2hex($uuid), '-', 8, 0);
-        $uuid = \substr_replace($uuid, $version, 13, 1);
-        $uuid = \substr_replace($uuid, '-', 18, 0);
-        return \substr_replace($uuid, '-', 23, 0);
+        $uuid = substr_replace(bin2hex($uuid), '-', 8, 0);
+        $uuid = substr_replace($uuid, $version, 13, 1);
+        $uuid = substr_replace($uuid, '-', 18, 0);
+        return substr_replace($uuid, '-', 23, 0);
     }
 }

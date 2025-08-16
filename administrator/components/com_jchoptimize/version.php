@@ -23,8 +23,8 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 
-const JCH_VERSION  = '9.1.1';
-const JCH_DATE     = '2025-06-30';
+const JCH_VERSION  = '9.1.2';
+const JCH_DATE     = '2025-08-15';
 const JCH_PRO      = '0';
 const JCH_DEVELOP  = '0';
 const JCH_PLATFORM = 'Joomla!';

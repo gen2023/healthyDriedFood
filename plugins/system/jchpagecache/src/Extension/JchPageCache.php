@@ -241,6 +241,7 @@ class JchPageCache extends CMSPlugin implements SubscriberInterface, ContainerAw
     {
         $result = [$this->getApplication()->getLanguage()->getTag()];
         if (JCH_PRO) {
+            /** @see Webp::getCanIUse() */
             $result[] = $this->getContainer()->get(Webp::class)->getCanIUse();
         }
         $event->addArgument('result', $result);

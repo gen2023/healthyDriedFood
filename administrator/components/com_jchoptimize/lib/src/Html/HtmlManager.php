@@ -146,7 +146,6 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
 
     public function appendChildToHTML(string $child, string $section): void
     {
-
         $sSearchArea = preg_replace(
         /** @see Parser::htmlClosingHeadTagToken() */
         /** @see Parser::htmlClosingBodyTagToken() */
@@ -172,7 +171,7 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
         $deferredJsStorage = $this->filesManager->deferredScriptStorage;
         //Remove deferred files from original location
         $html = $this->processor->getFullHtml();
-        /** @var Script $deferredJs */
+
         foreach ($deferredJsStorage as $deferredJs) {
             $html = str_replace((string)$deferredJs, '', $html);
         }
@@ -366,7 +365,7 @@ class HtmlManager implements ContainerAwareInterface, EventManagerAwareInterface
 
     public function loadCssAsync(Link|Style $cssElement): void
     {
-        if ($cssElement instanceof  Style && trim($cssElement->getChildren()[0]) == '') {
+        if ($cssElement instanceof Style && trim($cssElement->getChildren()[0]) == '') {
             return;
         }
 
@@ -552,6 +551,14 @@ CSS;
         }
     }
 
+    /**
+     * @template T of Link|Script
+     *
+     * @param T $element The HTML element to add the data-file attribute to.
+     * @param FileInfo $fileInfo The file information.
+     * @return T Returns the same type as the $element input (Link or Script).
+     * @noinspection PhpDocSignatureInspection
+     */
     public function addDataFileToElement(Link|Script $element, FileInfo $fileInfo): Link|Script
     {
         if ($this->params->get('debug', '') && !$this->params->get('combine_files', '0')) {

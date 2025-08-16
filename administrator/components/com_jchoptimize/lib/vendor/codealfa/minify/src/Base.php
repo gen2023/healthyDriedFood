@@ -60,6 +60,6 @@ abstract class Base
 
         self::throwExceptionOnPregError();
 
-        return $op_code;
+        return $op_code ?? $code;
     }
 }

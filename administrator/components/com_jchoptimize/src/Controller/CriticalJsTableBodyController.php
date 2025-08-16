@@ -48,7 +48,7 @@ class CriticalJsTableBodyController extends BaseController implements MVCFactory
         $model = $this->getModel('PopulateModalBody');
         $view->setModel($model);
 
-        $baseUrl = rawurldecode($this->input->json->getArray()['baseUrl']);
+        $baseUrl = rawurldecode($this->input->getRaw('baseUrl'));
         $model->setState('jchoptimize.base_url', Utils::uriFor($baseUrl));
 
         parent::display($cachable, $urlparams);

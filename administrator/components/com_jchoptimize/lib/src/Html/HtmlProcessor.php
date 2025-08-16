@@ -717,55 +717,6 @@ HTML;
         return $dynamicScripts;
     }
 
-    public function cleanHtml(): string
-    {
-        $aSearch = [
-            '#' . Parser::htmlHeadElementToken() . '#ix',
-            '#' . Parser::htmlCommentToken() . '#ix',
-            '#' . Parser::htmlElementToken('script') . '#ix',
-            '#' . Parser::htmlElementToken('style') . '#ix',
-            '#' . Parser::htmlVoidElementToken('link') . '#six',
-        ];
-
-        $aReplace = [
-            '<head><title></title></head>',
-            '',
-            '',
-            '',
-            ''
-        ];
-
-        $html = preg_replace($aSearch, $aReplace, $this->html);
-
-        //Remove any hidden element from HtmL
-        $html = preg_replace_callback('#(<[^>]*+>)[^<>]*+#ix', function ($aMatches) {
-            if (preg_match('#type\s*+=\s*+["\']?hidden["\'\s>]|\shidden(?=[\s>=])[^>\'"=]*+[>=]#i', $aMatches[1])) {
-                return '';
-            }
-
-            //Add linebreak for readability during debugging
-            return $aMatches[1] . "\n";
-        }, $html);
-
-        //Remove Text nodes
-        //Remove text nodes from HTML elements
-        return preg_replace_callback(
-            '#(<(?>[^<>]++|(?1))*+>)|((?<=>)(?=[^<>\S]*+[^<>\s])[^<>]++)#',
-            function ($m) {
-                if (!empty($m[1])) {
-                    return $m[0];
-                }
-
-                if (!empty($m[2])) {
-                    return ' ';
-                }
-
-                return '';
-            },
-            $html
-        );
-    }
-
     public function getAboveFoldHtml(string $html): string
     {
         $aboveFoldHtml = '';

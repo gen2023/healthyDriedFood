@@ -53,7 +53,7 @@ class JavaScriptConfigureHelper extends CombineJsCss
             $criticalJsIndex = 'script';
         }
 
-        if (isset($needleIndex) && isset($haystack) & isset($excludePeoIndex) && isset($criticalJsIndex)) {
+        if (isset($needleIndex) && isset($haystack) && isset($excludePeoIndex) && isset($criticalJsIndex)) {
             foreach ($this->excludes[$this->section]['excludes_peo'][$excludePeoIndex] as $exclude) {
                 if (!empty($exclude[$needleIndex]) && Helper::findExcludes([$exclude[$needleIndex]], $haystack)) {
                     if (!isset($exclude['ieo'])) {

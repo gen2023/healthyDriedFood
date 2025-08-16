@@ -240,7 +240,9 @@ class PlgJshoppingCheckoutTelegrambot extends CMSPlugin
                 $parts[] = '__MANUFACTURER__: ' . $product->manufacturer;
             }
 
-            $productInfoRaw[] = $parts;
+            if (!empty($parts)) {
+                $productInfoRaw[] = $parts;
+            }
         }
 
         return $productInfoRaw;

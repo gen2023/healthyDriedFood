@@ -196,9 +196,9 @@ class Combiner implements ContainerAwareInterface, LoggerAwareInterface, Seriali
 
         try {
             return $this->getResponseFromHttpRequest($uri, $fileInfo);
-        } catch (GuzzleException | FileNotFoundException $e) {
+        } catch (GuzzleException|FileNotFoundException $e) {
             throw new FileNotFoundException(
-                $this->wrapInComments($fileInfo->display()) .  $e->getMessage()
+                $this->wrapInComments($fileInfo->display()) . $e->getMessage()
             );
         }
     }
@@ -232,8 +232,13 @@ class Combiner implements ContainerAwareInterface, LoggerAwareInterface, Seriali
             ]
         ];
 
-        $response = $this->getHttp()->get($uri, $options);
-        $contentType = $response->getHeader('Content-Type')[0];
+        try {
+            $response = $this->getHttp()->get($uri, $options);
+        } catch (GuzzleException $e) {
+            throw new FileNotFoundException("/* {$e->getMessage()} */");
+        }
+
+        $contentType = $response->getHeader('Content-Type')[0] ?? '';
         $expectedContentType = $this->getExpectedContentTypeRegex($fileInfo);
 
         if (!preg_match("#$expectedContentType#i", $contentType)) {
@@ -374,9 +379,9 @@ JS;
     {
         if (
             (function_exists('mb_detect_encoding')
-                && mb_detect_encoding($resultObj->getContents(), 'UTF-8', true) === 'UTF-8')
+             && mb_detect_encoding($resultObj->getContents(), 'UTF-8', true) === 'UTF-8')
             || (!function_exists('mb_detect_encoding')
-            && StringUtils::hasPcreUnicodeSupport()
+                && StringUtils::hasPcreUnicodeSupport()
                 && StringUtils::isValidUtf8($resultObj->getContents()))
         ) {
             $resultObj->prependContents('@charset "UTF-8";');
@@ -400,10 +405,7 @@ JS;
 
         if (!empty($ids)) {
             foreach ($ids as $id) {
-                $resultObj->appendContents(Output::getCombinedFile([
-                    'f' => $id,
-                    'type' => $type
-                ], false));
+                $resultObj->merge($this->handleIdForCombining($id, $type));
             }
         }
 
@@ -415,11 +417,32 @@ JS;
             }
         }
 
+        if ($type == 'css') {
+            $resultObj->prependContents($resultObj->getImports());
+            $this->addCharset($resultObj);
+        }
         if ($type == 'js') {
             $resultObj->appendContents("\n" . 'jchOptimizeDynamicScriptLoader.next();');
         }
         $resultObj->prepareForCaching();
 
         return $resultObj;
+    }
+
+    private function handleIdForCombining(mixed $id, string $type): CacheObject
+    {
+        $content = Output::getCombinedFile([
+            'f'    => $id,
+            'type' => $type
+        ], false);
+
+        if ($type == 'css') {
+            /** @var CssProcessor $cssProcessor */
+            $cssProcessor = $this->getContainer()->getNewInstance(CSSProcessor::class);
+
+            return $cssProcessor->processDynamicCssFile($content);
+        } else {
+            return (new CacheObject())->setContents($content);
+        }
     }
 }

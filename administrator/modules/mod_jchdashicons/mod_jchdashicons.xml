@@ -2,8 +2,8 @@
 <extension type="module" client="administrator" method="upgrade" version="4.3">
     <name>mod_jchdashicons</name>
     <description>MOD_JCHDASHICONS_DESCRIPTION</description>
-    <version>9.1.1</version>
-    <creationDate>2025-06-30</creationDate>
+    <version>9.1.2</version>
+    <creationDate>2025-08-15</creationDate>
     <author>Samuel Marshall</author>
     <authorUrl>https://www.jch-optimize.net</authorUrl>
     <variant>PRO</variant>

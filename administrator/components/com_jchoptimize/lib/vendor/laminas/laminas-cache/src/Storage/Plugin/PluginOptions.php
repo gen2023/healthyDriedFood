@@ -184,7 +184,7 @@ class PluginOptions extends AbstractOptions
              * @psalm-suppress RedundantConditionGivenDocblockType, DocblockTypeContradiction
              * Until we do lack native type-hint we should check the `$serializer` twice.
              */
-            throw new Exception\InvalidArgumentException(sprintf('%s expects either a string serializer name or Laminas\\Serializer\\Adapter\\AdapterInterface instance; ' . 'received "%s"', __METHOD__, is_object($serializer) ? get_class($serializer) : gettype($serializer)));
+            throw new Exception\InvalidArgumentException(sprintf('%s expects either a string serializer name or Laminas\Serializer\Adapter\AdapterInterface instance; ' . 'received "%s"', __METHOD__, is_object($serializer) ? get_class($serializer) : gettype($serializer)));
         }
         $this->serializer = $serializer;
         return $this;

@@ -26,6 +26,12 @@ trait Html
     }
 
     //language=RegExp
+    public static function htmlIECommentToken(): string
+    {
+        return '<!--\[[^]]*+\](?>[^<]++|<)*?<!\[[^]]*+\]-->';
+    }
+
+    //language=RegExp
     public static function htmlElementsToken(array $elements, bool $voidElements = false): string
     {
         $result = [];
@@ -38,9 +44,8 @@ trait Html
     }
 
     //language=RegExp
-    public static function htmlElementToken(
-        string $name = null,
-    ): string {
+    public static function htmlElementToken(?string $name = null): string
+    {
         $startTag = self::htmlStartTagToken($name);
         $textContent = self::htmlTextContentToken();
         $endTag = self::htmlEndTagToken();
@@ -48,7 +53,7 @@ trait Html
         return "{$startTag}{$textContent}?{$endTag}";
     }
 
-    public static function htmlVoidElementToken(string $name = null): string
+    public static function htmlVoidElementToken(?string $name = null): string
     {
         $element = $name ?? '(?:area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)';
         $attributes = self::htmlAttributesListToken();
@@ -132,7 +137,6 @@ trait Html
      * @return string
      * @deprecated Will be removed in 3.0
      */
-    //language=RegExp
     public static function htmlUnquotedAttributeValueToken(): string
     {
         return '(?<==)[^\s*+>]++';
@@ -167,7 +171,7 @@ trait Html
         return "(?>{$a}|\s++)*";
     }
 
-    public static function htmlStartTagToken(string $name = null): string
+    public static function htmlStartTagToken(?string $name = null): string
     {
         $element = $name ?? self::htmlGenericElementNameToken();
         $attributes = self::htmlAttributesListToken();
@@ -176,14 +180,14 @@ trait Html
         return "<(?<{$gName}>{$element})\b(?:\s++{$attributes}+)?>";
     }
 
-    public static function htmlEndTagToken(string $name = null): string
+    public static function htmlEndTagToken(?string $name = null): string
     {
         $gName = $name ?? '(?&' . self::$cgName . self::$cgIndex . ')';
 
         return "</{$gName}\s*+>";
     }
 
-    public static function htmlTextContentToken(string $name = null): string
+    public static function htmlTextContentToken(?string $name = null): string
     {
         $et = self::htmlEndTagToken($name);
 

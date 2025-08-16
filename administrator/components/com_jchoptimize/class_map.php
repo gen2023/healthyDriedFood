@@ -28,7 +28,7 @@ if (!class_exists('_JchOptimizeVendor\V91\Joomla\Filesystem\File', false)) {
     class_alias(File::class, '\\_JchOptimizeVendor\\V91\\Joomla\\Filesystem\\File');
 }
 
-if (!class_exists('_JchOptimizeVendor\\V91\Joomla\Registry\Registry', false)) {
+if (!class_exists('_JchOptimizeVendor\V91\Joomla\Registry\Registry', false)) {
     class_alias(Registry::class, '\\_JchOptimizeVendor\\V91\\Joomla\\Registry\\Registry');
 }
 

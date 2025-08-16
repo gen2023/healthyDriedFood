@@ -9,14 +9,6 @@
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
 
-document.addEventListener("DOMContentLoaded", (event) => {
-    jchLazyLoadBgImages();
-});
-document.addEventListener("onJchDomLoaded", (event) => {
-    jchLazyLoadBgImages();
-    jchLazySizes.loader.checkElems();
-});
-
 function jchLazyLoadBgImages() {
     Object.values(jchLazyLoadSelectors).forEach(function (selector) {
         try {
@@ -36,3 +28,14 @@ function jchLazyLoadBgImages() {
         }
     });
 }
+
+if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", jchLazyLoadBgImages);
+} else {
+    jchLazyLoadBgImages();
+}
+
+document.addEventListener("onJchDomLoaded", (event) => {
+    jchLazyLoadBgImages();
+    jchLazySizes.loader.checkElems();
+});

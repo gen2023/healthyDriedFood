@@ -51,8 +51,8 @@ class JchMultiSelectField extends ListField
 
     public function setup(SimpleXMLElement $element, $value, $group = null): bool
     {
-        $element->addAttribute('multiple', true);
-        $element->addAttribute('class', 'inputbox chzn-custom-value input-xlarge jch-multiselect');
+        $this->addAttribute($element, 'multiple', 'true');
+        $this->addAttribute($element, 'class', 'inputbox chzn-custom-value input-xlarge jch-multiselect');
 
         if ($element['proOnly']) {
             $this->proOnly = true;
@@ -110,5 +110,24 @@ class JchMultiSelectField extends ListField
             JPATH_ADMINISTRATOR . '/components/com_jchoptimize/layouts',
             JPATH_ROOT . '/layouts'
         ];
+    }
+
+    private function addAttribute(SimpleXMLElement $element, string $attrName, string $attrValue): void
+    {
+        // Check if the attribute exists
+        if (isset($element[$attrName]) || $element->attributes()->$attrName) {
+            // Append to existing attribute value
+            $currentValue = (string)$element[$attrName];
+
+            //prevent duplicates
+            $values = explode(' ', $currentValue);
+            if (!in_array($attrValue, $values)) {
+                $values[] = $attrValue;
+                $element[$attrName] = implode(' ', $values);
+            }
+        } else {
+            // Attribute does not exist, add it
+            $element->addAttribute($attrName, $attrValue);
+        }
     }
 }
