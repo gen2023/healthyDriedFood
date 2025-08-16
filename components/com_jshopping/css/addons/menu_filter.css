@@ -1,0 +1,6 @@
+fieldset#fieldset-extra_fiels .form-grid > .control-group > .control-label{
+	display: none;
+}
+fieldset#fieldset-attributes .form-grid > .control-group > .control-label{
+	display: none;
+}

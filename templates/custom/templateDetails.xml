@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="template" client="site">
+	<name>custom</name>
+	<version>1.0</version>
+	<creationDate>2024</creationDate>
+	<author>Joomla! Project</author>
+	<authorEmail>admin@joomla.org</authorEmail>
+	<copyright>(C) 2017 Open Source Matters, Inc.</copyright>
+	<description>TPL_CUSTOM_XML_DESCRIPTION</description>
+	<inheritable>1</inheritable>
+	<files>
+		<filename>component.php</filename>
+		<filename>error.php</filename>
+		<filename>index.php</filename>
+		<filename>joomla.asset.json</filename>
+		<filename>offline.php</filename>
+		<filename>templateDetails.xml</filename>
+		<folder>html</folder>
+	</files>
+	<media destination="templates/site/custom" folder="media">
+		<folder>js</folder>
+		<folder>css</folder>
+		<folder>images</folder>
+		<folder>fonts</folder>
+	</media>
+	<positions>
+		<position>header</position>
+		<position>search</position>
+		<position>lang</position>
+		<position>breadcrumbs</position>
+		<position>debug</position>
+	</positions>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/tpl_custom.ini</language>
+		<language tag="en-GB">en-GB/tpl_custom.sys.ini</language>
+		<language tag="ru-RU">ru-RU/tpl_custom.ini</language>
+		<language tag="ru-RU">ru-RU/tpl_custom.sys.ini</language>
+		<language tag="uk-UA">uk-UA/tpl_custom.ini</language>
+		<language tag="uk-UA">uk-UA/tpl_custom.sys.ini</language>
+	</languages>
+		<config>
+		<fields name="params">
+			<fieldset name="advanced">
+				<field
+					name="logoFile"
+					type="media"
+					schemes="http,https,ftp,ftps,data,file"
+					validate="url"
+					relative="true"
+					default=""
+					label="TPL_CUSTOM_LOGO_LABEL"
+				/>
+				<field
+					name="siteTitle"
+					type="text"
+					default=""
+					label="Text Logo"
+					filter="string"
+				/>
+				</fieldset>
+		</fields>
+	</config>
+</extension>

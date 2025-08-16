@@ -1,0 +1,54 @@
+/*!******************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./plg_installer_nevigen/scss/nevigen.scss ***!
+  \******************************************************************************************************************************************************************************************/
+@charset "UTF-8";
+/*!
+ * @package    Nevigen Installer Plugin
+ * @version    2.1.1
+ * @author     Nevigen.com - https://nevigen.com
+ * @copyright  Copyright © Nevigen.com. All rights reserved.
+ * @license    Proprietary. Copyrighted Commercial Software
+ * @link       https://nevigen.com
+ */
+#nevigen > fieldset.options-form {
+  position: relative;
+}
+#nevigen button.nevigen-button-filter-reset-all {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+}
+#nevigen #nevigenList .errors {
+  text-align: center;
+  font-size: 1.4rem;
+}
+#nevigen #nevigenList .errors a {
+  display: inline-block;
+  margin-top: 20px;
+}
+#nevigen #nevigenList .nd-flex {
+  display: flex;
+}
+#nevigen .listExtensions .template {
+  box-shadow: 0 2px 0.7em rgba(0, 0, 0, 0.08);
+  padding: 20px 10px;
+  margin: 0 20px 20px 0;
+  -webkit-box-flex: 1 !important;
+  -ms-flex: 1 1 auto !important;
+  flex: 1 1 auto !important;
+}
+#nevigen .listExtensions .template:hover, #nevigen .listExtensions .template:active, #nevigen .listExtensions .template:focus {
+  box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
+}
+#nevigen .listExtensions .template .name {
+  margin-bottom: 10px;
+}
+#nevigen .listExtensions .template a[target=_blank]::before {
+  display: none;
+}
+#nevigen .extens-img {
+  max-width: 150px;
+  margin-left: -25px;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY3NzL25ldmlnZW4uY3NzIiwibWFwcGluZ3MiOiI7OztBQUFBLGdCQUFnQjtBQUFoQjs7Ozs7OztFQUFBO0FBVUU7RUFDRTtBQUFKO0FBR0U7RUFDRTtFQUNBO0VBQ0E7QUFESjtBQUtJO0VBQ0U7RUFDQTtBQUhOO0FBS007RUFDRTtFQUNBO0FBSFI7QUFPSTtFQUNFO0FBTE47QUFVSTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtBQVJOO0FBVU07RUFDRTtBQVJSO0FBV007RUFDRTtBQVRSO0FBWU07RUFDRTtBQVZSO0FBZUU7RUFDRTtFQUNBO0FBYkosQyIsInNvdXJjZXMiOlsid2VicGFjazovL3BsZ19pbnN0YWxsZXJfbmV2aWdlbi9wbGdfaW5zdGFsbGVyX25ldmlnZW4vc2Nzcy9uZXZpZ2VuLnNjc3MiXSwic291cmNlc0NvbnRlbnQiOlsiLyohXG4gKiBAcGFja2FnZSAgICBOZXZpZ2VuIEluc3RhbGxlciBQbHVnaW5cbiAqIEB2ZXJzaW9uICAgIDIuMS4xXG4gKiBAYXV0aG9yICAgICBOZXZpZ2VuLmNvbSAtIGh0dHBzOi8vbmV2aWdlbi5jb21cbiAqIEBjb3B5cmlnaHQgIENvcHlyaWdodCDCqSBOZXZpZ2VuLmNvbS4gQWxsIHJpZ2h0cyByZXNlcnZlZC5cbiAqIEBsaWNlbnNlICAgIFByb3ByaWV0YXJ5LiBDb3B5cmlnaHRlZCBDb21tZXJjaWFsIFNvZnR3YXJlXG4gKiBAbGluayAgICAgICBodHRwczovL25ldmlnZW4uY29tXG4gKi9cblxuI25ldmlnZW4ge1xuICA+IGZpZWxkc2V0Lm9wdGlvbnMtZm9ybSB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICB9XG5cbiAgYnV0dG9uLm5ldmlnZW4tYnV0dG9uLWZpbHRlci1yZXNldC1hbGx7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHRvcDogLTEwcHg7XG4gICAgcmlnaHQ6IDEwcHg7XG4gIH1cblxuICAjbmV2aWdlbkxpc3Qge1xuICAgIC5lcnJvcnMge1xuICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgICAgZm9udC1zaXplOiAxLjRyZW07XG5cbiAgICAgIGEge1xuICAgICAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gICAgICAgIG1hcmdpbi10b3A6IDIwcHg7XG4gICAgICB9XG4gICAgfVxuXG4gICAgLm5kLWZsZXgge1xuICAgICAgZGlzcGxheTogZmxleDtcbiAgICB9XG4gIH1cblxuICAubGlzdEV4dGVuc2lvbnMge1xuICAgIC50ZW1wbGF0ZSB7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCAuN2VtIHJnYmEoMCwgMCwgMCwgLjA4KTtcbiAgICAgIHBhZGRpbmc6IDIwcHggMTBweDtcbiAgICAgIG1hcmdpbjogMCAyMHB4IDIwcHggMDtcbiAgICAgIC13ZWJraXQtYm94LWZsZXg6IDEgIWltcG9ydGFudDtcbiAgICAgIC1tcy1mbGV4OiAxIDEgYXV0byAhaW1wb3J0YW50O1xuICAgICAgZmxleDogMSAxIGF1dG8gIWltcG9ydGFudDtcblxuICAgICAgJjpob3ZlciwgJjphY3RpdmUsICY6Zm9jdXMge1xuICAgICAgICBib3gtc2hhZG93OiAwIDE0cHggMjVweCByZ2JhKDAsIDAsIDAsIC4xNik7XG4gICAgICB9XG5cbiAgICAgIC5uYW1lIHtcbiAgICAgICAgbWFyZ2luLWJvdHRvbTogMTBweDtcbiAgICAgIH1cblxuICAgICAgYVt0YXJnZXQ9XCJfYmxhbmtcIl06OmJlZm9yZSB7XG4gICAgICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgICB9XG4gICAgfVxuICB9XG5cbiAgLmV4dGVucy1pbWcge1xuICAgIG1heC13aWR0aDogMTUwcHg7XG4gICAgbWFyZ2luLWxlZnQ6IC0yNXB4O1xuICB9XG59Il0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9*/

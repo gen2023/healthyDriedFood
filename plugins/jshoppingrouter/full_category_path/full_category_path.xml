@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<extension type="plugin" version="4.0" method="upgrade" group="jshoppingrouter">
+	<name>Jshoppingrouter - Full Category Path</name>
+	<author>Nevigen.com, Sergey Tolkachyov</author>
+	<creationDate>May, 2022</creationDate>
+	<copyright>Copyright © Nevigen.com, Sergey Tolkachyov. All rights reserved</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<authorEmail>support@nevigen.com, info@web-tolk.ru</authorEmail>
+	<authorUrl>https://nevigen.com/, https://web-tolk.ru</authorUrl>
+	<version>4.1.0</version>
+	<description><![CDATA[</![CDATA[<p>Developed & Powered by <a href="https://nevigen.com/" target="_blank">Nevigen.com</a>, updated for Joomla 4 by <a href="https://web-tolk.ru/" target="_blank">web-tolk.ru</a></p><p>If you have several entry points to the component (several JoomShopping menu items), there may be problems with building the correct path and errors Too many redirects. We recommend using only one entry point to the component.</p>]]></description>
+	<files>
+		<filename plugin="full_category_path">full_category_path.php</filename>
+		<filename>full_category_path.xml</filename>
+	</files>
+	<updateservers>
+        <server type="extension" name="WebTolk - Full Category Path for JoomShopping">https://web-tolk.ru/component/swjprojects/jupdate.html?element=plg_full_joomshopping_category_path</server>
+    </updateservers>
+</extension>

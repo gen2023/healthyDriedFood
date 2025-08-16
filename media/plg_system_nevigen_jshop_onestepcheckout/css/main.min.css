@@ -1,0 +1,8 @@
+/*!
+ * @package    Nevigen JShop OneStepCheckout Package
+ * @version    1.1.0
+ * @author     Nevigen.com - https://nevigen.com
+ * @copyright  Copyright © Nevigen.com. All rights reserved.
+ * @license    Proprietary. Copyrighted Commercial Software
+ * @link       https://nevigen.com
+ */#nevigenOneStepCheckout .payment_wrapper,#nevigenOneStepCheckout .shipping_wrapper{padding:5px 15px;border:2px solid rgba(0,0,0,0);border-radius:4px}#nevigenOneStepCheckout .payment_wrapper.active,#nevigenOneStepCheckout .shipping_wrapper.active{border-color:#00a046;background:#e0f6ea}#nevigenOneStepCheckout .payment_wrapper.active .form-check-input:checked,#nevigenOneStepCheckout .shipping_wrapper.active .form-check-input:checked{background-color:#00a046;border-color:#00a046}#nevigenOneStepCheckout .payment_wrapper.active label,#nevigenOneStepCheckout .shipping_wrapper.active label{font-weight:bold;color:#00a046}#nevigenOneStepCheckout .payment_wrapper.active .nevigen-onestepcheckout-shipping-name,#nevigenOneStepCheckout .payment_wrapper.active .nevigen-onestepcheckout-payment-name,#nevigenOneStepCheckout .shipping_wrapper.active .nevigen-onestepcheckout-shipping-name,#nevigenOneStepCheckout .shipping_wrapper.active .nevigen-onestepcheckout-payment-name{text-transform:uppercase}body.helix-ultimate #nevigenOneStepCheckout .btn-group input[name=delivery_adress]{clip:auto;width:49%;height:100%;z-index:1000;pointer-events:auto;opacity:0}body.helix-ultimate #nevigenOneStepCheckout .btn-group #delivery_adress0{left:0}body.helix-ultimate #nevigenOneStepCheckout .btn-group #delivery_adress1{right:0}

@@ -1,0 +1,20 @@
+.cartajaxattributes{
+	font-size: 0.8rem;
+	border:1px solid #ddd;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.cartajaxattributes fieldset{
+	margin:0pc;
+	padding:5px;	
+	width: 100%;
+}
+.cartajaxattributes fieldset legend{
+	font-size: 1rem;
+}
+.cartajaxattributes-fieldset-wrapper{
+	display:block;
+}
+.cartajaxattributes fieldset img,.cartajaxattributes fieldset input,.cartajaxattributes fieldset select{vertical-align : middle;}
+.product .cartajaxattributes-buy-button,.product .cartajaxattributes-close-button{display:none}
+#cartajax-attribute-loading{width:12px;height:12px;background:url('images/cartajax-attribute-loading.gif') no-repeat center center transparent;margin-right:-12px;display:inline-block;vertical-align:baseline;zoom:1;*display:inline;}

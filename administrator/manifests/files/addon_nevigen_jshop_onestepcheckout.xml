@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="file" method="upgrade">
+	<name>Nevigen JShop OneStepCheckout Addon</name>
+	<author>Nevigen.com</author>
+	<creationDate>November 2024</creationDate>
+	<copyright>copyright © Nevigen.com. All rights reserved</copyright>
+	<license>Proprietary. Copyrighted Commercial Software</license>
+	<authorEmail>support@nevigen.com</authorEmail>
+	<authorUrl>https://nevigen.com</authorUrl>
+	<version>1.1.0</version>
+	<description>Nevigen JShop OneStepCheckout Addon</description>
+	<addon>nevigen_onestepcheckout</addon>
+	<scriptfile>script.php</scriptfile>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.addon_nevigen_jshop_onestepcheckout.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.addon_nevigen_jshop_onestepcheckout.ini</language>
+		<language tag="uk-UA">uk-UA/uk-UA.addon_nevigen_jshop_onestepcheckout.ini</language>
+	</languages>
+	<fileset>
+		<files target="components/com_jshopping/addons">
+			<folder>nevigen_onestepcheckout</folder>
+		</files>
+	</fileset>
+</extension>

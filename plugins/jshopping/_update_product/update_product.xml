@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshopping" method="upgrade" version="5.0">
+    <name>PLG_JSHOPPING_UPDATE_PRODUCT</name>
+    <author>Sofona</author>
+    <version>1.0.0</version>
+    <description>PLG_JSHOPPING_UPDATE_PRODUCT_DESC</description>
+    <files>
+        <filename plugin="update_product">update_product.php</filename>
+    </files>
+    <languages>
+        <language tag="ru-RU">language/ru-RU/plg_joomshopping_update_product.ini</language>
+		<language tag="ru-RU">language/ru-RU/plg_joomshopping_update_product.sys.ini</language>
+    </languages> 
+</extension>

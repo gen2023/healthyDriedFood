@@ -1,0 +1,277 @@
+<config>
+    <fields name="params">
+        <fieldset name="googleShop" label="Google shopping">
+            <field
+              name="enable_googleshop"
+              type="radio"
+              layout="joomla.form.field.radio.switcher"
+              filter="integer"
+              default="0"
+              label="Google shopping">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+            <field
+              name="googleshop_enable_file"
+              type="radio"
+              layout="joomla.form.field.radio.switcher"
+              filter="integer"
+              default="0"
+              label="COM_EXPORT_ENABLE_FILE"
+              description="COM_EXPORT_ENABLE_FILE_DESCRIPTION"
+              showon="enable_googleshop:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>          
+          <field
+            name="googleshop_name_file"
+            type="text"
+            label="COM_EXPORT_NAME_FILE"
+            description="COM_EXPORT_NAME_FILE_DESCRIPTION"
+            showon="enable_googleshop:1[AND]googleshop_enable_file:1"
+            default="googleShop"
+          />
+          <field
+              name="googleshop_lang"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="0"
+              label="COM_EXPORT_LANG"
+              showon="enable_googleshop:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+          <field
+              name="googleshop_selectlang"
+              type="sql"
+              label="COM_EXPORT_SELECT_LANG"
+              showon="enable_googleshop:1[AND]googleshop_lang:0"
+              query="SELECT language AS value, name FROM #__jshopping_languages WHERE publish=1 ORDER BY name ASC"
+              key_field="value"
+			        value_field="name">
+          </field>
+          <field
+            name="googleshop_manufacturer"
+            type="text"
+            label="COM_EXPORT_NAME_MANUFACTURER_DEFAULT"
+            showon="enable_googleshop:1"
+            default="Manufacturer name"
+          />          
+          <field
+              name="googleshop_availability"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="1"
+              label="COM_EXPORT_AVAILABITY"
+              showon="enable_googleshop:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+          <field
+              name="googleshop_availability_status"
+              type="list"
+              default="out_of_stock"
+              label="COM_EXPORT_AVAILABITY_STATUS"
+              showon="enable_googleshop:2[AND]googleshop_availability:0">
+            <option value="out_of_stock">COM_EXPORT_OUT_OF_STOCK</option>
+            <option value="preorder">COM_EXPORT_PREORDER</option>
+            <option value="backorder">COM_EXPORT_BACKORDER</option>
+          </field>
+          <field
+              name="googleshop_exclude__sales_price"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="0"
+              label="COM_EXPORTXML_EXCLUDE_SALE_PRICE"
+              showon="enable_googleshop:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+        </fieldset>
+        <fieldset name="rozetka" label="Rozetka">
+          <field
+              name="enable_rozetka"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="0"
+              label="Rozetka">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+          <field
+              name="rozetka_enable_file"
+              type="radio"
+              layout="joomla.form.field.radio.switcher"
+              filter="integer"
+              default="0"
+              label="COM_EXPORT_ENABLE_FILE"
+              description="COM_EXPORT_ENABLE_FILE_DESCRIPTION"
+              showon="enable_rozetka:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>          
+          <field
+            name="rozetka_name_file"
+            type="text"
+            label="COM_EXPORT_NAME_FILE"
+            description="COM_EXPORT_NAME_FILE_DESCRIPTION"
+            showon="enable_rozetka:1[AND]rozetka_enable_file:1"
+            default="rozetka"
+          />
+          <field
+              name="rozetka_lang"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="0"
+              label="COM_EXPORT_LANG"
+              showon="enable_rozetka:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+          <field
+              name="rozetka_selectlang"
+              type="sql"
+              label="COM_EXPORT_SELECT_LANG"
+              showon="enable_rozetka:1[AND]rozetka_lang:0"
+              query="SELECT language AS value, name FROM #__jshopping_languages WHERE publish=1 ORDER BY name ASC"
+              key_field="value"
+			        value_field="name">
+          </field>
+          <field
+            name="rozetka_manufacturer"
+            type="text"
+            label="COM_EXPORT_NAME_MANUFACTURER_DEFAULT"
+            showon="enable_rozetka:1"
+            default="Manufacturer name"
+          />          
+          <field
+              name="rozetka_availability"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="1"
+              label="COM_EXPORT_AVAILABITY"
+              showon="enable_rozetka:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+          <field
+              name="rozetka_availability_status"
+              type="list"
+              default="out_of_stock"
+              label="COM_EXPORT_AVAILABITY_STATUS"
+              showon="enable_rozetka:2[AND]rozetka_availability:0">
+            <option value="out_of_stock">COM_EXPORT_OUT_OF_STOCK</option>
+            <option value="preorder">COM_EXPORT_PREORDER</option>
+            <option value="backorder">COM_EXPORT_BACKORDER</option>
+          </field>
+          <field
+              name="rozetka_exclude__sales_price"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="0"
+              label="COM_EXPORTXML_EXCLUDE_OLD_PRICE"
+              showon="enable_rozetka:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+        </fieldset>
+        <fieldset name="prom" label="Prom">
+          <field
+              name="enable_prom"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="0"
+              label="Prom">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+            <field
+              name="prom_enable_file"
+              type="radio"
+              layout="joomla.form.field.radio.switcher"
+              filter="integer"
+              default="0"
+              label="COM_EXPORT_ENABLE_FILE"
+              description="COM_EXPORT_ENABLE_FILE_DESCRIPTION"
+              showon="enable_prom:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>          
+          <field
+            name="prom_name_file"
+            type="text"
+            label="COM_EXPORT_NAME_FILE"
+            description="COM_EXPORT_NAME_FILE_DESCRIPTION"
+            showon="enable_prom:1[AND]prom_enable_file:1"
+            default="prom"
+          />
+          <field
+              name="prom_lang"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="0"
+              label="COM_EXPORT_LANG"
+              showon="enable_prom:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+          <field
+              name="prom_selectlang"
+              type="sql"
+              label="COM_EXPORT_SELECT_LANG"
+              showon="enable_prom:1[AND]prom_lang:0"
+              query="SELECT language AS value, name FROM #__jshopping_languages WHERE publish=1 ORDER BY name ASC"
+              key_field="value"
+			        value_field="name">
+          </field>
+          <field
+            name="prom_manufacturer"
+            type="text"
+            label="COM_EXPORT_NAME_MANUFACTURER_DEFAULT"
+            showon="enable_prom:1"
+            default="Manufacturer name"
+          />          
+          <field
+              name="prom_availability"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="1"
+              label="COM_EXPORT_AVAILABITY"
+              showon="enable_prom:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>
+          <field
+              name="prom_availability_status"
+              type="list"
+              default="out_of_stock"
+              label="COM_EXPORT_AVAILABITY_STATUS"
+              showon="enable_prom:2[AND]prom_availability:0">
+            <option value="out_of_stock">COM_EXPORT_OUT_OF_STOCK</option>
+            <option value="preorder">COM_EXPORT_PREORDER</option>
+            <option value="backorder">COM_EXPORT_BACKORDER</option>
+          </field>
+          <field
+              name="prom_exclude__sales_price"
+              type="radio"
+				      layout="joomla.form.field.radio.switcher"
+				      filter="integer"
+              default="0"
+              label="COM_EXPORTXML_EXCLUDE_OLD_PRICE"
+              showon="enable_prom:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+          </field>          
+        </fieldset>
+    </fields>
+</config>

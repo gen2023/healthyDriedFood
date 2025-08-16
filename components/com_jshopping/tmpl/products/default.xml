@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="PRODUCTS_LIST"></layout>
+    <fields name="request">
+		<fieldset name="request">		
+			<field name="task" type="list" label="List">
+				<option value="">All</option>
+				<option value="tophits">Top_Hits</option>
+                <option value="toprating">Top_Rating</option>
+                <option value="label">Label_Products</option>
+                <option value="bestseller">Bestseller</option>
+                <option value="random">Random</option>
+                <option value="last">Last_Products</option>
+			</field>
+            <field type="jshoppingcategories" name="category_id" label="Category_ID" addfieldprefix="Joomla\Component\Jshopping\Administrator\Field" default="" />
+            <field type="jshoppingmanufacturers" name="manufacturer_id" label="Manufacturer_ID" addfieldprefix="Joomla\Component\Jshopping\Administrator\Field" default="" />
+            <field type="jshoppinglabels" name="label_id" label="Label_ID" addfieldprefix="Joomla\Component\Jshopping\Administrator\Field" default="" />
+            <field type="jshoppingvendors" name="vendor_id" label="Vendor_ID" addfieldprefix="Joomla\Component\Jshopping\Administrator\Field" default="" />
+            <field name="price_from" type="text" default="" label="Price_from" />
+            <field name="price_to" type="text" default="" label="Price_to" />
+		</fieldset>
+	</fields>
+</metadata>

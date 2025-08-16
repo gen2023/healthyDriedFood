@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="1.7.0" client="site" method="upgrade">
+<name>Jshopping Filters Extended</name> 
+	<creationDate>01.07.2018</creationDate>
+    <author>MAXXmarketing GmbH</author>
+    <authorEmail>marketing@maxx-marketing.net</authorEmail>
+    <authorUrl>http://www.webdesigner-profi.de</authorUrl>
+    <copyright></copyright>
+    <license>MAXXmarketing</license>
+    <version>5.21.0</version>
+	<description>Displays extended filters of shop.</description>
+	<files>
+	<filename module="mod_jshopping_filters_extended">mod_jshopping_filters_extended.php</filename>
+        <filename>tmpl/default.php</filename>
+        <filename>css/mod_jshopping_filters.css</filename>
+        <filename>css/jquery-ui-slider.css</filename> 
+        <filename>js/jquery-ui.min-slider.js</filename> 		
+        <filename>element/attributes.php</filename>  
+        <filename>element/characteristics.php</filename>
+        <filename>helper.php</filename> 
+	</files>
+    <languages>
+        <language tag="en-GB">en-GB.mod_jshopping_filters_extended.ini</language>
+        <language tag="de-DE">de-DE.mod_jshopping_filters_extended.ini</language>  
+        <language tag="ru-RU">ru-RU.mod_jshopping_filters_extended.ini</language>                       
+        <language tag="uk-UA">uk-UA.mod_jshopping_filters_extended.ini</language>                       
+    </languages>     
+    <config>
+        <fields name="params">
+            <fieldset name="basic"> 
+                <field
+                    name="filter_order" 
+                    type="order" 
+                    default="manufacturer,categories,vendors,price,characteristic,label,availability,photo_filter,delivery_time,shipping,attribute,review,rating,search,sets"
+                    label="OUTPUT_ORDER" 
+                    description=""> 
+                </field>     
+                <field name="ajax_view" type="radio" default="0" label="Ajax view" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field> 				              
+                <field name="show_on_all_pages" type="radio" default="0" label="SHOW_ON_ALL_PAGES" class="btn-group" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="show_dropdown_list" type="radio" default="0" label="SHOW_DROPDOWN_LIST" class="btn-group" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>                
+                <field name="auto_submit" type="radio" default="1" label="AUTO_SUBMIT" description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="show_filter_active" type="radio" default="1" label="SHOW_FILTER_ACTIVE" class="btn-group" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="2">JYES_IN_PRODUCT_LIST</option>
+                </field>
+                <field name="filter_reset" type="radio" default="0" label="filter_reset" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="show_horizontal" type="radio" default="0" label="SHOW_HORIZONTAL" class="btn-group" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="columns_count" type="list" default="0" label="COLUMNS_COUNT" description="">
+                    <option value="0">auto</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="6">6</option>
+                </field>                                              
+               
+
+                <field name="filter_scrolling_number" type="number" default="0" label="MOD_FILTERS_EXTENDED_MINIMAL_DISPLAY_SCROLL"></field>
+
+                 
+                 <field
+                    name="display_unavailable_value"
+                    type="radio"
+                    default="1"
+                    label="Display_unavailable_value"
+                    description="" class="btn-group">
+                    <option value="0">Not display</option>
+                    <option value="1">As disable</option>
+                </field>
+                <field
+                    name="disable_mod_for_controllers"
+                    type="text"
+                    label="DISABLE_MOD_FOR_CONTROLLERS"
+                    description="" />
+                <field
+                    name="use_select_chosen"
+                    type="radio"
+                    default="0"
+                    label="USE_SELECT_CHOSEN"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYES</option>
+                </field>
+                <field name="alphabet_sorting" type="radio" default="0" label="ALPHABET_SORTING" description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field
+                    name="use_select_chosen_multiple"
+                    type="radio"
+                    default="0"
+                    label="USE_SELECT_CHOSEN_MULTIPLE"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYES</option>
+                </field>
+                <field name="build_url_filter" type="radio" default="0" label="BUILD_URL_FILTER" description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+				<!--
+                <field name="get_filter_only_url" type="radio" default="0" label="GET_FILTER_ONLY_URL" description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+				-->
+                <field name="btn_control_top" type="radio" default="0" class="btn-group" label="BTN_CONTROLL_TOP" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="btn_control_bottom" type="radio" default="1" class="btn-group" label="BTN_CONTROLL_BOTTOM" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="cache" type="radio" default="0" class="btn-group" label="Cache" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="button_to_open" type="radio" default="0" class="btn-group" label="Button to open on mobile" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+            </fieldset>
+            <fieldset name="price">
+                <field
+                    name="show_prices"
+                    type="radio"
+                    default="1"
+                    label="SHOW_PRICES"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYES</option>
+                </field>
+                <field
+                    name="show_price_button"
+                    type="radio"
+                    default="0"
+                    label="SHOW_PRICE_BUTTON"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYES</option>
+                </field>                  
+                <field
+                    name="show_prices_slider"
+                    type="radio"
+                    default="0"
+                    label="SHOW_PRICES_SLIDER"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYES</option>
+                </field>                   
+                <field
+                    name="show_products_with_old_prices"
+                    type="radio"
+                    default="0"
+                    label="SHOW_PRODUCTS_WITH_OLD_PRICES"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYES</option>
+                </field> 
+                <field name="pricef1" type="text" label="Price From" description="" />
+                <field name="pricet1" type="text" label="Price To" description="" />
+                <field name="pricef2" type="text" label="Price From" description="" />
+                <field name="pricet2" type="text" label="Price To" description="" />
+                <field name="pricef3" type="text" label="Price From" description="" />
+                <field name="pricet3" type="text" label="Price To" description="" />
+                <field name="pricef4" type="text" label="Price From" description="" />
+                <field name="pricet4" type="text" label="Price To" description="" />
+                <field name="pricef5" type="text" label="Price From" description="" />
+                <field name="pricet5" type="text" label="Price To" description="" />
+                <field name="pricef6" type="text" label="Price From" description="" />
+                <field name="pricet6" type="text" label="Price To" description="" />
+                <field name="pricef7" type="text" label="Price From" description="" />
+                <field name="pricet7" type="text" label="Price To" description="" />
+                <field name="pricef8" type="text" label="Price From" description="" />
+                <field name="pricet8" type="text" label="Price To" description="" />
+            </fieldset>
+
+            <fieldset name="categories">
+                <field
+                    name="show_categorys"
+                    type="radio"
+                    default="1"
+                    label="SHOW_CATEGORYS"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">Yes_Checkbox</option>
+                    <option
+                        value="2">Yes_Select</option>
+                </field>
+                <field
+                    name="show_category_img"
+                    type="radio"
+                    default="0"
+                    label="SHOW_CATEGORY_IMG"
+                    description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+						
+		        <field
+                    name="show_categorys_in_category"
+                    type="radio"
+                    default="0"
+                    label="Show filter categorys in category" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYES</option>
+                </field>
+                <field name="filter_scrolling_number_categories" 
+                    type="number" 
+                    default="0" 
+                    label="MOD_FILTERS_EXTENDED_MINIMAL_DISPLAY_SCROLL_CAT"
+                    min="0" />
+            </fieldset>
+
+            <fieldset name="characteristics">
+                <field
+                    name="show_characteristics"
+                    type="radio"
+                    default="1"
+                    label="SHOW_CHARACTERISTICS"
+                    description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>                    
+                </field>                  
+                <field  
+                    name="char_id_checkbox" 
+                    type="characteristics" 
+                    default=""                    
+                    label="AS_CHECKBOX" 
+                    description="" 
+                    addfieldpath="/modules/mod_jshopping_filters_extended/element"/>
+                <field  
+                    name="char_id_select" 
+                    type="characteristics" 
+                    default=""                    
+                    label="AS_SELECT" 
+                    description="" 
+                    addfieldpath="/modules/mod_jshopping_filters_extended/element"/>
+
+                <field
+                    name="show_text_ch_as_list"
+                    type="radio"
+                    default="1"
+                    label="Show text charactiristic as list"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYES</option>
+                </field>                                                                 
+                <field
+                    name="show_characteristics_title"
+                    type="radio"
+                    default="0"
+                    label="SHOW_CHARACTERISTICS_TITLE"
+                    description="SHOW_CHARACTERISTICS_TITLE"
+                    class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYes</option>
+                </field>
+                <field
+                    name="show_characteristics_group"
+                    type="radio"
+                    default="0"
+                    label="SHOW_CHARACTERISTICS_GROUP"
+                    description="SHOW_CHARACTERISTICS_GROUP"
+                    class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYes</option>
+                </field>
+                <field
+                    name="show_characteristics_button"
+                    type="radio"
+                    default="0"
+                    label="SHOW_CHAR_BUTTON"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYES</option>
+                </field>
+                <field name="filter_scrolling_number_characteristics" 
+                    type="number" 
+                    default="0" 
+                    label="MOD_FILTERS_EXTENDED_MINIMAL_DISPLAY_SCROLL"
+                    min="0" />
+             </fieldset>
+
+             <fieldset name="attributes">
+                <field
+                    name="show_attributes"
+                    type="radio"
+                    default="1"
+                    label="Show_Attributes"
+                    description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>                
+                <field 
+                    name="attr_id_checkbox" 
+                    type="attributes" 
+                    default=""                    
+                    label="AS_CHECKBOX" 
+                    description="" 
+                    addfieldpath="/modules/mod_jshopping_filters_extended/element"/>
+                <field 
+                    name="attr_id_select" 
+                    type="attributes" 
+                    default=""                    
+                    label="AS_SELECT" 
+                    description="" 
+                    addfieldpath="/modules/mod_jshopping_filters_extended/element"/>
+                <field  
+                    name="show_attribute_image" 
+                    type="attributes" 
+                    default=""                    
+                    label="Show_Attribute_Image" 
+                    description="" 
+                    addfieldpath="/modules/mod_jshopping_filters_extended/element"/>
+                <field
+                    name="show_attributes_title"
+                    type="radio"
+                    default="0"
+                    label="show_attributes_title"
+                    description="Show_Attributes"
+                    class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYes</option>                      
+                </field>
+                <field name="filter_scrolling_number_attributes" 
+                    type="number" 
+                    default="0" 
+                    label="MOD_FILTERS_EXTENDED_MINIMAL_DISPLAY_SCROLL"
+                    min="0" />
+             </fieldset>
+
+             <fieldset name="other_setting">
+                <field
+                    name="show_manufacturers"
+                    type="radio"
+                    default="1"
+                    label="SHOW_MANUFACTURERS"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">Yes_Checkbox</option>
+                    <option
+                        value="2">Yes_Select</option>
+                </field>
+		        <field
+                    name="show_manufacturer_img"
+                    type="radio"
+                    default="0"
+                    label="SHOW_MANUFACTURER_IMG"
+                    description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>  
+                <field name="filter_scrolling_number_manufacturer" 
+                    type="number" 
+                    default="0" 
+                    label="MOD_FILTERS_EXTENDED_MINIMAL_DISPLAY_SCROLL_MAN"
+                    min="0" />
+                <field type="spacer"  />    
+                    	
+                <field
+                    name="show_vendors"
+                    type="radio"
+                    default="1"
+                    label="SHOW_VENDORS"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">Yes_Checkbox</option>
+                    <option
+                        value="2">Yes_Select</option>  
+                </field> 
+                <field name="filter_scrolling_number_vendors" 
+                    type="number" 
+                    default="0" 
+                    label="MOD_FILTERS_EXTENDED_MINIMAL_DISPLAY_SCROLL_VENDOR"
+                    min="0" />
+                <field type="spacer"  /> 
+
+                <field
+                    name="show_products_with_free_shipping"
+                    type="radio"
+                    default="0"
+                    label="SHOW_PRODUCTS_WITH_FREE_SHIPPING"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">JYES</option>
+                </field> 
+                <field type="spacer"  /> 
+
+                <field
+                    name="show_labels"
+                    type="radio"
+                    default="1"
+                    label="Show labels"
+                    description="" class="btn-group">
+                    <option
+                        value="0">JNO</option>
+                    <option
+                        value="1">Yes_Checkbox</option>
+                    <option
+                        value="2">Yes_Select</option>  
+                </field>
+                <field
+                    name="show_labels_img"
+                    type="radio"
+                    default="0"
+                    label="SHOW_LABELS_IMG"
+                    description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>  
+                <field name="filter_scrolling_number_labels" 
+                    type="number" 
+                    default="0" 
+                    label="MOD_FILTERS_EXTENDED_MINIMAL_DISPLAY_SCROLL_LABEL"
+                    min="0" />
+                <field type="spacer"  /> 
+
+   
+                 <field
+                    name="show_quantity"
+                    type="radio"
+                    default="1"
+                    label="SHOW_PRODUCTS_IN_STOCK"
+                    description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="2">Yes_Select</option>
+                </field>    
+                 <field
+                    name="show_photo_filter"
+                    type="radio"
+                    default="1"
+                    label="Show_Photo_filter"
+                    description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="2">Yes_Select</option>
+                </field>   
+                 <field
+                    name="show_delivery_time"
+                    type="radio"
+                    default="1"
+                    label="Show_Delivery_time"
+                    description="" class="btn-group">
+                    <option value="0">JNO</option>
+                    <option value="1">Yes_Checkbox</option>
+                    <option value="2">Yes_Select</option>
+                </field>
+                <field name="filter_scrolling_number_delivery" 
+                    type="number" 
+                    default="0" 
+                    label="MOD_FILTERS_EXTENDED_MINIMAL_DISPLAY_SCROLL_DTIME"
+                    min="0" />
+                <field type="spacer"  /> 
+
+                <field name="show_review" type="radio" default="0" class="btn-group" label="_JSHOP_REVIEW_FILTER" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="2">Yes_Select</option>
+                </field>
+                <field name="show_rating" type="radio" default="0" class="btn-group" label="_JSHOP_RATING_FILTER" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="2">Yes_Select</option>
+                </field>
+                <field name="show_sets" type="radio" default="0" class="btn-group" label="_JSHOP_SETS_FILTER" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                    <option value="2">Yes_Select</option>
+                </field>
+                <field name="filter_scrolling_number_rating" 
+                    type="number" 
+                    default="0" 
+                    label="MOD_FILTERS_EXTENDED_MINIMAL_DISPLAY_SCROLL_RATING"
+                    min="0" />
+                <field type="spacer"  /> 
+
+				<field name="show_search" type="radio" default="0" class="btn-group" label="_JSHOP_SEARCH_FILTER" description="">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+             </fieldset>
+
+            <fieldset name="advanced">
+                <field
+                    name="moduleclass_sfx"
+                    type="text"
+                    label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                    description="" />
+                <field
+					name="layout"
+					type="modulelayout"
+					label="JFIELD_ALT_LAYOUT_LABEL"
+					class="form-select"
+					validate="moduleLayout"
+				/>
+            </fieldset>
+        </fields>
+    </config>       
+</extension>

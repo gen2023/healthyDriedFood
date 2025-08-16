@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="administrator" method="upgrade">
+	<name>MOD_NEVIGEN_AUDIT_DASHBOARD</name>
+	<author>Nevigen.com</author>
+	<creationDate>July 2025</creationDate>
+	<copyright>copyright © Nevigen.com. All rights reserved</copyright>
+	<license>Proprietary. Copyrighted Commercial Software</license>
+	<authorEmail>support@nevigen.com</authorEmail>
+	<authorUrl>https://nevigen.com</authorUrl>
+	<version>1.2.0</version>
+	<description>MOD_NEVIGEN_AUDIT_DASHBOARD_DESCRIPTION</description>
+	<namespace path="src">Joomla\Module\NevigenAuditDashboard</namespace>
+	<scriptfile>script.php</scriptfile>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/mod_nevigen_audit_dashboard.ini</language>
+		<language tag="en-GB">en-GB/mod_nevigen_audit_dashboard.sys.ini</language>
+		<language tag="ru-RU">ru-RU/mod_nevigen_audit_dashboard.ini</language>
+		<language tag="ru-RU">ru-RU/mod_nevigen_audit_dashboard.sys.ini</language>
+		<language tag="uk-UA">uk-UA/mod_nevigen_audit_dashboard.ini</language>
+		<language tag="uk-UA">uk-UA/mod_nevigen_audit_dashboard.sys.ini</language>
+	</languages>
+	<files>
+		<folder module="mod_nevigen_audit_dashboard">src</folder>
+		<folder>services</folder>
+		<folder>tmpl</folder>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+			</fieldset>
+			<fieldset name="advanced">
+				<field name="layout" type="modulelayout"
+					   label="JFIELD_ALT_LAYOUT_LABEL"
+					   description="JFIELD_ALT_MODULE_LAYOUT_DESC"
+					   class="form-select"/>
+				<field name="moduleclass_sfx" type="textarea"
+					   label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+					   description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"
+					   rows="3"/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

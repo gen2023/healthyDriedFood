@@ -1,0 +1,10 @@
+.idea
+
+/administrator/logs/
+/cache/
+/logs/
+/tmp
+
+*Zone.Identifier
+/components/com_jshopping/files/
+/components/com_jshopping/log/

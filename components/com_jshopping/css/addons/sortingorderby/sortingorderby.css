@@ -1,0 +1,28 @@
+#sort_count .form_sort_count .icon-arrow {
+	display: none !important;
+}
+
+#sort_count .form_sort_count .list_sort {
+	position: relative;
+}
+
+#sort_count .form_sort_count .list_sort ul {
+	display: none;
+}
+
+#sort_count .form_sort_count .list_sort.active ul {
+	display: block;
+	position: absolute;
+	border-radius: 30px;
+	background: #fff;
+	padding: 8px;
+}
+
+#sort_count .form_sort_count .list_sort.active ul li {
+	list-style: none;
+	padding: 5px;
+	width: 100%;
+}
+#sort_count .form_sort_count .list_sort.active ul li:hover{
+	background: #819D28;
+}

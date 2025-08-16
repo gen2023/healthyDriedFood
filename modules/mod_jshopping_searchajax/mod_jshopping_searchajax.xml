@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="1.6.0" client="site" method="upgrade">
+<name>MOD_JSHOP_SEARCHAAJAX_TITLE</name>
+    <creationDate>01.12.2024</creationDate>
+    <updateDate>28.05.2025</updateDate>
+    <author>Sofona</author>
+    <version>1.0.5</version>
+    <description>MOD_JSHOP_SEARCHAJAX_DESCRIPTION</description>
+    <files>
+        <filename module="mod_jshopping_searchajax">mod_jshopping_searchajax.php</filename>
+		<folder>tmpl</folder>
+    </files>
+    <languages>
+		<language tag="ru-RU">language/ru-RU/mod_jshopping_searchajax.ini</language>
+		<language tag="ru-RU">language/ru-RU/mod_jshopping_searchajax.sys.ini</language>
+		<language tag="uk-UA">language/uk-UA/mod_jshopping_searchajax.ini</language>
+		<language tag="uk-UA">language/uk-UA/mod_jshopping_searchajax.sys.ini</language>
+    </languages>     
+    <config>
+        <fields name="params">
+            <fieldset name="basic">  
+                <field
+                    name="ajax_search"
+                    type="radio"
+                    default="1"
+                    class="btn-group btn-group-yesno"
+                    label="MOD_JSHOP_SEARCHAJAX_AJAX_SEARCH">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field
+                    name="search_by_name"
+                    type="radio"
+                    default="1"
+					showon="ajax_search:1"
+                    class="btn-group btn-group-yesno"
+                    label="MOD_JSHOP_SEARCHAJAX_SEARCH_BY_NAME"
+                    description="MOD_JSHOP_SEARCHAJAX_DESCRIPTION_SEARCH_BY_NAME">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field
+                    name="search_by_kode"
+                    type="radio"
+                    default="1"
+					showon="ajax_search:1"
+                    class="btn-group btn-group-yesno"
+                    label="MOD_JSHOP_SEARCHAJAX_SEARCH_BY_KODE"
+                    description="MOD_JSHOP_SEARCHAJAX_DESCRIPTION_SEARCH_BY_KODE">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>                
+                <field
+                    name="more_results"
+                    type="radio"
+                    default="0"
+					showon="ajax_search:1"
+                    class="btn-group btn-group-yesno"
+                    label="MOD_JSHOP_SEARCHAJAX_LINK_MORE_RESULTS"
+                    description="MOD_JSHOP_SEARCHAJAX_LINK_MORE_RESULTS_DESC">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>                
+                <field
+                    name="advanced_search"
+                    type="radio"
+                    default="1"
+                    class="btn-group btn-group-yesno"
+                    label="MOD_JSHOP_SEARCHAJAX_ADVANCED_SEARCH">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field
+                    name="active_cur_cat"
+                    type="radio"
+                    default="0"
+                    class="btn-group btn-group-yesno"
+                    label="MOD_JSHOP_SEARCHAJAX_ACTIVE_CUR_CAT"
+                    description="MOD_JSHOP_SEARCHAJAX_ACTIVE_CUR_CAT_DESC">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field
+                    name="show_btn"
+                    type="radio"
+                    default="0"
+                    class="btn-group btn-group-yesno"
+                    label="MOD_JSHOP_SEARCHAJAX_SHOW_BTN">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field
+                    name="btn_icon"
+                    type="radio"
+                    default="0"
+                    showon="show_btn:1"
+                    class="btn-group btn-group-yesno"
+                    label="MOD_JSHOP_SEARCHAJAX_BTN_ICON">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field
+                    name="displaycount"
+                    type="text"
+                    default="10"
+                    label="MOD_JSHOP_SEARCHAJAX_RESULT_COUNT"
+                    description="MOD_JSHOP_SEARCHAJAX_RESULT_COUNT_DESC"/>
+                <field
+                    name="searchtype"
+                    type="list"
+                    default="any"
+                    label="MOD_JSHOP_SEARCHAJAX_TYPE_NAME"
+                    description="">
+                    <option value="any">MOD_JSHOP_SEARCHAJAX_TYPE_ANY</option>
+                    <option value="all">MOD_JSHOP_SEARCHAJAX_TYPE_ALL</option>
+                    <option value="exact">MOD_JSHOP_SEARCHAJAX_TYPE_EXACT</option>
+                </field>
+                <field
+                    name="moduleclass_name"
+                    type="textarea"
+                    rows="1"
+                    label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                    description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"/>
+            </fieldset> 
+            <fieldset name="advanced">
+                <field
+                    name="layout"
+                    type="modulelayout"
+					class="form-select"
+                    label="JFIELD_ALT_LAYOUT_LABEL"
+                    description="JFIELD_ALT_MODULE_LAYOUT_DESC"/>
+                <field
+                    name="moduleclass_sfx"
+                    type="text"
+                    label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                    default=""
+                    description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+                
+                <field
+                    name="cache"
+                    type="list"
+                    default="0"
+                    label="COM_MODULES_FIELD_CACHING_LABEL"
+                    description="COM_MODULES_FIELD_CACHING_DESC">
+                    <option value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+                </field>             
+            </fieldset>
+        </fields>
+    </config>        
+</extension>

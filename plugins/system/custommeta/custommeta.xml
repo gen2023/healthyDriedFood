@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade">
+    <name>PLG_SYSTEM_CUSTOMMETA</name>
+    <author>Sofona</author>
+    <version>1.0.0</version>
+    <description>PLG_SYSTEM_CUSTOMMETA_DESCRIPTION</description>
+    <files>
+        <filename plugin="custommeta">custommeta.php</filename>
+    </files>
+    <languages folder="language">
+        <language tag="en-GB">en-GB/plg_system_custommeta.ini</language>
+        <language tag="en-GB">en-GB/plg_system_custommeta.sys.ini</language>
+        <language tag="uk-UA">uk-UA/plg_system_custommeta.ini</language>
+        <language tag="uk-UA">uk-UA/plg_system_custommeta.sys.ini</language>
+        <language tag="ru-RU">ru-RU/plg_system_custommeta.ini</language>
+        <language tag="ru-RU">ru-RU/plg_system_custommeta.sys.ini</language>
+    </languages>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="default_image" type="media" label="PLG_SYSTEM_CUSTOMMETA_BASE_IMAGE" directory="images" />
+                <field name="default_description" type="text" label="PLG_SYSTEM_CUSTOMMETA_DEFAULT_DESCRIPTION" />
+            </fieldset>
+        </fields>
+    </config>
+</extension>

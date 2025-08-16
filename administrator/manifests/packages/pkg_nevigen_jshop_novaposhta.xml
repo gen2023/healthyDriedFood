@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="package" method="upgrade">
+	<name>PKG_NEVIGEN_JSHOP_NOVAPOSHTA</name>
+	<packagename>nevigen_jshop_novaposhta</packagename>
+	<author>Nevigen.com</author>
+	<creationDate>June 2025</creationDate>
+	<copyright>copyright © Nevigen.com. All rights reserved</copyright>
+	<license>Proprietary. Copyrighted Commercial Software</license>
+	<authorEmail>support@nevigen.com</authorEmail>
+	<authorUrl>https://nevigen.com</authorUrl>
+	<version>1.3.6</version>
+	<description>PKG_NEVIGEN_JSHOP_NOVAPOSHTA_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/pkg_nevigen_jshop_novaposhta.sys.ini</language>
+		<language tag="ru-RU">ru-RU/pkg_nevigen_jshop_novaposhta.sys.ini</language>
+		<language tag="uk-UA">uk-UA/pkg_nevigen_jshop_novaposhta.sys.ini</language>
+	</languages>
+	<files>
+		<folder type="plugin" group="jshopping" id="nevigen_novaposhta">plg_jshopping_nevigen_novaposhta</folder>
+		<folder type="file" id="addon_nevigen_novaposhta">addon_nevigen_novaposhta</folder>
+	</files>
+	<changelogurl>https://nevigen.com/changelogurl?extension=pkg_nevigen_jshop_novaposhta</changelogurl>
+	<updateservers>
+		<server type="extension" priority="1" name="Nevigen JShop Novaposhta Shipping for JoomShopping 5.x">
+			https://nevigen.com/getupdate?extension=pkg_nevigen_jshop_novaposhta
+		</server>
+	</updateservers>
+</extension>

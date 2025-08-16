@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshopping" method="upgrade">
+    <name>PLG_JSHOPPING_ANTISPAM</name>
+    <creationDate>01.04.2025</creationDate>
+    <version>1.0.1</version>
+    <author>Sofona</author>
+    <authorUrl>https://sofona.com/</authorUrl>
+    <copyright>Copyright © All rights reserved.</copyright>
+    <license>Proprietary. Copyrighted Commercial Software</license>
+    <description>PLG_JSHOPPING_ANTISPAM_DESC</description>
+
+    <files>
+        <filename plugin="antispam">antispam.php</filename>
+        <filename>install.php</filename>
+    </files>
+
+    <languages>
+        <language tag="en-GB">language/en-GB/plg_jshopping_antispam.ini</language>
+        <language tag="ru-RU">language/ru-RU/plg_jshopping_antispam.ini</language>
+        <language tag="uk-UA">language/uk-UA/plg_jshopping_antispam.ini</language>
+        <language tag="en-GB">language/en-GB/plg_jshopping_antispam.sys.ini</language>
+        <language tag="ru-RU">language/ru-RU/plg_jshopping_antispam.sys.ini</language>
+        <language tag="uk-UA">language/uk-UA/plg_jshopping_antispam.sys.ini</language>
+    </languages>
+
+    <scriptfile>install.php</scriptfile>
+
+    <media destination="plg_jshopping_antispam" folder="media">
+		<folder>css</folder>
+	</media>
+
+    <config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+				    name="enable_captcha"
+					type="radio"
+				    layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPING_ANTISPAM_ENABLE_CAPTCHA"
+					default="0"
+					filter="integer"
+					>
+				    <option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>
+                <field
+                    name="qty_position_captha"
+                    type="text"
+                    default="_tmp_ext_html_previewfinish_agb"
+                    showon="enable_captcha:1"
+                    label="PLG_JSHOPPING_ANTISPAM_POSITION_CAPTHA"/>
+				<field
+				    name="enable_send_tg"
+					type="radio"
+				    layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPING_ANTISPAM_ENABLE_SEND_TG"
+					default="0"
+					filter="integer"
+					>
+				    <option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>                
+			</fieldset>
+			<fieldset name="setting_tg" label="PLG_JSHOPPING_ANTISPAM_TELEGRAMBOT_SETTINGS">
+                <field
+                    name="token_id"
+                    type="text"
+                    default=""
+                    label="PLG_JSHOPPING_ANTISPAM_TELEGRAMBOT_LABEL_BOT_TOKEN"/>
+                <field
+                    name="chat_id"
+                    type="text"
+                    default=""
+                    label="PLG_JSHOPPING_ANTISPAM_TELEGRAMBOT_LABEL_CHAT_ID"/>
+			</fieldset>
+		</fields>
+	</config>
+
+    <updateservers>
+		<server type="extension" priority="1" name="PLG_JSHOPPING_ANTISPAM">https://gitvault.sofona.info/plugins/plg_antispam_order/update_plg_antispam_order.xml</server>
+	</updateservers>
+</extension>

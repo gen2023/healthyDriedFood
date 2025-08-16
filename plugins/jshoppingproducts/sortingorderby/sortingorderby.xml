@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<extension type="plugin" method="upgrade" group="jshoppingproducts">
+	<name>Sorting order by</name>
+	<creationDate>28.05.2025</creationDate>
+	<version>2.1.2</version>
+	<author>Sofona</author>
+	<authorUrl>http://sofona.com</authorUrl>
+	<copyright></copyright>
+	<license>2025. Sofona. All rights reserved.</license>
+	<description>Sorting order by</description> 
+    <files>
+        <filename plugin="sortingorderby">sortingorderby.php</filename>
+        <folder>language</folder>
+    </files>
+</extension>

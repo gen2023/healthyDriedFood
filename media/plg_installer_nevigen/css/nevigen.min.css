@@ -1,0 +1,8 @@
+/*!
+ * @package    Nevigen Installer Plugin
+ * @version    2.1.1
+ * @author     Nevigen.com - https://nevigen.com
+ * @copyright  Copyright © Nevigen.com. All rights reserved.
+ * @license    Proprietary. Copyrighted Commercial Software
+ * @link       https://nevigen.com
+ */#nevigen>fieldset.options-form{position:relative}#nevigen button.nevigen-button-filter-reset-all{position:absolute;top:-10px;right:10px}#nevigen #nevigenList .errors{text-align:center;font-size:1.4rem}#nevigen #nevigenList .errors a{display:inline-block;margin-top:20px}#nevigen #nevigenList .nd-flex{display:flex}#nevigen .listExtensions .template{box-shadow:0 2px .7em rgba(0,0,0,.08);padding:20px 10px;margin:0 20px 20px 0;-webkit-box-flex:1 !important;-ms-flex:1 1 auto !important;flex:1 1 auto !important}#nevigen .listExtensions .template:hover,#nevigen .listExtensions .template:active,#nevigen .listExtensions .template:focus{box-shadow:0 14px 25px rgba(0,0,0,.16)}#nevigen .listExtensions .template .name{margin-bottom:10px}#nevigen .listExtensions .template a[target=_blank]::before{display:none}#nevigen .extens-img{max-width:150px;margin-left:-25px}

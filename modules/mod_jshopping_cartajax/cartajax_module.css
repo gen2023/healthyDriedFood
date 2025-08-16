@@ -1,0 +1,78 @@
+.cartajax-module{
+	/* font-size:12px;
+	position:relative;
+	margin:8px 0 0;
+	padding:0; */
+}
+.cartajax-module ul{
+	margin: 0px;
+	padding-left: 0px;
+}
+.cartajax-module li{
+	display: block;
+}
+.cartajax-module .clear{clear:both;overflow:hidden;height:0;}
+.cartajax-module h2{font-weight:400;font-size:24px;margin:0 0 20px;}
+.cartajax-module .module-total{width:100%;font-size:16px;text-align:right;padding:0 0 10px;}
+/* .cartajax-module .module-count{width:100%;font-size:16px;text-align:right;padding:0 0 10px;} */
+/* .cartajax-module .module-checkout{width:100%;border-top:1px solid #EEE;font-size:16px;text-align:right;padding:10px 0 0;} */
+.cartajax-module .module-item{position:relative;border-bottom:1px solid #EEE;margin:0 0 10px;padding:0 0 10px;}
+.cartajax-module .module-item-label{font-weight:700;}
+.cartajax-module .module-item-count{font-weight:700;font-size:150%;}
+.cartajax-module .module-item-price{position:absolute;right:0;bottom:4px;font-weight:700;}
+.cartajax-module .module-item-remove{cursor : pointer;position : absolute;right : 0;top : 0;background : url('images/cartajax-remove.png') no-repeat 0 0;display : block;height : 16px;width : 16px;z-index : 1;}
+.cartajax-module .module-item-remove:hover{background : url('images/cartajax-remove.png') no-repeat 0 -16px;}
+.cartajax-module .jshop_cart_attribute{font-weight: bold;font-style: italic;font-size: 11px;margin-bottom: 4px;margin-top: 1px;padding-left: 10px;}
+
+.cartajax-module .no-products-msg{
+	display: none;
+}
+.cartajax-module .no-products-msg[ca-prodcount="0"]{
+	display: block;
+}
+.cartajax-module .module-bottom[ca-prodcount="0"]{
+	display: none;
+}
+
+.cartajax-module .module-checkout{
+	/* border-top:0px;
+	font-size:16px;
+	text-align:left;
+	padding:0px; */
+}
+.cartajax-module-icon .inner{
+	position: relative;
+	  display: flex;
+    justify-content: center;
+    align-items: center;
+	/* width:28px; */
+}
+.cartajax-module-icon .module-count{
+	position:absolute;
+	right:-15px;
+	top: -15px;
+	width:20px;
+	height:20px;
+	text-align:center;
+	line-height: 20px;
+	border-radius: 50%;
+	background: #DD0047;
+	color: #FFF;
+	text-align: center;
+	font-size: 10px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.cartajax-module-icon .module-count[ca-prodcount="0"]{
+	display: none;
+}
+.cartajax-module-icon .module-total{
+	width:100%;
+	font-size:12px;
+	text-align:left;
+	padding:0px;
+}

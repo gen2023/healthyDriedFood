@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset name="main" addfieldprefix="Joomla\Plugin\JShopping\NevigenNovaposhta\Field">
+		<field name="addon" type="hidden" default="nevigen_novaposhta"/>
+		<field name="apikey" type="text"
+			   hint="1aa4as26f87889daft35ba8cd094ng2dp"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_APIKEY"
+			   class="w-100"/>
+		<field name="currency" type="currency"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_CURRENCY">
+			<option value="">JNONE</option>
+		</field>
+		<field name="units" type="list"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_UNITS"
+			   default="kg">
+			<option value="kg">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_UNITS_KG</option>
+			<option value="g">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_UNITS_G</option>
+		</field>
+		<field name="length" type="characteristics"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_LENGTH">
+			<option value="">JNONE</option>
+		</field>
+		<field name="width" type="characteristics"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_WIDTH">
+			<option value="">JNONE</option>
+		</field>
+		<field name="height" type="characteristics"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_HEIGHT">
+			<option value="">JNONE</option>
+		</field>
+		<field name="type_search" type="list"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_TYPE_SEARCH"
+			   default="0"
+			   filter="integer">
+			<option value="0">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_TYPE_SEARCH_0</option>
+			<option value="1">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_TYPE_SEARCH_1</option>
+		</field>
+		<field name="enabled_cost_order" type="list"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_ENABLED_COST_ORDER"
+			   description="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_ENABLED_COST_ORDER_DESC"
+			   default="1"
+			   filter="integer">
+			<option value="0">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_ENABLED_COST_ORDER_0</option>
+			<option value="1">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_ENABLED_COST_ORDER_1</option>
+			<option value="2">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_ENABLED_COST_ORDER_2</option>
+		</field>
+	</fieldset>
+	<fieldset name="sender">
+		<field name="sender_postcode" type="text"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_SENDER_POSTCODE"/>
+		<field name="sender_type" type="list"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_SENDER_TYPE"
+			   default="warehouse">
+			<option value="warehouse">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_SENDER_TYPE_WAREHOUSE</option>
+			<option value="doors">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_SENDER_TYPE_DOORS</option>
+		</field>
+	</fieldset>
+</form>

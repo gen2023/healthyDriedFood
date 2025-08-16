@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="package" method="upgrade">
+	<name>PKG_NEVIGEN_JSHOP_RVP</name>
+	<packagename>nevigen_jshop_rvp</packagename>
+	<author>Nevigen.com</author>
+	<creationDate>June 2024</creationDate>
+	<copyright>copyright © Nevigen.com. All rights reserved</copyright>
+	<license>Proprietary. Copyrighted Commercial Software</license>
+	<authorEmail>support@nevigen.com</authorEmail>
+	<authorUrl>https://nevigen.com</authorUrl>
+	<version>1.0.0</version>
+	<description>PKG_NEVIGEN_JSHOP_RVP_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/pkg_nevigen_jshop_rvp.sys.ini</language>
+		<language tag="ru-RU">ru-RU/pkg_nevigen_jshop_rvp.sys.ini</language>
+		<language tag="uk-UA">uk-UA/pkg_nevigen_jshop_rvp.sys.ini</language>
+	</languages>
+	<files>
+		<folder type="plugin" group="jshopping" id="nevigen_rvp">plg_jshopping_nevigen_rvp</folder>
+		<folder type="module" client="site" id="mod_nevigen_jshop_rvp">mod_nevigen_jshop_rvp</folder>
+	</files>
+	<updateservers>
+		<server type="extension" priority="1" name="Nevigen Recently Viewed Products for JoomShopping 5.x">
+			https://nevigen.com/update?extension=pkg_nevigen_jshop_rvp
+		</server>
+	</updateservers>
+</extension>

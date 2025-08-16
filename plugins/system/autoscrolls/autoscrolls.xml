@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade" version="4.0">
+    <name>PLG_AUTO_SCROLL_TITLE</name>
+    <author>Sofona</author>
+    <creationDate>2025-01-12</creationDate>
+    <version>1.0.3</version>
+    <description>PLG_AUTO_SCROLL_DESCRIPTION</description>
+    <description>Plugin to autoload news blocks on scroll.</description>
+    <files>
+        <filename plugin="autoscrolls">autoscrolls.php</filename>
+		<folder>forms</folder>
+    </files>
+    <media destination="plg_system_autoscrolls" folder="media">
+        <folder>js</folder>
+        <folder>css</folder>
+    </media>
+	<languages>
+		<language tag="en-GB">language/en-GB/plg_system_autoscrolls.ini</language>
+		<language tag="en-GB">language/en-GB/plg_system_autoscrolls.sys.ini</language>		
+        <language tag="ru-RU">language/ru-RU/plg_system_autoscrolls.ini</language>
+		<language tag="ru-RU">language/ru-RU/plg_system_autoscrolls.sys.ini</language>		
+        <language tag="uk-UA">language/uk-UA/plg_system_autoscrolls.ini</language>
+		<language tag="uk-UA">language/uk-UA/plg_system_autoscrolls.sys.ini</language>		
+	</languages>    
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+            	<field 
+					name="setkalist" 
+					type="subform" 
+					formsource="plugins/system/autoscrolls/forms/list.xml" 
+					class="advancedSelect" 
+					min="0" 
+					max="9999" 
+					multiple="true" 
+					layout="joomla.form.field.subform.repeatable" 
+					groupByFieldset="true" 
+					label="Список" 
+					description="Список" 
+				/>
+            </fieldset>
+        </fields>
+    </config>
+    <updateservers>
+        <server type="extension" name="Autoscroll news">https://gitvault.sofona.info/autoscroll-news/update_auto_scrol.xml</server>
+    </updateservers>
+
+</extension>
+
+

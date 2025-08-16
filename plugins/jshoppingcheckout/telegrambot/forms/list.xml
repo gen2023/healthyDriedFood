@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+  <fieldset name="sample" class="sample-subform">
+    <field
+      name="form_token"
+      type="text"
+      default=""
+      label="PLG_JSCHECKOUT_TELEGRAMBOT_LABEL_FOR_TOKEN"/>
+    <field
+      name="token_id"
+      type="text"
+      default=""
+      label="PLG_JSCHECKOUT_TELEGRAMBOT_LABEL_BOT_TOKEN"/>
+    <field
+      name="chat_id"
+      type="text"
+      default=""
+      label="PLG_JSCHECKOUT_TELEGRAMBOT_LABEL_CHAT_ID"/>
+		<field
+			name="lang_message"
+			type="list"
+			label="PLG_JSCHECKOUT_TELEGRAMBOT_LANG_MESSAGES"
+			default="uk-UA"
+      class="form-select"
+			>
+			<option value="en-GB">English</option>
+			<option value="ru-RU">Russian</option>
+			<option value="uk-UA">Ukrainian</option>
+		</field>
+    <field
+			name="delayedMessages"
+			type="radio"
+			layout="joomla.form.field.radio.switcher"
+			label="PLG_JSCHECKOUT_TELEGRAMBOT_DELAYED_MESSAGES"
+			default="0"
+			filter="integer"
+			>
+			<option value="0">JOFF</option>
+			<option value="1">JON</option>
+		</field>
+		<field
+			name="timeFrom"
+			type="time"
+			label="PLG_JSCHECKOUT_TELEGRAMBOT_TIME_FROM"
+			default="18:00"
+			size="5"
+			showon="delayedMessages:1"
+			filter="string"
+			class="input-mini"
+		/>
+		<field
+			name="timeTo"
+			type="time"
+			label="PLG_JSCHECKOUT_TELEGRAMBOT_TIME_TO"
+			default="08:00"
+			size="5"
+			showon="delayedMessages:1"
+			filter="string"
+			class="input-mini"
+		/>
+  </fieldset>
+</form>

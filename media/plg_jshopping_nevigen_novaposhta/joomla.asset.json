@@ -1,0 +1,61 @@
+{
+	"$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+	"name": "plg_jshopping_nevigen_novaposhta",
+	"version": "1.3.6",
+	"description": "Nevigen JShop Novaposhta Shipping",
+	"license": "GPL-3.0-or-later",
+	"assets": [
+		{
+			"name": "nevigen_novaposhta.main",
+			"type": "script",
+			"uri": "plg_jshopping_nevigen_novaposhta/main.min.js",
+			"dependencies": [
+				"core",
+				"choicesjs"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "nevigen_novaposhta.main",
+			"type": "preset",
+			"uri": "plg_jshopping_nevigen_novaposhta/main.min.js",
+			"dependencies": [
+				"nevigen_novaposhta.main#script",
+				"choicesjs#preset"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "nevigen_novaposhta.autocomplete",
+			"type": "script",
+			"uri": "plg_jshopping_nevigen_novaposhta/autoComplete.min.js",
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "nevigen_novaposhta.autocomplete",
+			"type": "style",
+			"uri": "plg_jshopping_nevigen_novaposhta/autoComplete.css",
+			"version": "auto"
+		},
+		{
+			"name": "nevigen_novaposhta.autocomplete",
+			"type": "preset",
+			"dependencies": [
+				"nevigen_novaposhta.autocomplete#script",
+				"nevigen_novaposhta.autocomplete#style"
+			]
+		}
+	]
+}

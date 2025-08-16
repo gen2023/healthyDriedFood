@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshopping" method="upgrade">
+	<name>JShopping - Nevigen Recently Viewed Products</name>
+	<author>Nevigen.com</author>
+	<creationDate>June 2024</creationDate>
+	<copyright>copyright © Nevigen.com. All rights reserved</copyright>
+	<license>Proprietary. Copyrighted Commercial Software</license>
+	<authorEmail>support@nevigen.com</authorEmail>
+	<authorUrl>https://nevigen.com</authorUrl>
+	<version>1.0.0</version>
+	<description>Nevigen JShop Recently Viewed Products Plugin</description>
+	<namespace path="src">Joomla\Plugin\JShopping\NevigenRecentlyViewedProducts</namespace>
+	<scriptfile>script.php</scriptfile>
+	<files>
+		<folder>services</folder>
+		<folder plugin="nevigen_rvp">src</folder>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="limit" type="number"
+					   label="Limit save products"
+					   hint="12"
+					   default="12"/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

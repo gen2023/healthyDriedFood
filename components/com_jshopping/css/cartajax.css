@@ -1,0 +1,118 @@
+/*#cartajax-overlay
+{
+    position : fixed;
+    left : 0;
+    top : 0;
+    z-index : 65533;
+    background : url('../images/cartajax-loading.gif') no-repeat center center white;
+    opacity : 0.5;
+    filter:alpha(opacity=50);
+}*/
+
+#cartajax-overlay {
+    position : fixed;
+    left : 0;
+    top : 40%;
+    right: 0;
+    z-index : 65533;
+    opacity : 0.5;
+    filter:alpha(opacity=50);
+}
+#cartajax-overlay::after {
+    content: " ";
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    margin-left: -32px;
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #fff;    
+	border-color: #888 transparent #888 transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+}
+
+#product_added_to_cart
+{
+	position: relative;
+}
+
+#product_added_to_cart a
+{
+	position: absolute;
+	bottom: 0;
+}
+
+#product_added_to_cart a.cart
+{
+	right: 0;
+}
+
+#product_added_to_cart span
+{
+	display: block;
+	margin-bottom: 20px;
+}
+
+.cart_popup_item .img {
+    flex: 0 0 150px;
+    text-align: center;
+}
+.cart_popup_item .info {
+    flex: 1 1 auto;
+    padding-left: 25px;
+}
+.cart_popup_item .image{
+    max-width: 100%;
+    aspect-ratio: var(--img-aspect-ratio, 1/1);
+    object-fit: var(--object-fit, cover);
+}
+.cart_popup_item .price{
+    font-size: 24px;
+    line-height: 100%;
+    font-weight: 600;    
+}
+.cart_popup_item .attr_act .name{
+    width: 100px;
+}
+
+@media (max-width: 480px) {
+    .modal-dialog h3 {
+        font-size: 1rem;
+    }    
+    .modal-footer{
+        display: block;
+    }
+    .modal-footer .btn{
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .modal-footer > :not(:last-child) {
+        margin-right: 0;
+    }
+    .modal-footer > :not(:first-child) {
+        margin-left: 0;
+    }
+    .cart_popup_item .img {
+        flex: 0 0 90px;
+    }
+    .cart_popup_item .info {
+        padding-left: 15px;
+    }
+    .cart_popup_item .descr {
+        font-size: 14px;
+    }
+    .modal-footer>* {
+        margin: 0;
+    }
+}

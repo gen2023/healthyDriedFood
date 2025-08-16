@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+  <fieldset name="sample" class="sample-subform">
+		<field name="typefield" type="list" label="Тип поля" default="0" layout="joomla.form.field.radio.switcher" >
+			<option value="0">Text</option>
+			<option value="1">Number</option>
+		</field>   
+		<field name="nameField" type="text" default = "" label="Название" description=""/>
+  </fieldset>
+</form>

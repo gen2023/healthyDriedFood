@@ -1,0 +1,56 @@
+.wishlist-module{font-size:12px;position:relative;margin:8px 0 0;padding:0;}
+.wishlist-module ul{
+	margin:0px;
+	padding-left: 0px;
+}
+.wishlist-module li{
+	display: block;
+}
+.wishlist-module .clear{clear:both;overflow:hidden;height:0;}
+.wishlist-module h2{font-weight:400;font-size:24px;margin:0 0 20px;}
+.wishlist-module .module-total{width:100%;font-size:16px;text-align:right;padding:0 0 10px;}
+.wishlist-module .module-count{width:100%;font-size:16px;text-align:right;padding:0 0 10px;}
+.wishlist-module .module-checkout{width:100%;border-top:1px solid #EEE;font-size:16px;text-align:right;padding:10px 0 0;}
+.wishlist-module .module-item{position:relative;border-bottom:1px solid #EEE;margin:0 0 10px;padding:0 0 10px;}
+.wishlist-module .module-item-label{font-weight:700;}
+.wishlist-module .module-item-count{font-weight:700;font-size:150%;}
+.wishlist-module .module-item-id{margin-bottom: 10px;}
+.wishlist-module .module-item-price{position:absolute;right:0;bottom:4px;font-weight:700;}
+.wishlist-module .module-item-remove{cursor : pointer;position : absolute;right : 0;top : 0;background : url('images/cartajax-remove.png') no-repeat 0 0;display : block;height : 16px;width : 16px;z-index : 1;}
+.wishlist-module .module-item-remove:hover{background : url('images/cartajax-remove.png') no-repeat 0 -16px;}
+.wishlist-module .jshop_cart_attribute{font-weight: bold;font-style: italic;font-size: 11px;margin-bottom: 4px;margin-top: 1px;padding-left: 10px;}
+
+.wishlist-module .no-products-msg{
+	display: none;
+}
+.wishlist-module .no-products-msg[ca-prodcount="0"]{
+	display: block;
+}
+.wishlist-module .module-bottom[ca-prodcount="0"]{
+	display: none;
+}
+
+.wishlist-module-icon{
+	position:relative;
+}
+.wishlist-module-icon .module-bottom{
+	position: absolute;
+	width: 18px;
+	height: 18px;
+	text-align: center;
+	top: -7px;
+	left: 15px;
+}
+.wishlist-module.wishlist-module-icon .module-count{
+	text-align: center;
+	font-size: 12px;	
+	display: block;	
+	background-color: #aaa;
+	color: #fff;	
+	border-radius: 50%;
+	width: 18px;
+	height: 18px;
+}
+.wishlist-module.wishlist-module-icon .module-count[ca-prodcount="0"]{
+	display: none;
+}

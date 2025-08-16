@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshoppingproducts" method="upgrade" version="4.0">
+    <name>SortsProducts</name>
+    <author>Sofona</author>
+    <version>1.0.0</version>
+    <creationDate>2024-03-20</creationDate>
+    <copyright>(c) Sofona</copyright>
+    <license>Free</license>
+    <url>https://sofona.com</url>
+    <description>Плагин сортировки товаров JoomShopping, перемещающий товары "Нет в наличии" в конец списка.</description>
+    <files>
+        <filename plugin="sortsproducts">sortsproducts.php</filename>
+    </files>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="enable_sorting" type="radio" default="1" label="Включить сортировку" description="Включить или отключить сортировку товаров?">
+                    <option value="1">Да</option>
+                    <option value="0">Нет</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+</extension>

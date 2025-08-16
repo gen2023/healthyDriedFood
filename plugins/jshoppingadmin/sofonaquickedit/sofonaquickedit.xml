@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshoppingadmin" method="upgrade">
+  <name>PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT</name>
+  <author>Sofona</author>
+  <version>1.0.0</version>
+	<creationDate>23.07.2025</creationDate>
+  <description>PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_DESCR</description>
+
+  <scriptfile>script.php</scriptfile>
+
+  <files>
+    <filename plugin="sofonaquickedit">sofonaquickedit.php</filename>
+    <filename>script.php</filename>
+  </files>
+
+	<languages>
+		<language tag="en-GB">language/en-GB/plg_jshoppingadmin_sofonaquickedit.sys.ini</language>
+		<language tag="ru-RU">language/ru-RU/plg_jshoppingadmin_sofonaquickedit.sys.ini</language>
+		<language tag="en-GB">language/en-GB/plg_jshoppingadmin_sofonaquickedit.ini</language>
+		<language tag="ru-RU">language/ru-RU/plg_jshoppingadmin_sofonaquickedit.ini</language>
+		<language tag="uk-UA">language/uk-UA/plg_jshoppingadmin_sofonaquickedit.sys.ini</language>
+		<language tag="uk-UA">language/uk-UA/plg_jshoppingadmin_sofonaquickedit.ini</language>
+	</languages>
+    
+  <config>
+    <fields name="params">
+    	<fieldset name="basic">
+        <field
+					name="massedit_price"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_MASSEDIT_PRICE"
+					default="0"
+					filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>
+      </fieldset>
+      <fieldset name="setting" label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SETTING">
+        <field
+					name="show_id"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_ID"
+					default="0"
+				  filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>
+        <field
+					name="show_deleteProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_DELETE"
+					default="0"
+				  filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>
+        <field
+					name="show_publishProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_PUBLISH"
+					default="0"
+				  filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>  
+        <field
+					name="show_hitsProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_HITS"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field> 
+        <field
+					name="show_priceProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_PRICE"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>
+        <field
+					name="show_oldpriceProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_OLDPRICE"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field> 
+        <field
+					name="show_additionPriceProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_ADDITION_PRICE"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>
+        <field
+					name="show_vendorProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_VENDOR"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field> 
+        <field
+					name="show_labelProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_LABELS"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field> 				
+      	<field
+					name="show_product_eanProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_EAN"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field> 
+				<field
+					name="show_real_ean"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_REAL_EAN"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field> 
+				<field
+					name="show_manufacturer_code"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_MANUFACTURER_CODE"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field> 
+				
+
+      	<field
+					name="show_stockProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_STOCK"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>                                                 
+      	<field
+					name="show_product_manufacturer"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_PRODUCT_MANUFACTURER"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>  
+      	<field
+					name="show_category"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_CATEGORY"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field> 
+        <field
+					name="show_nameProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_NAME"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>  
+        <field
+					name="show_short_description"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_SHORT_DESC"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field> 				
+        <field
+					name="show_imageProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_IMAGE"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>                 
+        <field
+					name="show_currencyProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_CURRENCY"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>                 
+        <field
+					name="show_editProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_EDIT"
+					default="0"
+			    filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>  
+        <field
+					name="show_dateModifyProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_DATE_MODIFY"
+					default="0"
+				  filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>
+				        <field
+					name="show_dateCreateProduct"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+					label="PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_DATE_CREATE"
+					default="0"
+				  filter="integer"
+					>
+					<option value="0">JOFF</option>
+					<option value="1">JON</option>
+				</field>				
+      </fieldset>
+    </fields>    
+  </config>
+</extension>

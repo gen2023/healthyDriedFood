@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form addfieldprefix="Joomla\Plugin\System\NevigenJshopOneStepCheckout\Field">
+
+	<fieldset name="main" label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_TAB_MAIN">
+		<field name="enabled" type="radio"
+			   layout="joomla.form.field.radio.switcher"
+			   label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_PARAMS_ENABLED_CHECKOUT"
+			   default="0"
+			   filter="integer">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="enabled_css" type="radio"
+			   layout="joomla.form.field.radio.switcher"
+			   label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_PARAMS_ENABLED_CSS"
+			   default="1"
+			   filter="integer">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="skip_cart" type="radio"
+			   layout="joomla.form.field.radio.switcher"
+			   label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_PARAMS_SKIP_CART"
+			   default="1"
+			   filter="integer">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="show_login" type="radio"
+			   layout="joomla.form.field.radio.switcher"
+			   label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_PARAMS_SHOW_LOGIN"
+			   default="1"
+			   filter="integer">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="fields_reload" type="textarea"
+			   label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_PARAMS_FIELDS_RELOAD"
+			   default="country,d_country,delivery_adress"
+			   class="w-100"/>
+		<field name="use_mask" type="list"
+			   label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_PARAMS_USE_MASK">
+			<option value="">JNONE</option>
+			<option value="phone">JSHOP_FIELD_PHONE</option>
+			<option value="mobil_phone">JSHOP_FIELD_MOBIL_PHONE</option>
+		</field>
+		<field name="use_mask_input" type="text"
+			   label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_PARAMS_USE_MASK_INPUT"
+			   default="+{38}(000)000-00-00"
+			   showon="use_mask!:"/>
+		<field name="template" type="Folderlist"
+			   default="default"
+			   directory="components/com_jshopping/templates/addons/nevigen_onestepcheckout"
+			   hide_none="1"
+			   hide_default="1"
+			   label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_PARAMS_TEMPLATE"/>
+	</fieldset>
+	<fieldset name="finish" label="checkout">
+		<fields name="finish">
+			<field name="enabled" type="radio"
+				   layout="joomla.form.field.radio.switcher"
+				   label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_PARAMS_ENABLED"
+				   default="0"
+				   filter="integer">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field name="number" type="radio"
+				   layout="joomla.form.field.radio.switcher"
+				   label="JSHOP_NUMBER"
+				   default="0"
+				   filter="integer"
+				   showon="enabled:1">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field name="products" type="radio"
+				   layout="joomla.form.field.radio.switcher"
+				   label="JSHOP_PRODUCTS"
+				   default="0"
+				   filter="integer"
+				   showon="enabled:1">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field name="payment" type="radio"
+				   layout="joomla.form.field.radio.switcher"
+				   label="JSHOP_PANEL_PAYMENTS"
+				   default="0"
+				   filter="integer"
+				   showon="enabled:1">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field name="shipping" type="radio"
+				   layout="joomla.form.field.radio.switcher"
+				   label="JSHOP_PANEL_SHIPPINGS"
+				   default="0"
+				   filter="integer"
+				   showon="enabled:1">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field name="subtotal" type="radio"
+				   layout="joomla.form.field.radio.switcher"
+				   label="JSHOP_SUBTOTAL"
+				   default="0"
+				   filter="integer"
+				   showon="enabled:1">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field name="discount" type="radio"
+				   layout="joomla.form.field.radio.switcher"
+				   label="JSHOP_DISCOUNT"
+				   default="0"
+				   filter="integer"
+				   showon="enabled:1">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field name="total" type="radio"
+				   layout="joomla.form.field.radio.switcher"
+				   label="JSHOP_TOTAL"
+				   default="0"
+				   filter="integer"
+				   showon="enabled:1">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+		</fields>
+	</fieldset>
+	<fieldset name="fields_sorting" label="PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_TAB_FIELDS_SORTING">
+		<field name="fields_sorting" type="sorting"
+			   hiddenLabel="true"/>
+	</fieldset>
+</form>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="site" method="upgrade">
+<name>MOD_CATALOG_ELEMENTS</name> 
+<creationDate>10.05.2025</creationDate>
+<author>Sofona</author>
+<authorEmail>master.sofona@gmail.com</authorEmail>
+<authorUrl>sofona.com</authorUrl>
+<copyright></copyright>
+<license>Open Source License, GNU GPL</license>
+<version>1.0.6</version><!-- updated 08.06.2025 -->
+<description>MOD_CATALOG_ELEMENTS_DESCRIPTION</description>
+	<files>
+		<filename module="mod_catalog_elements">mod_catalog_elements.php</filename>
+    <folder>tmpl</folder>
+	</files>
+  <languages>
+		<language tag="en-GB">language/en-GB/mod_catalog_elements.ini</language>
+		<language tag="uk-UA">language/uk-UA/mod_catalog_elements.ini</language>
+		<language tag="ru-RU">language/ru-RU/mod_catalog_elements.ini</language>
+    <language tag="en-GB">language/en-GB/mod_catalog_elements.sys.ini</language>
+		<language tag="uk-UA">language/uk-UA/mod_catalog_elements.sys.ini</language>
+		<language tag="ru-RU">language/ru-RU/mod_catalog_elements.sys.ini</language>
+  </languages>    
+  <config>
+    <fields name="params">
+      <fieldset name="basic">
+        <field name="selected_type"
+            type="list"
+            default="list_manufacturer"
+            label="MOD_CATALOG_ELEMENTS_SELECT">
+          <option value="list_category">MOD_CATALOG_ELEMENTS_LIST_CATEGORY</option>
+          <option value="list_manufacturer">MOD_CATALOG_ELEMENTS_LIST_MANUFACTURER</option>
+        </field>
+        <field
+						name="all_menu"
+						type="radio"
+						label="MOD_CATALOG_ELEMENTS_SHOW_ALL"
+						layout="joomla.form.field.radio.switcher"
+						default="0"
+						filter="integer"
+						>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field
+						name="first_level_category"
+						type="radio"
+						label="MOD_CATALOG_ELEMENTS_SHOW_ONLY_FIRST_LEVEL"
+						description="MOD_CATALOG_ELEMENTS_SHOW_FIRST_LEVEL_DESC"
+						layout="joomla.form.field.radio.switcher"
+						default="0"
+						filter="integer"
+						showon="selected_type:list_category[AND]all_menu:0"
+						>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+        <field type="jshoppingmanufacturers" 
+          name="manufacturer_ids" 
+					multiple="true"
+          label="MOD_CATALOG_ELEMENTS_LIST_MANUFACTURER" 
+          addfieldprefix="Joomla\Component\Jshopping\Administrator\Field" 
+          default="" 
+          showon="selected_type:list_manufacturer[AND]all_menu:0"
+        />
+        <field name="category_ids" 
+          type="jshoppingcategories"
+					label="MOD_CATALOG_ELEMENTS_LIST_CATEGORY"
+					multiple="true"
+					filter="intarray"
+					layout="joomla.form.field.list-fancy-select"
+          showon="selected_type:list_category[AND]all_menu:0[AND]first_level_category:0"
+				/>
+        <field type="jshoppingmanufacturers" 
+          name="manufacturer_ids_exclude" 
+					multiple="true"
+          label="MOD_CATALOG_ELEMENTS_LIST_MANUFACTURER_EXCLUDE" 
+          addfieldprefix="Joomla\Component\Jshopping\Administrator\Field" 
+          default="" 
+          showon="selected_type:list_manufacturer"
+        />
+        <field name="category_ids_exclude" 
+          type="jshoppingcategories"
+					label="MOD_CATALOG_ELEMENTS_LIST_CATEGORY_EXCLUDE"
+					multiple="true"
+					filter="intarray"
+					layout="joomla.form.field.list-fancy-select"
+          showon="selected_type:list_category"/>                    
+        <field
+					name="show_image"
+					type="radio"
+					label="MOD_CATALOG_ELEMENTS_SHOW_IMAGES"
+					layout="joomla.form.field.radio.switcher"
+					default="0"
+					filter="integer"
+					>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+        <field
+					name="show_name"
+					type="radio"
+					label="MOD_CATALOG_ELEMENTS_SHOW_NAME"
+					layout="joomla.form.field.radio.switcher"
+					default="0"
+					filter="integer"
+					>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>                
+        <field
+          	name="sort"
+            type="list"
+            default="id"
+            label="MOD_CATALOG_ELEMENTS_SORT"
+            description="MOD_CATALOG_ELEMENTS_SORT_DESC">
+          <option value="id">MOD_CATALOG_ELEMENTS_ID</option>
+          <option value="name">MOD_CATALOG_ELEMENTS_NAME</option>
+          <option value="random">MOD_CATALOG_ELEMENTS_RANDOM</option>                        
+        </field>
+      	<field
+        		name="ordering"
+            type="list"
+            default="asc"
+            label="MOD_CATALOG_ELEMENTS_SORT"
+						layout="joomla.form.field.radio.switcher"
+          	description="MOD_CATALOG_ELEMENTS_SORT_DESC"
+          	showon="sort:id[OR]sort:name">
+          <option value="asc">MOD_CATALOG_ELEMENTS_ASCENDING</option>
+          <option value="desc">MOD_CATALOG_ELEMENTS_DESCENDING</option>
+        </field>                                
+      </fieldset> 
+      <fieldset name="swiper_setting" label="MOD_CATALOG_ELEMENTS_SWIPER_SETTING">
+        <field
+          name="swiperclass_sfx"
+          type="text"
+          label="MOD_CATALOG_ELEMENTS_CLASSNAME_SWIPER"
+          default="" />
+        <field
+					name="navegation_slider"
+					type="radio"
+					label="MOD_CATALOG_ELEMENTS_NAVIGATION_SLIDER"
+					layout="joomla.form.field.radio.switcher"
+					default="0"
+					filter="integer"
+					>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+        <field
+					name="use_swiper"
+					type="list"
+					label="MOD_CATALOG_ELEMENTS_USE_SWIPER"
+					layout="joomla.form.field.radio.switcher"
+					default="0"
+					>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field> 
+        <field
+					name="use_inline_script"
+					type="list"
+					label="MOD_CATALOG_ELEMENTS_USE_INLINE_SCRIPT"
+					layout="joomla.form.field.radio.switcher"
+					default="0"
+					>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field> 
+				<field 
+					name="script_slider" 
+					type="textarea" 
+					filter="raw" 
+					label="MOD_CATALOG_ELEMENTS_SCRIPT" 
+					rows="5" 
+					cols="35" 
+                    default="document.addEventListener('DOMContentLoaded', event => {
+						new Swiper('.nameClass', {
+  						    loop: false,
+  						    speed: 3000,
+  							spaceBetween: 10,
+  							slidesPerView: 1,
+  							pagination: {
+    							el: '.swiper-pagination',
+  							},
+							navigation: {
+								nextEl: '.swiper-button-next',
+								prevEl: '.swiper-button-prev',
+							},
+						});
+					});" 
+          showon="use_inline_script:1"
+				/>   
+      </fieldset>
+      <fieldset name="advanced">
+        <field
+          name="layout"
+        	type="modulelayout"
+					class="form-select"
+          label="JFIELD_ALT_LAYOUT_LABEL"
+          description="JFIELD_ALT_MODULE_LAYOUT_DESC"/>
+      	<field
+          name="moduleclass_sfx"
+          type="text"
+          label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+          default="nameClass"
+          description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />                    
+      	<field
+          name="cache"
+          type="list"
+          default="0"
+          label="COM_MODULES_FIELD_CACHING_LABEL"
+          description="COM_MODULES_FIELD_CACHING_DESC">
+          <option value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+      	</field>             
+      </fieldset>
+    </fields>
+  </config> 
+    <updateservers>
+        <server type="extension" name="MOD_CATALOG_ELEMENTS">https://gitvault.sofona.info/modules/mod_catalog_elements/update.xml</server>
+    </updateservers>
+</extension>

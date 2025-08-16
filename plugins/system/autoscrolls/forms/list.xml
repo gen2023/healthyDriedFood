@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+  <fieldset name="sample" class="sample-subform">
+
+    <field name="name_block" type="text" label="PLG_AUTO_SCROLL_NAME_BLOCK" description="PLG_AUTO_SCROLL_NAME_BLOCK_DESC" default="" />
+    <field name="pagination_class" type="text" label="PLG_AUTO_SCROLL_PAGINATION" description="" default=".pagination" />
+    <field name="block_class" type="text" label="PLG_AUTO_SCROLL_CONTAINER" description="PLG_AUTO_SCROLL_CONTAINER_DESCRIPTION" default=".blog-items" />
+    <field name="disable_mob" type="radio" default="0" label="PLG_AUTO_SCROLL_DISABLE_MOB" description="" class="btn-group btn-group-yesno">
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+    <field name="disable_mob_px" type="text" label="PLG_AUTO_SCROLL_DISABLE_MOB_PX" description="" default="0" showon="disable_mob:1" />
+    <field name="hide_pagination" type="radio" default="0" label="PLG_AUTO_SCROLL_HIDE_PAGINATION" description="" class="btn-group btn-group-yesno">
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+    <field name="scroll_first" type="radio" default="0" label="PLG_AUTO_SCROLL_SCROLL_FIRST" description="PLG_AUTO_SCROLL_SCROLL_FIRST_DESCRIPTION" class="btn-group btn-group-yesno">
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+    <field name="add_btn" type="radio" default="0" label="PLG_AUTO_SCROLL_ADD_BTN" description="" class="btn-group btn-group-yesno">
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+          
+  </fieldset>
+</form>

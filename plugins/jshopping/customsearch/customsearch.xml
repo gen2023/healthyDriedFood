@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshoppingproducts" method="upgrade" version="4.0">
+    <name>plg_jshopping_customsearch</name>
+    <author>ChatGPT</author>
+    <version>1.0.0</version>
+    <description>Ограничение поиска товаров по имени и/или коду.</description>
+    <files>
+        <filename plugin="customsearch">customsearch.php</filename>
+    </files>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field
+                    name="searchByName"
+                    type="radio"
+                    default="1"
+                    label="Искать по названию"
+                    description="Включить поиск по названию товара"
+                >
+                    <option value="1">Да</option>
+                    <option value="0">Нет</option>
+                </field>
+                <field
+                    name="searchByCode"
+                    type="radio"
+                    default="1"
+                    label="Искать по коду"
+                    description="Включить поиск по коду товара (EAN)"
+                >
+                    <option value="1">Да</option>
+                    <option value="0">Нет</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+</extension>

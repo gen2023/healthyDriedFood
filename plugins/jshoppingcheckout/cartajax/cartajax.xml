@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5.0" type="plugin" method="upgrade" group="jshoppingcheckout">
+	<name>JoomShopping - Cart Ajax (Checkout)</name>
+	<creationDate>21.08.2013</creationDate>
+	<version>1.0.0</version>
+	<author>MAXXmarketing GmbH</author>
+	<authorEmail>marketing@maxx-marketing.net</authorEmail>
+	<authorUrl>http://www.webdesigner-profi.de</authorUrl>
+	<copyright>Copyright (C) 2010 webdesigner-profi.de. All rights reserved.</copyright>
+	<license>MAXXmarketing GmbH</license>
+	<description>JoomShopping - Cart Ajax (Checkout)</description>
+	<files>
+		<filename plugin="cartajax">cartajax.php</filename>
+	</files>
+</extension>

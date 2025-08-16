@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+
+	<layout title="Landing page"></layout>
+
+    <fields name="request"></fields>
+
+	<fields name="params">		
+		<fieldset name="basic" addfieldpath="/components/com_jshopping/fields">
+			<field name="categorys" type="shopcategories" label="CATEGORIES" multiple="true" layout="joomla.form.field.list-fancy-select" />
+            <field name="manufacturers" type="shopmanufacturers" label="Manufacturers" multiple="true" layout="joomla.form.field.list-fancy-select" />
+            <field name="labels" type="shoplabels" label="JSHOP_PANEL_PRODUCT_LABELS" multiple="true" layout="joomla.form.field.list-fancy-select" />
+            <field name="vendors" type="shopvendors" label="JSHOP_VENDORS" multiple="true" layout="joomla.form.field.list-fancy-select" />
+			<field name="delivery_times" type="shopdeliverytimes" label="JSHOP_LIST_DELIVERY_TIMES" multiple="true" layout="joomla.form.field.list-fancy-select" />
+			<field name="photo_filter" type="list" label="Photo">
+				<option value="0"> - </option>
+                <option value="1">With photo</option>
+				<option value="2">Without photo</option>
+			</field>
+			<field name="quantity_filter" type="list" label="Availability">
+				<option value="0"> - </option>
+                <option value="1">In stock</option>
+				<option value="2">Unavailable</option>
+			</field>
+			<field name="review_filter" type="list" label="Review">
+				<option value="0"> - </option>
+                <option value="1">With review</option>
+				<option value="2">Without review</option>
+			</field>
+			<field name="show_products_with_old_prices" type="list" label="Products with old prices">
+				<option value="0"> - </option>
+                <option value="1">Products with old prices</option>				
+			</field>
+			<field name="show_products_with_free_shipping" type="list" label="Free shipping">
+				<option value="0"> - </option>
+                <option value="1">Products with free shipping</option>
+			</field>
+			<field name="rating_filter" type="list" label="Rating">
+				<option value="0"> - </option>
+                <option value="1">1 +</option>
+				<option value="2">2 +</option>
+				<option value="3">3 +</option>
+				<option value="4">4 +</option>
+				<option value="5">5 +</option>
+				<option value="6">6 +</option>
+				<option value="7">7 +</option>
+				<option value="8">8 +</option>
+				<option value="9">9 +</option>
+				<option value="10">10</option>				
+			</field>
+            <field name="fprice_from" type="text" default="" label="Price_from" />
+            <field name="fprice_to" type="text" default="" label="Price_to" />
+		</fieldset>		
+		<fieldset name="extra_fiels" label="JSHOP_EXTRA_FIELDS" addfieldpath="/components/com_jshopping/fields">
+			<field name="extra_fiels" type="extrafields" />
+		</fieldset>
+		<fieldset name="attributes" label="JSHOP_ATTRIBUTES" addfieldpath="/components/com_jshopping/fields">
+			<field name="attributes" type="attributes" />
+		</fieldset>
+		<fieldset name="description" label="JSHOP_DESCRIPTION">
+			<field name="description" label="JSHOP_DESCRIPTION" type="editor" filter="RAW"  />
+			<field name="position_description" type="list" label="Text position">
+				<option value="0">Top</option>
+                <option value="1">Bottom</option>
+			</field>
+		</fieldset>
+	</fields>
+
+</metadata>

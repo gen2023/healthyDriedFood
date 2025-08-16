@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form addfieldprefix="Joomla\Component\NevigenAudit\Administrator\Field">
+	<fieldset name="filters">
+		<fields name="filter">
+			<field name="usergroups" type="userGroups"
+				   label="COM_NEVIGEN_AUDIT_USER_GROUPS"
+				   onchange="Joomla.submitFilter(this.form);">
+				<option value="">COM_NEVIGEN_AUDIT_USER_GROUPS_SELECT</option>
+			</field>
+			<field name="period" type="date_period"
+				   label="COM_NEVIGEN_AUDIT_DATE_PERIOD"
+				   hint="COM_NEVIGEN_AUDIT_DATE_PERIOD_SELECT"
+				   filter="user_utc"
+				   onchange="Joomla.submitFilter(this.form);"/>
+			<field name="state" type="userstate"
+					label="JSTATUS"
+				   onchange="Joomla.submitFilter(this.form);">
+				<option value="">COM_USERS_FILTER_STATE</option>
+			</field>
+		</fields>
+	</fieldset>
+	<fieldset name="search">
+		<fields name="filter">
+			<field name="search" type="text"
+				   label="JSEARCH_FILTER"
+				   hint="JSEARCH_FILTER"/>
+		</fields>
+	</fieldset>
+	<fieldset name="list">
+		<fields name="list">
+			<field name="fullordering" type="hidden"
+				   label="JGLOBAL_SORT_BY"
+				   onchange="Joomla.submitFilter(this.form);"/>
+			<field name="limit" type="limitbox"
+				   label="JGLOBAL_LIST_LIMIT"
+				   onchange="Joomla.submitFilter(this.form);"
+				   default="25"/>
+		</fields>
+	</fieldset>
+</form>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" method="upgrade">
+
+    <name>Export xml</name>
+    <creationDate>2025-01-30</creationDate>
+    <author>Sofona</author>
+    <authorUrl>https://sofona.com/</authorUrl>
+    <copyright>Sofona</copyright>
+    <license>GPL v3</license>
+    <version>1.0.3</version>
+    <description>COM_EXPORTXML_DESCRIPTION</description>
+	
+    <namespace path="src/">Sofona\Component\ExportXml</namespace>
+
+    <files folder="site/">
+        <folder>src</folder>
+        <folder>tmpl</folder>
+    </files>
+    <media destination="com_exportxml" folder="media">
+	    <folder>css</folder>
+		<folder>js</folder>
+	</media>
+
+    <languages>
+        <language tag="en-GB">site/language/en-GB/com_exportxml.ini</language>
+        <language tag="ru-RU">site/language/ru-RU/com_exportxml.ini</language>
+        <language tag="uk-UA">site/language/en-GB/com_exportxml.ini</language>
+    </languages>
+
+    <administration>
+        <menu link="index.php?option=com_exportxml">Export Product</menu>
+        <files folder="admin/">
+            <folder>services</folder>
+            <folder>sql</folder>
+            <folder>src</folder>
+            <folder>tmpl</folder>
+            <filename>config.xml</filename>
+        </files>
+
+        <languages>
+            <language tag="en-GB">admin/language/en-GB/com_exportxml.ini</language>
+            <language tag="en-GB">admin/language/en-GB/com_exportxml.sys.ini</language>
+            <language tag="ru-RU">admin/language/ru-RU/com_exportxml.ini</language>
+            <language tag="ru-RU">admin/language/ru-RU/com_exportxml.sys.ini</language>
+            <language tag="uk-UA">admin/language/uk-UA/com_exportxml.ini</language>
+            <language tag="uk-UA">admin/language/uk-UA/com_exportxml.sys.ini</language>
+        </languages>
+    </administration>
+
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+    <update>
+        <schemas>
+            <schemapath type="mysql">sql/updates/mysql</schemapath>
+        </schemas>
+    </update>
+    <updateservers>
+		  <server type="extension" priority="1" name="com_exportxml">https://gitvault.sofona.info/com_exportxml/update.xml</server>
+	  </updateservers>
+
+</extension>

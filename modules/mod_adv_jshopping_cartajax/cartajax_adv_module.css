@@ -1,0 +1,146 @@
+.cartajax_adv_module{font-family:verdana, times, serif;font-size:12px;position:relative;margin:8px 0 0;padding:0;}
+.cartajax_adv_module .clear{clear:both;overflow:hidden;height:0;}
+.cartajax_adv_module h2{font-weight:400;font-size:24px;margin:0 0 20px;}
+.cartajax_adv_module .module-total{width:100%;font-size:16px;text-align:right;padding:0 0 10px;}
+.cartajax_adv_module .module-checkout{width:100%;border-top:1px solid #EEE;font-size:16px;text-align:right;padding:10px 0 0;}
+.cartajax_adv_module .module-item{position:relative;border-bottom:1px solid #EEE;margin:0 0 10px;padding:0 0 10px;}
+.cartajax_adv_module .module-item-label{font-weight:700;}
+.cartajax_adv_module .module-item-count{font-weight:700;font-size:150%;}
+.cartajax_adv_module .module-item-price{position:absolute;right:0;bottom:4px;font-weight:700;}
+.cartajax_adv_module .module-item-remove{cursor : pointer;position : absolute;right : 0;top : 0;background : url('images/cartajax-remove.png') no-repeat 0 0;display : block;height : 16px;width : 16px;z-index : 65535;}
+.cartajax_adv_module .module-item-remove:hover{cursor : pointer;position : absolute;right : 0;top : 0;background : url('images/cartajax-remove.png') no-repeat 0 -16px;display : block;height : 16px;width : 16px;z-index : 65535;}
+.cartajax_adv_module .jshop_cart_attribute{font-weight: bold;font-style: italic;font-size: 11px;margin-bottom: 4px;margin-top: 1px;padding-left: 10px;}
+
+.cartajax_adv_module .block{
+    background-image: linear-gradient(to bottom, #19B2FE, #3E7DFD);
+    border: 1px solid #FFFFFF;
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 0 0 1px #0051F2;
+    margin-bottom: 10px;
+    width: 100%;
+    color: #fff;
+    font-family: verdana;
+    background-color: #3E7DFD;
+}
+.cartajax_adv_module .block:first-child{
+    height: 60px;
+}
+
+.cartajax_adv_module .module-total, 
+.cartajax_adv_module .module-show-products{
+    float: right;
+    height: 31px;
+    width: 55%;
+    font-size: 11px;
+    text-align: right;
+    padding: 0;
+}
+.cartajax_adv_module .module-show-products .cartajax-link{
+    cursor: pointer;
+}
+.cartajax_adv_module .module-show-products .cartajax-link[btn-product="show"] .text_show{
+    display: block;
+}
+.cartajax_adv_module .module-show-products .cartajax-link[btn-product="show"] .text_hide{
+    display: none;
+}
+.cartajax_adv_module .module-show-products .cartajax-link[btn-product="hide"] .text_show{
+    display: none;
+}
+.cartajax_adv_module .module-show-products .cartajax-link[btn-product="hide"] .text_hide{
+    display: block;
+}
+
+.cartajax_adv_module .module-checkout, 
+.cartajax_adv_module .module-count{
+    border: none;
+    float: left;
+    height: 31px;
+    width: 45%;
+    font-size: 11px;
+    text-align: left;
+    padding: 0;
+}
+
+.cartajax_adv_module .module-checkout a, 
+.cartajax_adv_module .cartajax-link{
+    text-decoration: none;
+    color: #fff;
+    border-bottom: 1px dashed #ccc;
+}
+
+.cartajax_adv_module .module-checkout a:hover, 
+.cartajax_adv_module .cartajax-link:hover{
+    text-decoration: none;
+    border-bottom: 1px dashed #fff;
+    background: none;
+}
+
+.cartajax_adv_module .module-checkout div, 
+.cartajax_adv_module .module-count div, 
+.cartajax_adv_module .module-total div, 
+.cartajax_adv_module .module-show-products div{
+    padding: 5px;
+}
+
+.cartajax_adv_module .clr{
+    clear: both;
+    height: 0;
+    overflow: hidden;
+}
+
+.cartajax_adv_module .module-item-image{
+    float: left;
+    width: 55px;
+}
+
+.cartajax_adv_module .module-product-info{
+    color: #e4e4e4;
+    float: left;
+}
+
+.cartajax_adv_module .module-item-image img{
+    width: 50px;
+}
+
+.cartajax_adv_module li.module-item{
+    list-style: none;
+    border-bottom: 1px dotted #ccc;
+    padding: 0 0 3px;
+}
+.cartajax_adv_module ul.module-list{
+	padding-left:5px;
+}
+.cartajax_adv_module .module-list{
+    margin: 5px !important;
+}
+
+.cartajax_adv_module .module-item-label{
+    font-size: 12px;
+    font-weight: bold;
+    color: #EEE;
+}
+
+.cartajax_adv_module .module-item-label a{
+    color: #fff;
+    text-decoration: none;
+}
+
+.cartajax_adv_module .module-item-label a:hover{
+    background: none;
+    text-decoration: none;
+}
+
+.cartajax_adv_module .module-item-count, 
+.cartajax_adv_module .module-item-price, 
+.cartajax_adv_module .module-item-code{
+    position: relative;
+    font-weight: normal;
+    font-size: 11px;
+    bottom: 0;
+}
+
+.cartajax_adv_module .module-close{
+    float: right;
+    padding: 4px;
+}

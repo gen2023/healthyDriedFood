@@ -1,0 +1,132 @@
+{
+	"$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+	"name": "com_nevigen_audit",
+	"version": "1.2.0",
+	"description": "Nevigen audit component",
+	"license": "GPL-3.0-or-later",
+	"assets": [
+		{
+			"name": "com_nevigen_audit.administrator.main",
+			"type": "style",
+			"uri": "com_nevigen_audit/administrator/main.min.css",
+			"version": "auto"
+		},
+		{
+			"name": "com_nevigen_audit.administrator.list",
+			"type": "script",
+			"uri": "com_nevigen_audit/administrator/list.min.js",
+			"dependencies": [
+				"core",
+				"webcomponent.core-loader"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "com_nevigen_audit.administrator.orders_audit",
+			"type": "style",
+			"uri": "com_nevigen_audit/administrator/orders_audit.min.css",
+			"version": "auto"
+		},
+		{
+			"name": "com_nevigen_audit.administrator.orders_audit",
+			"type": "script",
+			"uri": "com_nevigen_audit/administrator/orders_audit.min.js",
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "com_nevigen_audit.administrator.orders_audit",
+			"type": "preset",
+			"dependencies": [
+				"com_nevigen_audit.administrator.orders_audit#style",
+				"com_nevigen_audit.administrator.orders_audit#script"
+			]
+		},
+		{
+			"name": "com_nevigen_audit.administrator.orders",
+			"type": "script",
+			"uri": "com_nevigen_audit/administrator/orders.min.js",
+			"dependencies": [
+				"core"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "com_nevigen_audit.chart",
+			"type": "script",
+			"uri": "com_nevigen_audit/chart.min.js",
+			"dependencies": [
+				"core",
+				"webcomponent.core-loader"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "com_nevigen_audit.fields.date.flatpickr",
+			"type": "style",
+			"uri": "com_nevigen_audit/fields/date/flatpickr.min.css",
+			"version": "auto"
+		},
+		{
+			"name": "com_nevigen_audit.fields.date.period",
+			"type": "script",
+			"uri": "com_nevigen_audit/fields/date/period.min.js",
+			"dependencies": [
+				"core"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "com_nevigen_audit.fields.modal",
+			"type": "script",
+			"uri": "com_nevigen_audit/fields/modal.min.js",
+			"class": "ModalFieldAssetItem",
+			"namespace": "Joomla\\Component\\NevigenAudit\\Administrator\\WebAsset\\AssetItem",
+			"dependencies": [
+				"core",
+				"bootstrap.modal"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "com_nevigen_audit.administrator.orders",
+			"type": "preset",
+			"dependencies": [
+				"com_nevigen_audit.administrator.list#script",
+				"com_nevigen_audit.administrator.orders#script",
+				"com_nevigen_audit.administrator.main#style"
+			]
+		},
+		{
+			"name": "com_nevigen_audit.fields.date.period",
+			"type": "preset",
+			"dependencies": [
+				"com_nevigen_audit.fields.date.flatpickr#style",
+				"com_nevigen_audit.fields.date.period#script"
+			]
+		}
+	]
+}

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="site" method="upgrade">
+    <name>MOD_JSHOPPING_PRODUCTS_LIST</name>
+	<creationDate>22.05.2025</creationDate>
+    <author>Sofona</author>
+    <copyright>© 2025 Sofona. All rights reserved.</copyright>
+    <license>Open Source License, GNU GPL</license>
+    <version>1.0.5</version>
+	<description>MOD_JSHOPPING_PRODUCTS_LIST_DESCRIPTION</description>
+	<files>
+	    <filename module="mod_jshopping_products">mod_jshopping_products.php</filename>
+		<folder>tmpl</folder>
+	</files>
+	<media destination="mod_jshopping_products" folder="media">
+    	<folder>js</folder>
+    	<folder>css</folder>
+  	</media>    
+    <languages>
+		<language tag="ru-RU">language/ru-RU/mod_jshopping_products.ini</language>
+		<language tag="ru-RU">language/ru-RU/mod_jshopping_products.sys.ini</language>
+		<language tag="uk-UA">language/uk-UA/mod_jshopping_products.ini</language>
+		<language tag="uk-UA">language/uk-UA/mod_jshopping_products.sys.ini</language>
+    </languages>     
+    <config>
+        <fields name="params">
+            <fieldset name="basic" addfieldprefix="Joomla\Component\Jshopping\Administrator\Field">
+                <field name="selected_type"
+                        type="list"
+                        default="select_type_all"
+                        label="MOD_JSHOPPING_PRODUCTS_LIST_TYPE">
+                    <option value="select_type_all">MOD_JSHOPPING_PRODUCTS_LIST_ALL</option>
+                    <option value="list_popylar_order">MOD_JSHOPPING_PRODUCTS_LIST_POPYLAR_ORDER</option>
+                    <option value="list_popylar_view">MOD_JSHOPPING_PRODUCTS_LIST_POPYLAR_VIEW</option>
+                    <option value="list_new">MOD_JSHOPPING_PRODUCTS_LIST_NEW</option>
+                    <option value="list_by_category">MOD_JSHOPPING_PRODUCTS_LIST_BY_CATEGORY</option>
+                    <option value="list_by_product_id">MOD_JSHOPPING_PRODUCTS_LIST_PRODUCT_ID</option>
+                    <option value="list_product_label">MOD_JSHOPPING_PRODUCTS_LIST_PRODUCT_LABEL</option>
+                    <option value="list_product_randon">MOD_JSHOPPING_PRODUCTS_LIST_PRODUCT_RANDOM</option>
+                    <option value="list_product_manuf">MOD_JSHOPPING_PRODUCTS_LIST_MANUFACTURER_PRODUCTS</option>
+                </field>
+                <field type="jshoppingmanufacturers" 
+                    name="manufacturer_ids" 
+					multiple="true"
+                    label="MOD_JSHOPPING_PRODUCTS_LIST_MANUFACTURER" 
+                    addfieldprefix="Joomla\Component\Jshopping\Administrator\Field" 
+                    default="" 
+                    showon="selected_type:list_product_manuf"
+                    />
+                <field name="categpry_id" 
+                        type="jshoppingcategories"
+					   label="MOD_JSHOPPING_PRODUCTS_LIST_SELECT_CATEGORY"
+					   multiple="true"
+					   filter="intarray"
+					   layout="joomla.form.field.list-fancy-select"
+                        showon="selected_type:list_by_category[OR]selected_type:list_product_randon"/>
+                <field
+                        name="product_ids"
+                        type="text"
+                        label="MOD_JSHOPPING_PRODUCTS_LIST_ENTER_PRODUCT_LIST"
+                        showon="selected_type:list_by_product_id"
+                />                
+                <field
+                        name="product_id_label"
+                        type="jshoppinglabels"
+					    multiple="true"
+					    filter="intarray"
+					    layout="joomla.form.field.list-fancy-select"
+                        label="MOD_JSHOPPING_PRODUCTS_LIST_ENTER_LABEL"
+                        showon="selected_type:list_product_label"
+                />
+                <field
+                        name="product_not_ids"
+                        type="text"
+                        label="MOD_JSHOPPING_PRODUCTS_LIST_ENTER_EXCLUDE_PRODUCT_LIST"
+                        description="MOD_JSHOPPING_PRODUCTS_LIST_ENTER_EXCLUDE_PRODUCT_LIST_DESC"
+                        showon="selected_type:select_type_all[OR]selected_type:list_popylar_order[OR]selected_type:list_popylar_view[OR]selected_type:list_new[OR]selected_type:list_by_category[OR]selected_type:list_product_label"
+                />                
+                <field
+                        name="cont_product"
+                        type="number"
+                        label="MOD_JSHOPPING_PRODUCTS_LIST_QUANTITY_LIST"
+                        default="10"
+                        description="MOD_JSHOPPING_PRODUCTS_LIST_QUANTITY_LIST_DESC"
+                        filter="integer"/>
+                <field
+                    name="sort"
+                    type="list"
+                    default="id"
+                    label="MOD_JSHOPPING_PRODUCTS_LIST_SORT"
+                    showon="selected_type:select_type_all,list_by_category,list_by_product_id,list_exclude_product_id,list_product_label">
+                    <option value="product_id">MOD_JSHOPPING_PRODUCTS_LIST_SORT_ID</option>
+                    <option value="hits">MOD_JSHOPPING_PRODUCTS_LIST_SORT_POPYLAR_VIEW</option>
+                    <option value="product_price">MOD_JSHOPPING_PRODUCTS_LIST_SORT_PRICE</option>
+                </field>
+                <field
+                    name="ordering"
+					type="radio"
+					layout="joomla.form.field.radio.switcher"
+                    default="asc"
+                    label="MOD_JSHOPPING_PRODUCTS_LIST_SORT_DIRECTION">
+                    <option value="asc">MOD_JSHOPPING_PRODUCTS_LIST_SORT_DIRECTION_ASC</option>
+                    <option value="desc">MOD_JSHOPPING_PRODUCTS_LIST_SORT_DIRECTION_DESC</option>
+                </field>
+                <field
+                    name="show_in_stock"
+                    type="radio"
+					layout="joomla.form.field.radio.switcher"
+                    default="1"
+                    label="MOD_JSHOPPING_PRODUCTS_LIST_SHOW_IN_STOK"
+                    showon="selected_type:select_type_all[OR]selected_type:list_popylar_order[OR]selected_type:list_popylar_view[OR]selected_type:list_new[OR]selected_type:list_by_category[OR]selected_type:list_product_label[OR]selected_type:select_type_all[OR]selected_type:list_popylar_order[OR]selected_type:list_product_randon">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field
+                    name="show_pagination"
+                    type="radio"
+					layout="joomla.form.field.radio.switcher"
+                    default="0"
+                    description="MOD_JSHOPPING_PRODUCTS_LIST_SHOW_PAGINATION_DESC"
+                    label="MOD_JSHOPPING_PRODUCTS_LIST_SHOW_PAGINATION">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+
+            </fieldset>
+            <fieldset name="swiper_setting" label="MOD_JSHOPPING_PRODUCTS_LIST_SWIPER_SETTING" >
+                <field
+                    name="swiperclass_sfx"
+                    type="text"
+                    label="MOD_JSHOPPING_PRODUCTS_LIST_CLASSNAME_SWIPER"
+                    default="nameClass" />
+                <field
+					name="navegation_slider"
+					type="radio"
+					label="MOD_JSHOPPING_PRODUCTS_LIST_NAVIGATION_SLIDER"
+					layout="joomla.form.field.radio.switcher"
+					default="0"
+					filter="integer"
+					>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+                <field
+					name="use_swiper"
+					type="list"
+					label="MOD_JSHOPPING_PRODUCTS_LIST_USE_SWIPER"
+					layout="joomla.form.field.radio.switcher"
+					default="0"
+					>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field> 
+                <field
+					name="use_inline_script"
+					type="list"
+					label="MOD_JSHOPPING_PRODUCTS_LIST_USE_INLINE_SCRIPT"
+					layout="joomla.form.field.radio.switcher"
+					default="0"
+					>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field> 
+				<field 
+					name="script_slider" 
+					type="textarea" 
+					filter="raw" 
+					label="MOD_JSHOPPING_PRODUCTS_LIST_SCRIPT" 
+					rows="5" 
+					cols="35" 
+                    default="document.addEventListener('DOMContentLoaded', event => {
+						new Swiper('.nameClass', {
+  						    loop: false,
+  						    speed: 3000,
+  							spaceBetween: 10,
+  							slidesPerView: 1,
+  							pagination: {
+    							el: '.swiper-pagination',
+  							},
+							navigation: {
+								nextEl: '.swiper-button-next',
+								prevEl: '.swiper-button-prev',
+							},
+						});
+					});" 
+                    showon="use_inline_script:1"
+				/>    
+            </fieldset>
+            <fieldset name="advanced">
+                <field
+                    name="layout"
+                    type="modulelayout"
+					class="form-select"
+                    label="JFIELD_ALT_LAYOUT_LABEL"
+                    description="JFIELD_ALT_MODULE_LAYOUT_DESC"/>
+                <field
+                    name="moduleclass_sfx"
+                    type="text"
+                    label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                    default=""
+                    description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+                
+                <field
+                    name="cache"
+                    type="list"
+                    default="0"
+                    label="COM_MODULES_FIELD_CACHING_LABEL"
+                    description="COM_MODULES_FIELD_CACHING_DESC">
+                    <option value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+                </field>             
+            </fieldset>
+        </fields>
+    </config>     
+    <updateservers>
+    <server type="extension" name="Module joomshopping products">https://gitvault.sofona.info/modules/mod_jshopping_products/update.xml</server>
+  </updateservers> 
+</extension>

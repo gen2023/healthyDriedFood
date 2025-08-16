@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="OneStepCheckout (Nevigen)">
+        <message>
+            <![CDATA[Page OneStepCheckout (Nevigen)]]>
+        </message>
+    </layout>
+        <fields name="request" />
+</metadata>

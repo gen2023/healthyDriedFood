@@ -1,0 +1,118 @@
+{
+  "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+  "name": "custom",
+  "version": "1.0.104",
+  "description": "This file contains details of the assets used by custom, the default Joomla 4 site template.",
+  "license": "GPL-2.0-or-later",
+  "assets": [
+    {
+      "name": "swiper.min.style",
+      "description": "swiper style",
+      "type": "style",
+      "uri": "swiper.min.css",
+      "dependencies": []
+    },
+    {
+      "name": "lightgallery.min.style",
+      "description": "lightgallery style",
+      "type": "style",
+      "uri": "lightgallery.min.css",
+      "dependencies": []
+    },
+    {
+      "name": "main.custom.style",
+      "description": "main style",
+      "type": "style",
+      "uri": "main.css",
+      "dependencies": []
+    },
+    {
+      "name": "media.custom.style",
+      "description": "main style",
+      "type": "style",
+      "uri": "media.css",
+      "dependencies": []
+    },
+    {
+      "name": "main.custom.script",
+      "description": "The file containing the javascript for this template.",
+      "type": "script",
+      "uri": "main.js",
+      "attributes" : {
+        "defer": true
+      },
+      "dependencies": []
+    },
+    {
+      "name": "jquery.script",
+      "description": "jquery",
+      "type": "script",
+      "uri": "jquery-3.3.1.min.js",
+      "attributes" : {
+        "defer": true
+      },
+      "dependencies": []
+    },
+    {
+      "name": "swiper.script",
+      "description": "swiper",
+      "type": "script",
+      "uri": "swiper.min.js",
+      "attributes" : {
+        "defer": true
+      },
+      "dependencies": []
+    },
+    {
+      "name": "lightgallery.script",
+      "description": "lightgallery",
+      "type": "script",
+      "uri": "lightgallery-all.min.js",
+      "attributes" : {
+        "defer": true
+      },
+      "dependencies": []
+    },
+    {
+      "name": "inputmask.script",
+      "description": "inputmask",
+      "type": "script",
+      "uri": "jquery.inputmask.min.js",
+      "attributes" : {
+        "defer": true
+      },
+      "dependencies": []
+    },    
+    {
+      "name": "main.custom.script",
+      "description": "The file containing the javascript for this template.",
+      "type": "script",
+      "uri": "main.js",
+      "attributes" : {
+        "defer": true
+      },
+      "dependencies": []
+    },
+    {
+      "name": "template.custom.ltr",
+      "type": "preset",
+      "dependencies": []
+    },
+    {
+      "name": "template.active.language",
+      "description": "An asset to allow language specific css, eg 'language/[lang-CODE]/[lang-CODE].css', to use it as a dependency to the active template",
+      "type": "style",
+      "uri": "",
+      "class": "LangActiveAssetItem",
+      "dependencies": []
+    },
+    {
+      "name": "template.user",
+      "description": "A file where a user can add their own css.",
+      "type": "style",
+      "uri": "custom.css",
+      "weight": 500,
+      "dependencies": []
+    }
+  ]
+}

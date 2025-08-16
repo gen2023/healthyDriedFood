@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshoppingcheckout" method="upgrade">
+    <name>PLG_JSCHECKOUT_TELEGRAMBOT</name>
+		<creationDate>2024-10-02</creationDate>
+		<updateDate>2025-07-13</updateDate>
+    <version>1.0.5</version>
+    <author>Sofona</author>
+    <authorUrl>https://sofona.com/</authorUrl>
+    <description>PLG_JSCHECKOUT_TELEGRAMBOT_DESCRIPTION</description>
+    <files>
+        <filename plugin="telegrambot">telegrambot.php</filename>
+				<filename>models/TelegrambotModel.php</filename>
+				<folder>forms</folder>
+    </files>
+		<languages>
+				<language tag="en-GB">language/en-GB/plg_jshoppingcheckout_telegrambot.sys.ini</language>
+				<language tag="ru-RU">language/ru-RU/plg_jshoppingcheckout_telegrambot.sys.ini</language>
+				<language tag="en-GB">language/en-GB/plg_jshoppingcheckout_telegrambot.ini</language>
+				<language tag="ru-RU">language/ru-RU/plg_jshoppingcheckout_telegrambot.ini</language>
+				<language tag="uk-UA">language/uk-UA/plg_jshoppingcheckout_telegrambot.sys.ini</language>
+				<language tag="uk-UA">language/uk-UA/plg_jshoppingcheckout_telegrambot.ini</language>
+		</languages>
+		<scriptfile>script.php</scriptfile>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+							<field 
+								name="setkalist" 
+								type="subform" 
+								formsource="plugins/jshoppingcheckout/telegrambot/forms/list.xml" 
+								class="advancedSelect" 
+								min="0" 
+								max="9999" 
+								multiple="true" 
+								layout="joomla.form.field.subform.repeatable" 
+								groupByFieldset="true" 
+								label="Список" 
+								description="Список" 
+								/>
+            </fieldset>
+            <fieldset name="setting" label="PLG_JSCHECKOUT_TELEGRAMBOT_SEND_SETTINGS">
+            	<field
+								name="show_order_id"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_ORDER_ID"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+              <field
+								name="show_order_number"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_ORDER_NUMBER"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+              <field
+								name="show_order_total"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_ORDER_TOTAL"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>                
+              <field
+								name="show_user_name"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_NAME"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+              <field
+								name="show_user_email"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_EMAIL"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+              <field
+								name="show_user_phone"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_PHONE"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+              <field
+								name="show_product_name"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_PRODUCT_NAME"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+              <field
+								name="show_product_quantity"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_PRODUCT_QUANTITY"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>				
+              <field
+								name="show_shipping"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_SHIPPING"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+              <field
+								name="show_payment"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_PAYMENT"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+              <field
+								name="show_atribute"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_ATRIBUTE_PRODUCT"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+							<field
+								name="show_manufacturer_code"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_MANUFACTURER_CODE"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+							<field
+								name="show_ean_product"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_EAN_PRODUCT"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+							<field
+								name="show_manufacturer"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_MANUFACTURER"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+							<field
+								name="show_lang_site"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_LANG_SITE"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+            </fieldset>
+        </fields>
+    </config>
+		<updateservers>
+    	<server type="extension" name="PLG_JSCHECKOUT_TELEGRAMBOT">https://gitvault.sofona.info/telegrambot/update.xml</server>
+  	</updateservers>
+
+</extension>

@@ -1,0 +1,44 @@
+{
+	"$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+	"name": "plg_installer_nevigen",
+	"version": "2.1.1",
+	"description": "Installer - Install from Nevigen.com",
+	"license": "GPL-3.0-or-later",
+	"assets": [
+		{
+			"name": "installer_nevigen.script",
+			"type": "script",
+			"uri": "plg_installer_nevigen/nevigen.min.js",
+			"dependencies": [
+				"core"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "installer_nevigen.style",
+			"type": "style",
+			"uri": "plg_installer_nevigen/nevigen.min.css",
+			"version": "auto"
+		},
+		{
+			"name": "installer_nevigen.main",
+			"type": "preset",
+			"uri": "plg_installer_nevigen/main.min.js",
+			"dependencies": [
+				"keepalive#script",
+				"webcomponent.core-loader#script",
+				"installer_nevigen.script#script",
+				"installer_nevigen.style#style"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		}
+	]
+}

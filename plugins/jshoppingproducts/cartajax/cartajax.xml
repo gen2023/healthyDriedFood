@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="1.7" method="upgrade" group="jshoppingproducts">
+	<name>JoomShopping - CartAjax</name>
+	<files>
+		<filename plugin="cartajax">cartajax.php</filename>
+        <filename>cartajax_plugin.js</filename>
+		<filename>index.html</filename>
+	</files>
+	<config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="add_to_wishlist" type="radio" default="0" label="Add to Wishlist" description="Use plugin for add to Wishlist">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+		        <field name="show_popup_message" type="radio" default="0" label="Show Popup message" description="Show Popup message">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+		        <field name="show_popup_message_back_close" type="radio" default="0" label="Popup message Back to shop = close" description="Popup message Back to shop = close">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+		        <field name="show_product_in_cart_message" type="radio" default="0" label='Show "Product in Cart" message' description='Show "Product in Cart" message'>
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field name="show_quant_in_list_prod" type="radio" default="1" label="Show Input quantity in list product">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+				
+				<field name="qty_position_prod_list" type="text" default="_tmp_var_top_buttons" label="Quantity position in product list (only for developer)" />
+				<field name="cart_msg_position_prod_list" type="text" default="_tmp_var_top_buttons" label="Product in Cart message position in product list (only for developer)" />
+				
+            </fieldset>
+	</fields>
+	</config>
+</extension>

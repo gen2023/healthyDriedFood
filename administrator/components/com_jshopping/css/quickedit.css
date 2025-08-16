@@ -1,0 +1,130 @@
+.scrollcontt {
+	width: 100%;
+	background: #fff;
+	#border: 1px solid #C1C1C1;
+	#overflow-x: auto;
+	#overflow-y: auto;
+}
+
+table.adminlistquick{
+    border:1px solid #000;
+    border-spacing: 0px !important;
+    border-collapse: collapse;   
+	width: 100%;
+ }
+table.adminlistquick tbody tr th,table.adminlistquick thead tr th{
+    background:#eee;
+    text-align:center;
+}
+table.adminlistquick tbody td{
+    background:#fff;
+}
+table.adminlistquick th{
+    white-space: nowrap;
+    overflow: hidden;
+}
+td,th{
+    min-width:80px;
+}
+td p,th p{
+    display:block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height:25px;
+    /*width:80px;*/
+    padding:0px;margin: 0px;
+    height:23px;
+    min-width:40px;
+}
+th p.hover{
+    overflow: visible;
+    width:auto;
+    position:relative;
+    background: #fff;
+    min-width:40px;
+}
+
+th.narrow p{
+    width:40px;
+}
+td p.full-height{
+    height:auto !important;
+    overflow: visible;
+    white-space: normal;
+    background:#fff;
+}
+table.adminlistquick td,table.adminlistquick th{
+    border:1px solid #ccc !important;
+}
+div.field_edit_container{
+    position:absolute;
+}
+div.field_edit{
+    position:relative;
+    top:-10px;
+}
+textarea.inputedit{
+    width:150%;
+    height-line:30px;
+    height:auto;
+}
+
+table.adminlistquick td.td_selected{
+    border:1px solid red !important;
+    background:#fff !important;
+}
+.disabled_field{
+    background-color:grey;
+    color:#fff;
+}
+
+div.tfoot{
+    display:block;
+    width:100%;
+    /*height:50px;*/
+    padding-top:0px;
+    text-align: center !important;
+    margin-top:0px;
+    line-height: 30px;
+    position: fixed;
+    bottom: 0;
+    left:0px;
+    background: #fff;
+    opacity: 1;
+}
+div.tfoot .pagination{
+    margin-top:0px;
+    margin-bottom: 0px;
+}
+
+.fill{
+    background: #fff7e2 !important;
+}
+table.adminlistquick td.fill-right{
+    border-right:1px solid red !important;
+}
+table.adminlistquick td.fill-bottom{
+    border-bottom:1px solid red !important;
+}
+
+.inputedit{
+    position:relative;
+}
+input.inputedit{
+}
+table.adminlistquick td.quick-send-error{
+    background: red !important;
+}
+
+table.adminlistquick tbody tr.hovering td{
+    background: #d9d9d9 !important;
+}
+
+.short{
+    width:100px !important;
+}
+th.td40,td.td40,th.td40 p,td.td40 p{
+   min-width:40px;
+   width:40px;
+}

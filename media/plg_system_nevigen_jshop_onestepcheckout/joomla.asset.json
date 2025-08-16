@@ -1,0 +1,51 @@
+{
+	"$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+	"name": "plg_system_nevigen_jshop_onestepcheckout",
+	"version": "1.1.0",
+	"description": "Nevigen JShop OneStepCheckout",
+	"license": "GPL-3.0-or-later",
+	"assets": [
+		{
+			"name": "onestepcheckout.fields.sorting",
+			"type": "script",
+			"uri": "plg_system_nevigen_jshop_onestepcheckout/fields/sorting.min.js",
+			"dependencies": [
+				"core",
+				"dragula"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "onestepcheckout.fields.sorting",
+			"type": "preset",
+			"dependencies": [
+				"onestepcheckout.fields.sorting#script",
+				"dragula#preset"
+			]
+		},
+		{
+			"name": "nevigen_onestepcheckout.main",
+			"type": "script",
+			"uri": "plg_system_nevigen_jshop_onestepcheckout/main.min.js",
+			"dependencies": [
+				"core",
+				"form.validate"
+			],
+			"attributes": {
+				"defer": true,
+				"type": "module"
+			},
+			"version": "auto"
+		},
+		{
+			"name": "nevigen_onestepcheckout.main",
+			"type": "style",
+			"uri": "plg_system_nevigen_jshop_onestepcheckout/main.min.css",
+			"version": "auto"
+		}
+	]
+}

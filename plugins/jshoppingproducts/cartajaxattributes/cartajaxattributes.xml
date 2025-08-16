@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="1.7" method="upgrade" group="jshoppingproducts">
+	<name>JoomShopping - CartAjaxAttributes</name>
+	<creationDate>02.11.2012</creationDate>
+	<version>1.4.0</version>
+	<author>MAXXmarketing</author>
+	<authorEmail>marketing@maxx-marketing.net</authorEmail>
+	<authorUrl>http://www.webdesigner-profi.de</authorUrl>
+	<copyright></copyright>
+	<license>2012. MAXXmarketing GmbH. All rights reserved.</license>
+	<description>JoomShopping Plugin CartAjaxAttributes</description> 
+	<files>
+		<filename plugin="cartajaxattributes">cartajaxattributes.php</filename>
+		<filename>product.php</filename>
+		<filename>cartajaxattributes_plugin.js</filename>
+		<filename>cartajaxattributes_plugin.css</filename>
+		<filename>index.html</filename>
+		<folder>images</folder>
+	</files>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="preload_attribute_value" type="radio" default="0" label="Preload attribute value" description="Preload attribute value">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>             
+            </fieldset>
+        </fields>
+    </config> 
+</extension>

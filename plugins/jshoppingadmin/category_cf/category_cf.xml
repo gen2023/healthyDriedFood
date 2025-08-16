@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" method="upgrade" group="jshoppingadmin">
+    <name>JoomShopping Category custom field</name>
+    <creationDate>05.06.2025</creationDate>
+    <version>1.0.0</version>
+    <author>Sofona</author>
+    <description>JoomShopping Category custom field</description> 
+    <files>
+        <filename plugin="category_cf">category_cf.php</filename>
+		<filename>install.sql</filename>
+		<folder>forms</folder>
+    </files>
+    <config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field 
+					name="setkalist" 
+					type="subform" 
+					formsource="plugins/jshoppingadmin/category_cf/forms/list.xml" 
+					class="advancedSelect" 
+					min="0" 
+					max="9999" 
+					multiple="true" 
+					layout="joomla.form.field.subform.repeatable" 
+					groupByFieldset="true" 
+					label="Список" 
+					description="Список" 
+					/>
+			</fieldset>
+		</fields>
+	</config>
+    <install>
+    <sql>
+        <file driver="mysql" charset="utf8">install.sql</file>
+    </sql>
+</install>
+
+</extension>

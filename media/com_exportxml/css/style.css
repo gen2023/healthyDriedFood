@@ -1,0 +1,116 @@
+.panelSetting .icon {
+  margin: 15px;
+}
+
+.panelSetting .icon i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto;
+}
+
+.panelSetting .icon a {
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  border-radius: 5px 5px 5px 5px;
+  color: #565656;
+  display: block;
+  float: left;
+  text-decoration: none;
+  vertical-align: middle;
+  width: 200px;
+  height: 118px;
+  padding: 10px;
+  font-weight: 700;
+  font-size: .95rem;
+  transition: all .25s;
+  text-align: center;
+}
+
+.panelSetting .icon a p {
+  color: #1f3047;
+}
+
+.panelSetting .icon a:hover {
+  color: #fff;
+  background-color: #2a69b8;
+  border-color: #2a69b8;
+}
+
+.panelSetting .icon a:hover p {
+  color: #fff;
+}
+
+
+.pagesettingComExportComponent .card .result.active {
+  display: block;
+}
+
+.pagesettingComExportComponent .card .result {
+  height: 300px;
+  overflow: scroll;
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  float: left;
+  min-width: 100%;
+  list-style: none;
+  font-size: 13px;
+  text-align: left;
+  background-color: #fff;
+  border-radius: 3px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+}
+
+.pagesettingComExportComponent .card .blockSelect {
+  position: relative;
+}
+
+.pagesettingComExportComponent .card .result li {
+  padding: 5px;
+}
+
+.pagesettingComExportComponent .card .result li:hover {
+  background: #f8f9fa;
+}
+
+
+.pagesettingComExportComponent .card{
+  background-color: #fff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  padding: 10px;
+  margin-bottom: 30px;
+}
+
+.pagesettingComExportComponent table td{font-size: 12px;}
+.pagesettingComExportComponent .table thead th{font-size: 14px;}
+.pagesettingComExportComponent .dropdown-item{font-size: 12px;}
+.pagesettingComExportComponent joomla-tab > joomla-tab-element{
+  background: unset;
+  padding: 30px 0 0 0;
+}
+
+.pagesettingComExportComponent .preloader {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top: 5px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 9999;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

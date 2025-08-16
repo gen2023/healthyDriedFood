@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+  <fieldset name="sample" class="sample-subform">
+    <field name="image" type="media" label="MOD_SLIDER_IMAGE" description=""/>
+		<field name="use_mob" type="list" label="MOD_SLIDER_IMAGE_USE_MOB" default="0" layout="joomla.form.field.radio.switcher" >
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>   
+		<field name="size_mob" type="number" default = "768" label="JGLOBAL_TITLE" description="" showon="use_mob:1"/>
+    <field name="image_mob" type="media" label="MOD_SLIDER_IMAGE_MOB" description="" showon="use_mob:1"/>
+		<field name="title" type="text" default = "" label="JGLOBAL_TITLE" description=""/>
+    <field name="description" type="description" default = "" label="MOD_SLIDER_DESCRIPTION_SLIDER" description=""/>
+    <field name="link" type="text" default = "" label="MOD_SLIDER_LINK" description=""/>
+    <field name="className" type="text" default = "" label="MOD_SLIDER_CLASS_SLIDE" description=""/>
+  </fieldset>
+</form>

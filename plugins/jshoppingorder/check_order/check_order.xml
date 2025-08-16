@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" method="upgrade" group="jshoppingorder">
+    <name>JoomShopping check order</name>
+    <creationDate>10.06.2025</creationDate>
+    <version>1.0.0</version>
+    <author>Sofona</author>
+    <description>JoomShopping check order for this project</description> 
+    <files>
+        <filename plugin="check_order">check_order.php</filename>
+    </files>
+</extension>

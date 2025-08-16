@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<extension type="module" version="1.6.0" client="site" method="upgrade">
+	<name>JoomShopping - CartAjax</name> 
+	<files>
+		<filename module="mod_jshopping_cartajax">mod_jshopping_cartajax.php</filename>
+	    <filename>cartajax_module.css</filename>
+	    <filename>cartajax_module.js</filename>
+        <filename>index.html</filename>
+        <folder>tmpl</folder>
+        <folder>images</folder>
+	</files>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field
+					name="showImage"
+					type="radio"
+					default="1"
+					layout="joomla.form.field.radio.switcher"
+					label="Show product image"
+					description="Show product image">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+                </field>
+                <field
+					name="showEan"
+					type="radio"
+					default="1"
+					layout="joomla.form.field.radio.switcher"
+					label="Show product code"
+					description="Show product code">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+                </field>
+                <field
+					name="showLinkToCart"
+					type="radio"
+					default="1"
+					layout="joomla.form.field.radio.switcher"
+					label="Show link to cart or to checkout"
+					description="Show link to cart or to checkout">
+                    <option value="0">To cart</option>
+                    <option value="1">To checkout</option>
+                </field>
+            </fieldset>
+            <fieldset name="advanced">
+                <field
+                    name="layout"
+                    type="modulelayout"
+					class="form-select"
+                    label="JFIELD_ALT_LAYOUT_LABEL"
+                    description="JFIELD_ALT_MODULE_LAYOUT_DESC"/>
+                <field
+                    name="moduleclass_sfx"
+                    type="text"
+                    label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                    description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+
+                <field
+                    name="cache"
+                    type="list"
+                    default="0"
+                    label="COM_MODULES_FIELD_CACHING_LABEL"
+                    description="COM_MODULES_FIELD_CACHING_DESC">
+                    <option value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+</extension>

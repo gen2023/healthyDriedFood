@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form addfieldprefix="Joomla\Component\NevigenAudit\Administrator\Field">
+	<fieldset name="search">
+		<fields name="filter">
+			<field name="search" type="text"
+				   label="JSEARCH_FILTER"
+				   hint="JSEARCH_FILTER"/>
+		</fields>
+	</fieldset>
+	<fieldset name="filters">
+		<fields name="filter">
+			<field name="order_created" type="list"
+				   label="COM_NEVIGEN_AUDIT_ORDERS_ORDER_CREATED"
+				   default="1"
+				   onchange="Joomla.submitFilter(this.form);">
+				<option value="1">COM_NEVIGEN_AUDIT_ORDERS_ORDER_CREATED_1</option>
+				<option value="0">COM_NEVIGEN_AUDIT_ORDERS_ORDER_CREATED_0</option>
+				<option value="2">COM_NEVIGEN_AUDIT_ORDERS_ORDER_CREATED_2</option>
+			</field>
+			<field name="status" type="statuses"
+				   label="COM_NEVIGEN_AUDIT_STATUS"
+				   onchange="Joomla.submitFilter(this.form);">
+				<option value="">COM_NEVIGEN_AUDIT_STATUS_SELECT</option>
+			</field>
+			<field name="user" type="modal_user"
+				   label="COM_NEVIGEN_AUDIT_USER"
+				   onchange="Joomla.submitFilter(this.form);"
+				   icons="true"
+				   buttons="select,clear"
+				   dynamic="false"
+				   selector="filter_user"/>
+			<field name="period" type="date_period"
+				   label="COM_NEVIGEN_AUDIT_DATE_PERIOD"
+				   hint="COM_NEVIGEN_AUDIT_DATE_PERIOD_SELECT"
+				   filter="user_utc"
+				   onchange="Joomla.submitFilter(this.form);"/>
+			<field name="shipping" type="methods_shipping"
+				   label="COM_NEVIGEN_AUDIT_SHIPPING_METHOD"
+				   onchange="Joomla.submitFilter(this.form);">
+				<option value="">COM_NEVIGEN_AUDIT_SHIPPING_METHOD_SELECT</option>
+			</field>
+			<field name="payment" type="methods_payment"
+				   label="COM_NEVIGEN_AUDIT_METHOD_PAYMENT_METHOD"
+				   onchange="Joomla.submitFilter(this.form);">
+				<option value="">COM_NEVIGEN_AUDIT_PAYMENT_METHOD_SELECT</option>
+			</field>
+			<field name="currency" type="currencies"
+				   label="COM_NEVIGEN_AUDIT_CURRENCY"
+				   valueKey="currency_code_iso"
+				   onchange="Joomla.submitFilter(this.form);">
+				<option value="">COM_NEVIGEN_AUDIT_CURRENCY_SELECT</option>
+			</field>
+		</fields>
+	</fieldset>
+	<fieldset name="list">
+		<fields name="list">
+			<field name="fullordering" type="hidden"
+				   label="JGLOBAL_SORT_BY"
+				   onchange="Joomla.submitFilter(this.form);"/>
+			<field name="limit" type="limitbox"
+				   label="JGLOBAL_LIST_LIMIT"
+				   onchange="Joomla.submitFilter(this.form);"
+				   default="25"/>
+		</fields>
+	</fieldset>
+</form>

@@ -1,0 +1,45 @@
+/*!*********************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./com_nevigen_audit/scss/administrator/orders_audit.scss ***!
+  \*********************************************************************************************************************************************************************************************************/
+@charset "UTF-8";
+/*!
+ * @package    Nevigen Audit Package
+ * @version    1.2.0
+ * @author     Nevigen.com - https://nevigen.com
+ * @copyright  Copyright © Nevigen.com. All rights reserved.
+ * @license    Proprietary. Copyrighted Commercial Software
+ * @link       https://nevigen.com
+ */
+/*!
+ * @package    Nevigen Audit Package
+ * @version    1.2.0
+ * @author     Nevigen.com - https://nevigen.com
+ * @copyright  Copyright © Nevigen.com. All rights reserved.
+ * @license    Proprietary. Copyrighted Commercial Software
+ * @link       https://nevigen.com
+ */
+.apexcharts-legend-marker svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#nevigenAudit a[target=_blank]:not([class*=icon-])::before {
+  display: none;
+}
+#nevigenAudit tr.order-not-finished > td {
+  background: rgb(255, 196, 0);
+}
+#nevigenAudit .order-preview-box {
+  position: absolute;
+  z-index: 9999;
+  left: 0;
+  min-width: 400px;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY3NzL2FkbWluaXN0cmF0b3Ivb3JkZXJzX2F1ZGl0LmNzcyIsIm1hcHBpbmdzIjoiOzs7QUFBQSxnQkFBZ0I7QUFBaEI7Ozs7Ozs7RUFBQTtBQ0FBOzs7Ozs7O0VBQUE7QUFTQTtFQUNFO0VBQ0E7QURTRjs7QUNMRTtFQUNFO0FEUUo7QUNORTtFQUNFO0FEUUo7QUNMRTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0FET0osQyIsInNvdXJjZXMiOlsid2VicGFjazovL3BrZ19uZXZpZ2VuX2F1ZGl0L2NvbV9uZXZpZ2VuX2F1ZGl0L3Njc3MvYWRtaW5pc3RyYXRvci9vcmRlcnNfYXVkaXQuc2NzcyIsIndlYnBhY2s6Ly9wa2dfbmV2aWdlbl9hdWRpdC9jb21fbmV2aWdlbl9hdWRpdC9zY3NzL2FkbWluaXN0cmF0b3IvbWFpbi5zY3NzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qIVxuICogQHBhY2thZ2UgICAgTmV2aWdlbiBBdWRpdCBQYWNrYWdlXG4gKiBAdmVyc2lvbiAgICAxLjAuN1xuICogQGF1dGhvciAgICAgTmV2aWdlbi5jb20gLSBodHRwczovL25ldmlnZW4uY29tXG4gKiBAY29weXJpZ2h0ICBDb3B5cmlnaHQgwqkgTmV2aWdlbi5jb20uIEFsbCByaWdodHMgcmVzZXJ2ZWQuXG4gKiBAbGljZW5zZSAgICBQcm9wcmlldGFyeS4gQ29weXJpZ2h0ZWQgQ29tbWVyY2lhbCBTb2Z0d2FyZVxuICogQGxpbmsgICAgICAgaHR0cHM6Ly9uZXZpZ2VuLmNvbVxuICovXG5cbkB1c2UgXCJtYWluXCI7XG5cbiNuZXZpZ2VuQXVkaXQub3JkZXJzLWF1ZGl0IHtcblxufSIsIi8qIVxuICogQHBhY2thZ2UgICAgTmV2aWdlbiBBdWRpdCBQYWNrYWdlXG4gKiBAdmVyc2lvbiAgICAxLjAuN1xuICogQGF1dGhvciAgICAgTmV2aWdlbi5jb20gLSBodHRwczovL25ldmlnZW4uY29tXG4gKiBAY29weXJpZ2h0ICBDb3B5cmlnaHQgwqkgTmV2aWdlbi5jb20uIEFsbCByaWdodHMgcmVzZXJ2ZWQuXG4gKiBAbGljZW5zZSAgICBQcm9wcmlldGFyeS4gQ29weXJpZ2h0ZWQgQ29tbWVyY2lhbCBTb2Z0d2FyZVxuICogQGxpbmsgICAgICAgaHR0cHM6Ly9uZXZpZ2VuLmNvbVxuICovXG5cbi5hcGV4Y2hhcnRzLWxlZ2VuZC1tYXJrZXIgc3ZnIHtcbiAgd2lkdGg6IDEwMCUgIWltcG9ydGFudDtcbiAgaGVpZ2h0OiAxMDAlICFpbXBvcnRhbnQ7XG59XG5cbiNuZXZpZ2VuQXVkaXQge1xuICBhW3RhcmdldD1fYmxhbmtdOm5vdChbY2xhc3MqPWljb24tXSk6OmJlZm9yZSB7XG4gICAgZGlzcGxheTogbm9uZTtcbiAgfVxuICB0ci5vcmRlci1ub3QtZmluaXNoZWQgPiB0ZHtcbiAgICBiYWNrZ3JvdW5kOiByZ2IoMjU1LCAxOTYsIDApO1xuICB9XG5cbiAgLm9yZGVyLXByZXZpZXctYm94IHtcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgei1pbmRleDogOTk5OTtcbiAgICBsZWZ0OiAwO1xuICAgIG1pbi13aWR0aDogNDAwcHg7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgYmFja2dyb3VuZDogI2ZmZjtcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjZGVlMmU2O1xuICAgIGJveC1zaGFkb3c6IDAgLjVyZW0gMXJlbSByZ2JhKDAsMCwwLC4xNSk7XG4gICAgYm9yZGVyLXJhZGl1czogLjVyZW07XG4gICAgcGFkZGluZzogMXJlbTtcbiAgfVxufSJdLCJuYW1lcyI6W10sInNvdXJjZVJvb3QiOiIifQ==*/

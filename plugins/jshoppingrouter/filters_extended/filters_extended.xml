@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="2.5" method="upgrade" group="jshoppingrouter">
+    <name>JoomShopping filters_extended</name>
+    <creationDate>19.10.2022</creationDate>
+    <version>5.0.0</version>
+    <author>MAXXmarketing</author>
+    <authorEmail>marketing@maxx-marketing.net</authorEmail>
+    <authorUrl>http://www.webdesigner-profi.de</authorUrl>
+    <copyright></copyright>
+    <license>2012. MAXXmarketing GmbH. All rights reserved.</license>
+    <description>Plugin for filters_extended</description> 
+    <files>
+        <filename plugin="filters_extended">filters_extended.php</filename>
+    </files>
+</extension>
