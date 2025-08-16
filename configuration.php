@@ -4,7 +4,7 @@ class JConfig {
 	public $offline_message = 'Сайт закрыт на техническое обслуживание. Пожалуйста, зайдите позже.';
 	public $display_offline_message = 1;
 	public $offline_image = '';
-	public $sitename = 'Onlineshop';
+	public $sitename = 'HealthyDriedFood';
 	public $editor = 'tinymce';
 	public $captcha = '0';
 	public $list_limit = 30;
@@ -34,7 +34,7 @@ class JConfig {
 	public $mailonline = true;
 	public $mailer = 'smtp';
 	public $mailfrom = 'test-romanko@sofona.info';
-	public $fromname = 'Onlineshop';
+	public $fromname = 'HealthyDriedFood';
 	public $sendmail = '/usr/sbin/sendmail';
 	public $smtpauth = true;
 	public $smtpuser = 'test-romanko@sofona.info';
@@ -49,7 +49,7 @@ class JConfig {
 	public $MetaDesc = '';
 	public $MetaAuthor = false;
 	public $MetaVersion = false;
-	public $robots = 'noindex, nofollow';
+	public $robots = '';
 	public $sef = true;
 	public $sef_rewrite = true;
 	public $sef_suffix = false;
