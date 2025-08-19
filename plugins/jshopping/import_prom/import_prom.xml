@@ -1,0 +1,39 @@
+<extension type="plugin" group="jshopping" method="upgrade">
+    <name>PLG_JSHOPPING_IMPORT_PROM</name>
+    <version>1.0.0</version>
+    <author>Sofona</author>
+    <creationDate>2025-08-16</creationDate>
+    <description>PLG_JSHOPPING_IMPORT_PROM_DESC</description>
+
+    <scriptfile>script.php</scriptfile>
+
+    <files>
+        <filename plugin="import_prom">import_prom.php</filename>
+        <filename>script.php</filename>
+		<filename>install.sql</filename>
+    </files>
+
+    <languages>
+        <language tag="en-GB">language/en-GB/plg_jshopping_import_prom.ini</language>
+        <language tag="en-GB">language/en-GB/plg_jshopping_import_prom.sys.ini</language>
+        <language tag="ru-RU">language/ru-RU/plg_jshopping_import_prom.ini</language>
+        <language tag="ru-RU">language/ru-RU/plg_jshopping_import_prom.sys.ini</language>
+        <language tag="uk-UA">language/uk-UA/plg_jshopping_import_prom.ini</language>
+        <language tag="uk-UA">language/uk-UA/plg_jshopping_import_prom.sys.ini</language>        
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="link_prom_product" type="text" label="PLG_JSHOPPING_IMPORT_PROM_LINK_PROM_PRODUCT" />
+                <field name="link_prom_order" type="text" label="PLG_JSHOPPING_IMPORT_PROM_LINK_PROM_ORDER" />
+                <field name="link_prom_order_file" type="text" label="PLG_JSHOPPING_IMPORT_PROM_LINK_PROM_ORDER_FILE" />                
+            </fieldset>
+        </fields>
+    </config>    
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">install.sql</file>
+        </sql>
+    </install>
+</extension>
+
