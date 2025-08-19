@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshoppingadmin" method="upgrade">
+    <name>PLG_JSHOPPINGADMIN_SOFONAREPORTS</name>
+    <author>Sofona</author>
+    <version>1.0.4</version>
+    <creationDate>29.07.2025</creationDate>
+    <description>PLG_JSHOPPINGADMIN_SOFONAREPORTS_DESCRIPTION</description>
+
+    <scriptfile>script.php</scriptfile>
+
+    <files>
+        <filename plugin="sofonareports">sofonareports.php</filename>
+        <filename>script.php</filename>
+    </files>
+
+    <media destination="plg_jshoppingadmin_sofonareports" folder="media">
+		<folder>js</folder>
+		<folder>css</folder>
+	</media>
+    
+    <languages>
+        <language tag="en-GB">language/en-GB/plg_jshoppingadmin_sofonareports.sys.ini</language>
+        <language tag="ru-RU">language/ru-RU/plg_jshoppingadmin_sofonareports.sys.ini</language>
+        <language tag="en-GB">language/en-GB/plg_jshoppingadmin_sofonareports.ini</language>
+        <language tag="ru-RU">language/ru-RU/plg_jshoppingadmin_sofonareports.ini</language>
+        <language tag="uk-UA">language/uk-UA/plg_jshoppingadmin_sofonareports.sys.ini</language>
+        <language tag="uk-UA">language/uk-UA/plg_jshoppingadmin_sofonareports.ini</language>
+    </languages>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic" label="PLG_JSHOPPINGADMIN_SOFONAREPORTS_PARAMS">
+                <field name="info" type="spacer"
+                       label="PLG_JSHOPPINGADMIN_SOFONAREPORTS_DESCRIPTION_INFO" />
+            </fieldset>
+        </fields>
+    </config>
+
+    <updateservers>
+		<server type="extension" priority="1" name="PLG_JSHOPPINGADMIN_SOFONAREPORTS">https://gitvault.sofona.info/plugins/sofonareports/update.xml</server>
+	</updateservers>
+</extension>

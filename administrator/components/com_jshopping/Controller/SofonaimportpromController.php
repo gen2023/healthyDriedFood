@@ -427,21 +427,21 @@ class SofonaimportpromController extends BaseadminController
 
     // Справочники (как в importOrderFile)
     $statusMap = [
-      'closed' => 7,
-      'canceled' => 3,
+      'closed' => 8,
+      'canceled' => 9,
       'new' => 1,
     ];
 
     $shippingMethods = [
-      'Нова Пошта' => 1,
-      'Укрпошта' => 2,
-      'Самовывоз' => 3,
-      'Магазины Rozetka' => 4,
+      'Нова Пошта' => 4,
+      'Укрпошта' => 7,
+      'Самовывоз' => 2,
+      'Магазины Rozetka' => 8,
     ];
 
     $paymentMethods = [
-      'Наложенный платеж' => 1,
-      'Пром-оплата' => 2,
+      'Наложенный платеж' => 2,
+      'Пром-оплата' => 6,
     ];
 
     // Перебор заказов
@@ -592,20 +592,20 @@ class SofonaimportpromController extends BaseadminController
     $rows = $worksheet->toArray();
 
     $statusMap = [
-      'Виконано' => 7,
-      'Скасовано' => 3,
+      'Виконано' => 8,
+      'Скасовано' => 9,
     ];
 
     $shippingMethods = [
-      'Нова Пошта' => 1,
-      'Укрпошта' => 2,
-      'Самовывоз' => 3,
-      'Магазины Rozetka' => 4,
+      'Нова Пошта' => 4,
+      'Укрпошта' => 7,
+      'Самовывоз' => 2,
+      'Магазины Rozetka' => 8,
     ];
 
     $paymentMethods = [
-      'Наложенный платеж' => 1,
-      'Пром-оплата' => 2,
+      'Наложенный платеж' => 2,
+      'Пром-оплата' => 6,
     ];
 
     // Собираем заказы по orderPromId
@@ -627,8 +627,13 @@ class SofonaimportpromController extends BaseadminController
       $productSku = $row[12];
       $productName = $row[13];
       $productQty = (float) $row[14];
-      $orderSumRaw = $row[20] ?? '0';
-      $orderSum = (float) str_replace(',', '.', $orderSumRaw);
+      $productPrice = (float) str_replace(',', '.', $row[21]); // Ціна, UAH
+      $orderSum = (float) str_replace(',', '.', $row[20]);
+
+      if ($fio == 'Євгеній Ромашкін') {
+        continue;
+      }
+
 
       // Конвертация даты
       $dateObj = \DateTime::createFromFormat('d.m.y H:i', $date);
@@ -672,7 +677,6 @@ class SofonaimportpromController extends BaseadminController
       $categoryId = $product->category_id ?? 0;
       $manufacturerCode = $product->manufacturer_code ?? '';
       $weight = $product->weight ?? 0;
-      // $extraFields = $product ? $product->getExtraFields(2) : [];
 
       // Формируем массив товара
       $productData = [
@@ -682,14 +686,13 @@ class SofonaimportpromController extends BaseadminController
         'manufacturer_code' => $manufacturerCode,
         'product_name' => $productName,
         'product_quantity' => $productQty,
-        'product_item_price' => $productQty > 0 ? $orderSum / $productQty : $orderSum,
+        'product_item_price' => $productPrice,
         'weight' => $weight,
-        // 'extra_fields'      => $extraFields,
       ];
 
       $ordersData[$orderPromId]['products'][] = $productData;
-      $ordersData[$orderPromId]['order_total'] += $productData['product_item_price'] * $productQty;
-      $ordersData[$orderPromId]['order_subtotal'] += $productData['product_item_price'] * $productQty;
+      $ordersData[$orderPromId]['order_subtotal'] += $productPrice * $productQty;
+      $ordersData[$orderPromId]['order_total'] = $orderSum;
     }
 
     // Сохраняем заказы

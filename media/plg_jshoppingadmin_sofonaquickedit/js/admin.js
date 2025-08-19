@@ -94,17 +94,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const selectMassOperation = document.querySelector('#mass_operation_type');
     const containerValue = document.querySelector('.mass_operation_value');
+    const mass_action_mode = document.querySelector('#mass_action_mode');
 
     function updateInputField() {
       const val = selectMassOperation.value;
+      const selectedOption = selectMassOperation.options[selectMassOperation.selectedIndex];
+      const baseVal = selectedOption.dataset.setv || val;
 
       containerValue.innerHTML = '';
 
-      if (val === 'product_manufacturer_id' || val === 'currency_id' || val == 'label_id') {
+      if (val === 'product_manufacturer_id' || val === 'currency_id' || val == 'label_id' || val == 'category') {
         const functionMap = {
           'product_manufacturer_id': 'getManufacturers',
           'currency_id': 'getCurrencies',
-          'label_id': 'getLabelProduct'
+          'label_id': 'getLabelProduct',
+          'category': 'getCategories',
         };
 
         const function_name = functionMap[val];
@@ -120,10 +124,22 @@ document.addEventListener("DOMContentLoaded", function () {
               select.id = 'input-mass_operation_value';
               select.classList.add('form-select');
             }
+            mass_action_mode.value = 'replace';
+            mass_action_mode.classList.remove('active');
+
           })
           .catch(() => {
             alert(Joomla.Text._('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_MSG_UPLOAD_FAIL'));
           });
+      } else if (baseVal === 'mass_operation_value') {
+        mass_action_mode.classList.add('active');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'mass_operation_value';
+        input.id = 'input-mass_operation_value';
+        input.className = 'form-control';
+        containerValue.appendChild(input);
+
       } else {
         const input = document.createElement('input');
         input.type = 'number';
@@ -131,6 +147,9 @@ document.addEventListener("DOMContentLoaded", function () {
         input.id = 'input-mass_operation_value';
         input.className = 'form-control';
         containerValue.appendChild(input);
+        mass_action_mode.value = 'replace';
+        mass_action_mode.classList.remove('active');
+
       }
     }
 
@@ -157,6 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const type = selectMassOperation.value;
       const countType = contProduct.value;
+      const action_mode = mass_action_mode.value;
 
       if (!type) return alert('Выберите тип массовой операции');
 
@@ -183,7 +203,8 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({
           ids: ids,
           type,
-          value
+          value,
+          action_mode
         })
       })
         .then(res => res.json())
@@ -312,6 +333,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const payload = {
                   id: id,
+                  fieldLog: fieldName,
+                  newValueLog: selectedOptions,
                   fields: {
                     [fieldName]: selectedOptions
                   }
@@ -364,6 +387,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
           const payload = {
             id: id,
+            fieldLog: fieldName,
+            newValueLog: newValue,
             fields: {
               [fieldName]: newValue
             }
@@ -426,13 +451,58 @@ document.addEventListener("DOMContentLoaded", function () {
 
   }
 
+  const actionRestore = document.querySelectorAll('.actionRestore');
+  if (actionRestore) {
+    actionRestore.forEach(element => {
+      element.addEventListener('click', function () {
+        const id = this.dataset.id;
+
+        if (!confirm('Восстановить эту операцию?')) return;
+
+        fetch('index.php?option=com_jshopping&controller=sofonaquickedit&task=restoreChange&format=json', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: 'id=' + encodeURIComponent(id)
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              showJoomlaMessage(data.message, 'success');
+              location.reload();
+            } else {
+              alert(Joomla.Text._('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_MSG_ERR') + data.message);
+            }
+          })
+          .catch(err => {
+            // console.error(err);
+            alert(Joomla.Text._('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_MSG_ERR_FETCH'))
+
+          });
+      });
+    });
+  }
+  const historyTab=document.querySelector('.history-tab');
+  if(historyTab){
+    const item=historyTab.querySelectorAll('.itemDate');
+    item.forEach(element => {
+      const span=element.querySelector('.spanDateTable');
+      span.addEventListener('click',function(){
+        element.classList.toggle('active');
+        
+      })
+    });
+  }
+
 });
+
 function editUnlimited(isChecked, productId) {
   const td = document.querySelector(`td[data-field="product_quantity"][data-product_id="${productId}"]`);
   if (!td) return;
   const originalQty = td.dataset.original_qty || 1;
 
-  // Показываем текст или значение
+
   if (isChecked) {
     td.innerHTML = `-----`;
   } else {
@@ -441,6 +511,8 @@ function editUnlimited(isChecked, productId) {
 
   const payload = {
     id: productId,
+    fieldLog: "unlimited",
+    newValueLog: isChecked ? 1 : 0,
     fields: {
       unlimited: isChecked ? 1 : 0,
       product_quantity: isChecked ? 1 : parseFloat(originalQty)
@@ -463,8 +535,6 @@ function editUnlimited(isChecked, productId) {
         showJoomlaMessage(Joomla.Text._('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_MSG_UPDATE_UNLIMITED'), 'success');
       } else {
         showJoomlaMessage(Joomla.Text._('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_MSG_ERR_UNLIMITED'), 'error');
-        //   alert('Ошибка обновления unlimited: ' + (data.message || 'Unknown error'));
-
       }
 
     })
@@ -472,7 +542,7 @@ function editUnlimited(isChecked, productId) {
 
 }
 
-function openModalAdditionPrice(productId) {
+function openModalAdditionPrice(productId, priceProduct) {
   const modalAdditionPrice = document.querySelector('.modalAdditionPrice');
   const closeModal = modalAdditionPrice.querySelector('.closeModal');
   const tableBody = modalAdditionPrice.querySelector('#table_add_price tbody');
@@ -595,7 +665,7 @@ function openModalAdditionPrice(productId) {
 
   //---------------------------------------------------
   window.currentProductId = productId;
-  window.currentBasePrice = 100; // TODO: получи из ответа реальную цену item.product_price
+  window.currentBasePrice = priceProduct;
 
   document.querySelector('input[name="add_new_price"]').addEventListener('click', function () {
 
@@ -623,18 +693,16 @@ function openModalAdditionPrice(productId) {
 
     tableBody.appendChild(newRow);
 
-    // Автоматический расчет цены, если хочешь
     const discountInput = newRow.querySelector('#new_discount');
     discountInput.addEventListener('input', () => {
-      const productPrice = window.currentBasePrice || 100; // 🔁 заменить на реальную цену
+      const productPrice = window.currentBasePrice || 100;
       const discount = parseFloat(discountInput.value) || 0;
       const discountedPrice = (productPrice * (1 - discount / 100)).toFixed(2);
       newRow.querySelector('#new_calculated_price').textContent = discountedPrice;
     });
 
-    // Сохранение новой цены
     newRow.querySelector('#save_new_price').addEventListener('click', function () {
-      const productId = window.currentProductId; // сохраняем id продукта глобально при открытии
+      const productId = window.currentProductId;
       const quantityStart = parseInt(document.getElementById('new_quantity_start').value);
       const quantityFinish = parseInt(document.getElementById('new_quantity_finish').value);
       const discount = parseFloat(document.getElementById('new_discount').value);
@@ -643,7 +711,7 @@ function openModalAdditionPrice(productId) {
       msg.textContent = '';
 
       if (!productId || isNaN(quantityStart) || isNaN(quantityFinish) || isNaN(discount)) {
-        msg.textContent = 'Все поля должны быть заполнены корректно.';
+        msg.textContent = Joomla.Text._('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_MSG_ERR_ADDITION_PRICE_NOT_FIELD');
         return;
       }
 
@@ -671,7 +739,7 @@ function openModalAdditionPrice(productId) {
           }
         })
         .catch(err => {
-          msg.textContent = 'Ошибка сети';
+          msg.textContent = Joomla.Text._('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_MSG_ERR_FETCH');
           console.error(err);
         });
     });

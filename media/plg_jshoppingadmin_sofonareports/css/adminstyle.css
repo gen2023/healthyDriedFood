@@ -1,0 +1,68 @@
+ #client_id {
+   position: absolute;
+   left: -9999px;
+   visibility: hidden;
+ }
+
+ .list_search_client {
+   position: absolute;
+   top: 40px;
+   left: 0;
+   width: 100%;
+   background: #fff;
+   border: 1px solid #ccc;
+   max-height: 200px;
+   overflow-y: auto;
+   z-index: 9999;
+   display: none;
+ }
+
+ .list_search_client div {
+   padding: 5px 10px;
+   cursor: pointer;
+ }
+
+ .list_search_client div:hover {
+   background-color: #f0f0f0;
+ }
+
+ .block_search_cliens {
+   position: relative;
+ }
+
+ .container-graphic {
+   max-width: 1780px;
+ }
+
+ .selectStatusOrder {
+   position: relative;
+ }
+
+ .selectStatusOrder select {
+   display: none;
+   width: 250px;
+   position: absolute;
+   top: 100%;
+   z-index: 1;
+ }
+
+ .selectStatusOrder select.active {
+   display: block;
+ }
+
+ .selectStatusOrder .form-control {
+   height: 47px;
+ }
+
+ .js-filters .filters-containers {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+   max-width: unset;
+ }
+
+ .other-filter {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 10px;
+ }

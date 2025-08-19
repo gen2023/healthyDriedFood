@@ -6,7 +6,7 @@ use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 
-class PlgJshoppingadminSofonaQuickeditInstallerScript
+class PlgJshoppingadminSofonareportsInstallerScript
 {
     protected $basePath;
     protected $logFile;
@@ -14,7 +14,7 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
     public function __construct()
     {
         $this->basePath = JPATH_ADMINISTRATOR . '/components/com_jshopping';
-        $this->logFile = JPATH_ADMINISTRATOR . '/logs/plg_jshoppingadmin_sofonaquickedit.sys.txt';
+        $this->logFile = JPATH_ADMINISTRATOR . '/logs/plg_jshoppingadmin_sofonareports.sys.txt';
         $this->log("==== Запуск InstallerScript ====");
     }
 
@@ -23,9 +23,7 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
         $this->log("Выполняется установка плагина");
         $this->copyFiles();
         $this->enablePlugin($adapter);
-        $this->createLogTable();
         $this->log("Установка завершена");
-
         return true;
     }
 
@@ -35,7 +33,6 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
         $this->deleteFiles();
         $this->deleteConfigField();
         $this->log("Удаление завершено");
-
         return true;
     }
 
@@ -45,7 +42,6 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
         $this->deleteFiles();
         $this->copyFiles();
         $this->log("Обновление завершено");
-
         return true;
     }
 
@@ -69,19 +65,18 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
 
     protected function deleteConfigField()
     {
-        $this->log("Удаление поля 'quickEdit_columns' из таблицы jm_jshopping_configs...");
+        $this->log("Удаление поля 'report_columns' из таблицы jm_jshopping_configs...");
         try {
             $db = Factory::getContainer()->get('DatabaseDriver');
             $query = $db->getQuery(true)
                 ->delete('#__jshopping_configs')
-                ->where('`key` = ' . $db->quote('quickEdit_columns'));
+                ->where('`key` = ' . $db->quote('report_columns'));
             $db->setQuery($query)->execute();
-            $this->log("Поле 'quickEdit_columns' успешно удалено из таблицы jm_jshopping_configs");
+            $this->log("Поле 'report_columns' успешно удалено из таблицы jm_jshopping_configs");
         } catch (\Exception $e) {
-            $this->log("Ошибка при удалении поля 'quickEdit_columns': " . $e->getMessage());
+            $this->log("Ошибка при удалении поля 'report_columns': " . $e->getMessage());
         }
     }
-
 
     protected function copyFiles()
     {
@@ -89,15 +84,22 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
         $src = __DIR__ . '/admin_files';
 
         $map = [
-            'Controller/SofonaquickeditController.php' => $this->basePath . '/Controller/SofonaquickeditController.php',
-            'Model/SofonaquickeditModel.php' => $this->basePath . '/Model/SofonaquickeditModel.php',
-            'View/Sofonaquickedit/HtmlView.php' => $this->basePath . '/View/Sofonaquickedit/HtmlView.php',
-            'tmpl/sofonaquickedit/default.php' => $this->basePath . '/tmpl/sofonaquickedit/default.php',
-            'tmpl/sofonaquickedit/default_edit.php' => $this->basePath . '/tmpl/sofonaquickedit/default_edit.php',
-            'tmpl/sofonaquickedit/default_history.php' => $this->basePath . '/tmpl/sofonaquickedit/default_history.php',
-            'tmpl/sofonaquickedit/settings.php' => $this->basePath . '/tmpl/sofonaquickedit/settings.php',
-            'images/sofonaquickedit_settings.png' => $this->basePath . '/images/sofonaquickedit_settings.png',
-            'images/sofonaquickedit.png' => $this->basePath . '/images/sofonaquickedit.png',
+            'Controller/SofonareportsController.php' => $this->basePath . '/Controller/SofonareportsController.php',
+            'Model/SofonareportsModel.php' => $this->basePath . '/Model/SofonareportsModel.php',
+            'View/Sofonareports/HtmlView.php' => $this->basePath . '/View/Sofonareports/HtmlView.php',
+            'tmpl/sofonareports/clients_list.php' => $this->basePath . '/tmpl/sofonareports/clients_list.php',
+            'tmpl/sofonareports/orders_list.php' => $this->basePath . '/tmpl/sofonareports/orders_list.php',
+            'tmpl/sofonareports/default.php' => $this->basePath . '/tmpl/sofonareports/default.php',
+            'tmpl/sofonareports/products_list.php' => $this->basePath . '/tmpl/sofonareports/products_list.php',
+            'tmpl/sofonareports/settings.php' => $this->basePath . '/tmpl/sofonareports/settings.php',
+            'tmpl/sofonareports/settings_products.php' => $this->basePath . '/tmpl/sofonareports/settings_products.php',
+            'tmpl/sofonareports/settings_order.php' => $this->basePath . '/tmpl/sofonareports/settings_order.php',
+            'tmpl/sofonareports/settings_clients.php' => $this->basePath . '/tmpl/sofonareports/settings_clients.php',
+            'images/sofonareport_clients.png' => $this->basePath . '/images/sofonareport_clients.png',
+            'images/sofonareport_order.png' => $this->basePath . '/images/sofonareport_order.png',
+            'images/sofonareport_product.png' => $this->basePath . '/images/sofonareport_product.png',
+            'images/sofonareport.png' => $this->basePath . '/images/sofonareport.png',
+            'images/sofonareport_settings.png' => $this->basePath . '/images/sofonareport_settings.png',
         ];
 
         foreach ($map as $rel => $target) {
@@ -124,7 +126,6 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
             } catch (\Exception $e) {
                 $this->log("Ошибка копирования файла ($source): " . $e->getMessage());
             }
-
         }
     }
 
@@ -132,16 +133,22 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
     {
         $this->log("Удаление старых файлов...");
         $files = [
-            $this->basePath . '/Controller/SofonaquickeditController.php',
-            $this->basePath . '/Model/SofonaquickeditModel.php',
-            $this->basePath . '/View/Sofonaquickedit/HtmlView.php',
-            $this->basePath . '/tmpl/sofonaquickedit/default.php',
-            $this->basePath . '/tmpl/sofonaquickedit/default_edit.php',
-            $this->basePath . '/tmpl/sofonaquickedit/default_history.php',
-            $this->basePath . '/tmpl/sofonaquickedit/settings.php',
-            $this->basePath . '/images/sofonaquickedit_settings.png',
-            $this->basePath . '/images/sofonaquickedit.png',
-
+            $this->basePath . '/Controller/SofonareportsController.php',
+            $this->basePath . '/Model/SofonareportsModel.php',
+            $this->basePath . '/View/Sofonareports/HtmlView.php',
+            $this->basePath . '/tmpl/sofonareports/clients_list.php',
+            $this->basePath . '/tmpl/sofonareports/orders_list.php',
+            $this->basePath . '/tmpl/sofonareports/default.php',
+            $this->basePath . '/tmpl/sofonareports/products_list.php',
+            $this->basePath . '/tmpl/sofonareports/settings.php',
+            $this->basePath . '/tmpl/sofonareports/settings_products.php',
+            $this->basePath . '/tmpl/sofonareports/settings_order.php',
+            $this->basePath . '/tmpl/sofonareports/settings_clients.php',
+            $this->basePath . '/images/sofonareport_clients.png',
+            $this->basePath . '/images/sofonareport_order.png',
+            $this->basePath . '/images/sofonareport_product.png',
+            $this->basePath . '/images/sofonareport.png',
+            $this->basePath . '/images/sofonareport_settings.png',
         ];
 
         foreach ($files as $file) {
@@ -152,8 +159,8 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
         }
 
         $folders = [
-            $this->basePath . '/View/Sofonaquickedit',
-            $this->basePath . '/tmpl/sofonaquickedit',
+            $this->basePath . '/View/Sofonareports',
+            $this->basePath . '/tmpl/sofonareports',
         ];
 
         foreach ($folders as $folder) {
@@ -163,32 +170,6 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
             }
         }
     }
-
-    protected function createLogTable()
-    {
-        $this->log("Создание таблицы логов изменений цен...");
-        try {
-            $db = Factory::getContainer()->get('DatabaseDriver');
-            $prefix = $db->getPrefix();
-            $query = "
-            CREATE TABLE IF NOT EXISTS `{$prefix}sofonaquickedit_log` (
-              `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-              `product_id` INT NOT NULL,
-              `old_value` VARCHAR(250) NOT NULL,
-              `new_value` VARCHAR(250) NOT NULL,
-              `field` VARCHAR(250) NOT NULL,
-              `info` TEXT NOT NULL,
-              `date_modify` DATETIME NOT NULL,
-              PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-        ";
-            $db->setQuery($query)->execute();
-            $this->log("Таблица логов успешно создана или уже существует.");
-        } catch (\Exception $e) {
-            $this->log("Ошибка при создании таблицы логов: " . $e->getMessage());
-        }
-    }
-
 
     protected function log($message)
     {

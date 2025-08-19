@@ -1,56 +1,94 @@
-.group_actions{
+.group_actions {
   display: flex;
   gap: 10px;
 }
-.group_actions .btn.active{
+
+.group_actions .btn.active {
   background: green;
   color: #fff;
 }
-.product_list td{
+
+.product_list td {
   position: relative;
 }
-.product_list .edit_field{
+
+.product_list .edit_field {
   position: absolute;
   top: 5px;
   left: 0;
   z-index: 1;
 }
-.mass_operation{
+
+.mass_operation {
   display: flex;
   gap: 10px;
   width: max-content;
 }
-.mass_operation select{
+
+.mass_operation select {
   width: 200px;
 }
-.mass_operation input{
+
+.mass_operation input {
   width: 500px;
 }
-.modalAdditionPrice{
+
+.modalAdditionPrice {
   display: none;
 }
-.modalAdditionPrice.active{
+
+.modalAdditionPrice.active {
   display: block;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 9999;
 }
-.modalAdditionPrice .modalAdditionPriceContent{
-width: max-content;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-        padding: 30px;
-    background: #fff;
+
+.modalAdditionPrice .modalAdditionPriceContent {
+  width: max-content;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  background: #fff;
 }
-.modalAdditionPrice .modalAdditionPriceContent .closeModal{
+
+.modalAdditionPrice .modalAdditionPriceContent .closeModal {
   position: absolute;
   top: 10px;
   right: 10px;
   cursor: pointer;
+}
+
+.w-maxc {
+  width: max-content !important;
+}
+
+.mass_action_mode {
+  display: none;
+}
+
+.mass_action_mode.active {
+  display: block;
+}
+
+.langlistForm {
+  max-width: 250px;
+}
+
+.history-tab .spanDateTable {
+  cursor: pointer;
+}
+
+.history-tab .itemDate table {
+  display: none;
+}
+
+.history-tab .itemDate.active table {
+  display: block;
 }

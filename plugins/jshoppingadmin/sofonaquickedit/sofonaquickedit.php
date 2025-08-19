@@ -25,4 +25,30 @@ class plgJshoppingAdminSofonaquickedit extends JPlugin
         }
     }
 
+    public function onBeforeAdminConfigPanelIcoDisplay(&$menu)
+    {
+        $lang = Factory::getApplication()->getLanguage();
+        $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
+
+        $menu['sofonaquickeditconfig'] = array(
+            Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_BUTTON_SETTINGS'),
+            'index.php?option=com_jshopping&amp;controller=sofonaquickedit&amp;task=settings',
+            'sofonaquickedit_settings.png',
+            1
+        );
+    }
+
+    public function onBeforeAdminOptionPanelIcoDisplay(&$menu)
+    {
+        $lang = Factory::getApplication()->getLanguage();
+        $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
+
+        $menu['sofonaquickeditconfig'] = array(
+            Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT'),
+            'index.php?option=com_jshopping&amp;controller=sofonaquickedit',
+            'sofonaquickedit.png',
+            1
+        );
+    }
+
 }
