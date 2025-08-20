@@ -9,6 +9,7 @@
 defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Helper\ModuleHelper;
 
 print $this->_tmp_category_html_start;
 
@@ -51,39 +52,45 @@ if ($currentCategoryId) {
     <div class="container">
         <div class="mb15">
             <?php
-            $module = JModuleHelper::getModules('breadcrumbs');
+            $module = ModuleHelper::getModules('breadcrumbs');
             $attribs['style'] = 'none';
-            echo JModuleHelper::renderModule($module[0], $attribs);
+            echo ModuleHelper::renderModule($module[0], $attribs);
             ?>
         </div>
-        <h1 class="ttl md mb15"><?php print $this->category->name ?></h1>
-        <?php if (!empty($subcategories)) { ?>
-            <div class="slider-wrapper subcategory-list">
-                <div class="swiper subcategory-slider">
-                    <div class="swiper-wrapper">
-                        <?php foreach ($subcategories as $subcategory) { ?>
-                            <?php if (isset($subcategory->category_image) && $subcategory->category_image != '') {
-                                $image = '/components/com_jshopping/files/img_categories/' . $subcategory->category_image;
-                            } else {
-                                $image = '/components/com_jshopping/files/img_categories/noimage.gif';
-                            }
-                            ?>
-                            <div class="swiper-slide">
-                                <a href="<?= \JSHelper::SEFLink('index.php?option=com_jshopping&controller=category&task=view&category_id=' . $subcategory->category_id, 1) ?> ">
-                                    <span class="icon"><img class="image_cat" src="<?= $image ?>" alt="<?= $subcategory->img_alt ?>" title="<?= $subcategory->img_title ?>"></span>
-                                    <span class="namesubcat"><?= htmlspecialchars($subcategory->name) ?></span>
-                                </a>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="control_swiper">
-                    <div class="swiper-button-prev">&nbsp;</div>
-                    <div class="swiper-button-next">&nbsp;</div>
-                </div>
+        <div class="top flex between">
+            <h1 class="ttl md mb15"><?php print $this->category->name ?></h1>
+            <div class="btn btn_filter_mob">
+                <img src="/images/svg/filter.svg" alt="icon filter">
             </div>
-        <?php } ?>
-        <?php include(dirname(__FILE__) . "/../" . $this->template_block_form_filter); ?>
+        </div>
+
+        <?php /* if (!empty($subcategories)) { ?>
+       <div class="slider-wrapper subcategory-list">
+           <div class="swiper subcategory-slider">
+               <div class="swiper-wrapper">
+                   <?php foreach ($subcategories as $subcategory) { ?>
+                       <?php if (isset($subcategory->category_image) && $subcategory->category_image != '') {
+                           $image = '/components/com_jshopping/files/img_categories/' . $subcategory->category_image;
+                       } else {
+                           $image = '/components/com_jshopping/files/img_categories/noimage.gif';
+                       }
+                       ?>
+                       <div class="swiper-slide">
+                           <a href="<?= \JSHelper::SEFLink('index.php?option=com_jshopping&controller=category&task=view&category_id=' . $subcategory->category_id, 1) ?> ">
+                               <span class="icon"><img class="image_cat" src="<?= $image ?>" alt="<?= $subcategory->img_alt ?>" title="<?= $subcategory->img_title ?>"></span>
+                               <span class="namesubcat"><?= htmlspecialchars($subcategory->name) ?></span>
+                           </a>
+                       </div>
+                   <?php } ?>
+               </div>
+           </div>
+           <div class="control_swiper">
+               <div class="swiper-button-prev">&nbsp;</div>
+               <div class="swiper-button-next">&nbsp;</div>
+           </div>
+       </div>
+   <?php } */ ?>
+        <?php /*include(dirname(__FILE__) . "/../" . $this->template_block_form_filter); */ ?>
         <div class="page-flex flex between">
             <div class="filter_block">
                 <h2 class="mob_title"><?= Text::_('TPL_CUSTOM_TITLE_FILTER') ?>
@@ -98,23 +105,13 @@ if ($currentCategoryId) {
                         </svg>
                     </div>
                 </h2>
-                <?php
-                $module = JModuleHelper::getModules('filters');
-                $attribs['style'] = 'none';
-                echo JModuleHelper::renderModule($module[0], $attribs);
-                ?>
-                <?php /*<ul class="subcat-menu">
-   <?php foreach ($subcategories as $subcategory) {
-       $isActive = ($subcategory->category_id == $currentCategoryId) ? ' active' : '';
-       ?>
-       <li class="<?= $isActive ?>">
-           <a href="<?= \JSHelper::SEFLink('index.php?option=com_jshopping&controller=category&task=view&category_id=' . $subcategory->category_id, 1) ?>">
-               <span class="namesubcat"><?= htmlspecialchars($subcategory->name) ?></span>
-           </a>
-       </li>
-
-   <?php } ?>
-</ul>*/ ?>
+                <div class="filter_category">
+                    <?php
+                    $module = ModuleHelper::getModules('filter-catalog');
+                    $attribs['style'] = 'none';
+                    echo ModuleHelper::renderModule($module[0], $attribs);
+                    ?>
+                </div>
             </div>
             <div class="right-side">
                 <?php include(dirname(__FILE__) . "/products.php"); ?>
@@ -127,9 +124,5 @@ if ($currentCategoryId) {
         </div>
     </div>
 </div>
-<?php
-$module = JModuleHelper::getModules('main-advan');
-$attribs['style'] = 'none';
-echo JModuleHelper::renderModule($module[0], $attribs);
-?>
+
 </div>

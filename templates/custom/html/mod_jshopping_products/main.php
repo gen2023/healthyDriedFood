@@ -72,19 +72,17 @@ $user = Factory::getUser();
                         <?php } ?>
                         <?php print $product->_tmp_var_top_buttons; ?>
 
-                        <?php if ($product->buy_link && $product->product_quantity > 0) { ?>
-                            <div class="buttons">
-                                <?php print $product->_tmp_var_buttons; ?>
-                                <a class="btn button btn-wishlist product-button-wishlist btn-secondary" href="<?= $product->buy_link ?>&to=wishlist" style="display: none;"></a>
-                                <a class="btn btn-success button_buy icon-cart" href="<?= $product->buy_link ?>">
-                                    <?= Text::_('TPL_CUSTOM_BUY'); ?>
-                                </a>
-                            </div>
-                        <?php } ?>
                     </div>
-                    <div class="bottom_buttons">
-                        <?php print $product->_tmp_var_bottom_buttons; ?>
-                    </div>
+                    <?php print $product->_tmp_var_bottom_buttons; ?>
+                    <?php if ($product->buy_link && $product->product_quantity > 0) { ?>
+                        <div class="buttons">
+                            <?php print $product->_tmp_var_buttons; ?>
+                            <a class="btn button btn-wishlist product-button-wishlist btn-secondary" href="<?= $product->buy_link ?>&to=wishlist" style="display: none;"></a>
+                            <a class="btn btn-success button_buy icon-cart" href="<?= $product->buy_link ?>">
+                                <?= Text::_('TPL_CUSTOM_BUY'); ?>
+                            </a>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>

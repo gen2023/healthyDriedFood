@@ -8,24 +8,30 @@
  */
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Helper\ModuleHelper;
+use Joomla\CMS\Language\Text;
+
 $attribs['style'] = 'none';
 ?>
 <div class="main-page">
     <div class="main-intro mb50">
         <div class="container-wide">
             <div class="flex between">
-                <?php echo JModuleHelper::renderModule(JModuleHelper::getModules('main-intro-slider')[0], $attribs); ?>
-                <?php echo JModuleHelper::renderModule(JModuleHelper::getModules('main-intro')[0], $attribs); ?>
+                <?php echo ModuleHelper::renderModule(ModuleHelper::getModules('main-intro-slider')[0], $attribs); ?>
+                <?php echo ModuleHelper::renderModule(ModuleHelper::getModules('main-intro')[0], $attribs); ?>
             </div>
         </div>
     </div>
-    <?php echo JModuleHelper::renderModule(JModuleHelper::getModules('main-cats')[0], $attribs); ?>
-    <?php echo JModuleHelper::renderModule(JModuleHelper::getModules('main-advan')[0], $attribs); ?>
+    <div class="container mb40">
+        <h2 class="ttl md mb25"><?= Text::_('TPL_CUSTOM_POPULAR_PRODUCTS'); ?></h2>
+        <?php echo ModuleHelper::renderModule(ModuleHelper::getModules('popular-home')[0], $attribs); ?>
+    </div>
+    <?php echo ModuleHelper::renderModule(ModuleHelper::getModules('main-advan')[0], $attribs); ?>
     <div class="mb40"></div>
     <div class="main-catalogue mb80" id="mainCatalogue">
         <div class="container">
-            <div class="ttl md mb25"><?= JText::_('TPL_CUSTOM_CATALOG'); ?></div>
-            <?php echo JModuleHelper::renderModule(JModuleHelper::getModules('main-catalogue')[0], $attribs); ?>
+            <div class="ttl md mb25"><?= Text::_('TPL_CUSTOM_CATALOG'); ?></div>
+            <?php echo ModuleHelper::renderModule(ModuleHelper::getModules('main-catalogue')[0], $attribs); ?>
         </div>
     </div>
 </div>

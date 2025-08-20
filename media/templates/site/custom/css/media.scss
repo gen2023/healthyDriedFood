@@ -16,7 +16,7 @@
 			height: 600px;
 			background-repeat: no-repeat;
 			background-position: right bottom;
-			padding: 40px 30px;
+			// padding: 40px 30px;
 		}
 	}
 
@@ -145,7 +145,7 @@
 			height: auto;
 			background-repeat: no-repeat;
 			background-position: right bottom;
-			padding: 40px 30px 50%;
+			// padding: 40px 30px 50%;
 		}
 	}
 
@@ -154,6 +154,26 @@
 
 		.card {
 			padding: 30px 20px;
+			height: auto;
+			min-height: 150px;
+			display: flex;
+			align-items: center;
+
+			&.second {
+				background-position: right;
+			}
+
+			.text-box {
+				max-width: unset;
+
+				br {
+					display: none;
+				}
+
+				.mb50 {
+					margin-bottom: 10px;
+				}
+			}
 		}
 	}
 
@@ -165,8 +185,8 @@
 	}
 
 	.prod-wrap {
-		padding-bottom: 0;
-		margin-bottom: 0;
+		// padding-bottom: 0;
+		// margin-bottom: 0;
 
 		.buttons {
 			position: static;
@@ -241,23 +261,29 @@
 		bottom: 20px;
 	}
 
-	.page-flex .left-side {
-		display: none;
+	.page-flex {
+		.right-side {
+			width: 100%;
+		}
+
+		.left-side {
+			display: none;
+		}
 	}
 
-	.page-flex .right-side {
-		width: 100%;
-	}
 
-	#sort_count {
-		align-items: center;
 
+	.cat-page {
 		.btn_filter_mob {
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			margin-right: 20px;
 		}
+	}
+
+	#sort_count {
+		align-items: center;
 
 		.form_sort_count .box_products_sorting .list_sort {
 			width: 349px;
@@ -457,6 +483,21 @@
 		width: calc(33.3% - 12px);
 		margin-left: 6px;
 		margin-right: 6px;
+
+		.block_quantity {
+			padding: 2px;
+		}
+
+		.buttons .icon-cart {
+			width: unset;
+			max-width: unset;
+			height: 32px;
+			font-size: 16px;
+
+			&:before {
+				margin-right: 10px;
+			}
+		}
 	}
 
 	.block_quantity {
@@ -677,6 +718,12 @@
 	.nevigen-novaposhta-courier-address-apartment {
 		width: calc(50% - 4px);
 	}
+
+	.prod-wrap {
+		width: calc(49.3% - 12px);
+		margin-left: 6px;
+		margin-right: 6px;
+	}
 }
 
 @media (max-width: 600px) {}
@@ -772,7 +819,7 @@
 
 		.swiper-slide {
 			background-position: 90% bottom;
-			padding: 40px 16px 80%;
+			// padding: 40px 16px 80%;
 
 			.text-box {
 				font-size: 14px;
@@ -791,8 +838,6 @@
 		width: 100%;
 
 		.card {
-			display: flex;
-			flex-direction: column;
 			height: auto;
 			min-height: 190px;
 			padding: 20px 20px;
@@ -1163,6 +1208,15 @@
 		}
 	}
 
+	.prod-wrap {
+		width: calc(100% - 12px);
+		margin-left: 6px;
+		margin-right: 6px;
+	}
+
+	.page-flex .right-side .prod-wrap {
+		width: calc(100% - 12px);
+	}
 }
 
 @media (max-width: 480px) {
@@ -1193,7 +1247,8 @@
 			padding: 0 8px;
 		}
 	}
-	#sort_count .form_sort_count .box_products_sorting .list_sort{
+
+	#sort_count .form_sort_count .box_products_sorting .list_sort {
 		width: 260px;
 	}
 }

@@ -11,9 +11,7 @@ defined('_JEXEC') or die();
 <?php print $this->_tmp_before_form_filter_html ?? ''; ?>
 
 <form action="<?php print $this->action; ?>" method="post" name="sort_count" id="sort_count" class="form-horizontal">
-    <div class="btn btn_filter_mob">
-    <img src="/images/svg/filter.svg" alt="icon filter">
-</div>
+
     <div class="form_sort_count">
         <?php if ($this->config->show_sort_product || $this->config->show_count_select_products): ?>
             <div class="block_sorting_count_to_page">

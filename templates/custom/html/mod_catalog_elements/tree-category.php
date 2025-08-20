@@ -22,7 +22,7 @@ function renderTree($list, $parent = 0, $level = 0)
         echo '<li class="nav-item' . implode(' ', $classList) . '">';
         echo '<a href="' . $item->link . '">';
             if($level==0){         
-            echo '<span class="img-wrap"><img src="/components/com_jshopping/files/img_categories/'.$item->image.'" loading="lazy"></span><span class="show-subcat icon-next"></span>' ;
+            echo '<span class="img-wrap"><img src="/components/com_jshopping/files/img_categories/'.$item->image.'" loading="lazy"></span>' ;
         }        
         echo '<span class="' . $classSpan . '">' . htmlspecialchars($item->name) . '</span>';
         echo '</a>';

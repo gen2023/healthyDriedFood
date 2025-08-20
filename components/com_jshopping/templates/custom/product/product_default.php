@@ -3,6 +3,7 @@
 use Joomla\Component\Jshopping\Site\Helper\Helper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Helper\ModuleHelper;
 $user = Factory::getUser();
 
 
@@ -26,9 +27,9 @@ include(dirname(__FILE__) . "/load.js.php");
     <div class="container">
         <div class="mt50 mb25">
             <?php
-            $module = JModuleHelper::getModules('breadcrumbs');
+            $module = ModuleHelper::getModules('breadcrumbs');
             $attribs['style'] = 'none';
-            echo JModuleHelper::renderModule($module[0], $attribs);
+            echo ModuleHelper::renderModule($module[0], $attribs);
             ?>
         </div>
         <?php print $this->_tmp_product_html_start; ?>
@@ -112,31 +113,7 @@ include(dirname(__FILE__) . "/load.js.php");
                             </div>
                         <?php } ?>
 
-                        <?php /* if (is_array($this->product->extra_field)) { ?>
-<div class="extra_fields">
-<?php foreach ($this->product->extra_field as $extra_field) { ?>
-<?php if ($extra_field['grshow']) { ?>
-<div class='block_efg'>
-<div class='extra_fields_group'><?php print $extra_field['groupname'] ?></div>
-<?php } ?>
-<div class="extra_fields_el">
-<span
-    class="extra_fields_name"><?php print $extra_field['name']; ?> :</span><?php if ($extra_field['description']) { ?>
-    <span class="extra_fields_description">
-        <?php print $extra_field['description']; ?>
-    </span><?php } ?>
-<span class="extra_fields_value">
-    <?php print $extra_field['value']; ?>
-</span>
-</div>
-
-<?php if ($extra_field['grshowclose']) { ?>
-</div>
-<?php } ?>
-<?php } ?>
-</div>
-<?php } */ ?>
-                        <?php if ($product->product_quantity > 0) { ?>
+                       <?php if ($product->product_quantity > 0) { ?>
                             <div class="flex between align-center">
                                 <div class="extra_fields_name"><?= Text::_('TPL_CUSTOM_ENTER_QUAN'); ?>:</div>
                                 <div class="prod_qty_input block_quantity">
@@ -211,21 +188,23 @@ include(dirname(__FILE__) . "/load.js.php");
             </div>
         </div>
 
-
-
         <div class="mb50">
             <?php
-            $module = JModuleHelper::getModules('recently-viewed');
+            $module = ModuleHelper::getModules('recently-viewed');
             $attribs['style'] = 'none';
-            echo JModuleHelper::renderModule($module[0], $attribs);
+            echo ModuleHelper::renderModule($module[0], $attribs);
             ?>
         </div>
-    </div>
-    <?php
-    $module = JModuleHelper::getModules('main-advan');
+                <div class="mb50">
+                    <h2><?= Text::_('TPL_CUSTOM_TITLE_RANDOM_PRODUCT') ?></h2>
+            <?php
+    $module = ModuleHelper::getModules('random-product');
     $attribs['style'] = 'none';
-    echo JModuleHelper::renderModule($module[0], $attribs);
+    echo ModuleHelper::renderModule($module[0], $attribs);
     ?>
+            </div>
+    </div>
+
 </div>
 
 <script>
