@@ -46,20 +46,20 @@ $(document).ready(function () {
       menuBtn.removeClass('active');
     };
   });
-  // $(document).click(function (e) {
-  //     if (!$('#cartajaxCartModal').is(e.target)) {
-  //       const modal = document.querySelector('#cartajaxCartModal');
-  //       const bsModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
-  //       bsModal.hide();
-  //     };
-  // });
-  // $(document).click(function (e) {
-  //     if (!$('#cartajaxWishlistModal').is(e.target)) {
-  //       const modal = document.querySelector('#cartajaxWishlistModal');
-  //       const bsModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
-  //       bsModal.hide();
-  //     };
-  // });
+  $(document).click(function (e) {
+    if (!$('#cartajaxCartModal').is(e.target)) {
+      const modal = document.querySelector('#cartajaxCartModal');
+      const bsModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+      bsModal.hide();
+    };
+  });
+  $(document).click(function (e) {
+    if (!$('#cartajaxWishlistModal').is(e.target)) {
+      const modal = document.querySelector('#cartajaxWishlistModal');
+      const bsModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+      bsModal.hide();
+    };
+  });
   $('.show-search').click(function (e) {
     e.preventDefault();
     $(this).toggleClass('open');
@@ -90,15 +90,15 @@ $(document).ready(function () {
       $("html, body").animate({ scrollTop: 0 }, 1200);
     });
   }
-  $('.button_buy, .button-buy').click(function (e) {
-    $('.buy-caption-success').addClass('open')
-    setTimeout(function () {
-      $('.buy-caption-success').removeClass('open');
-    }, 3000);
-  })
-  $('.buy-caption-success .close').click(function (e) {
-    $('.buy-caption-success').removeClass('open');
-  })
+  // $('.button_buy, .button-buy').click(function (e) {
+  //   $('.buy-caption-success').addClass('open')
+  //   setTimeout(function () {
+  //     $('.buy-caption-success').removeClass('open');
+  //   }, 3000);
+  // })
+  // $('.buy-caption-success .close').click(function (e) {
+  //   $('.buy-caption-success').removeClass('open');
+  // })
 
   $('.burger-menu').click(function (e) {
     e.stopPropagation()
@@ -211,6 +211,15 @@ $(document).ready(function () {
   }
 
 
+  const swiper_reviews = new Swiper('.swiper-reviews', {
+    spaceBetween: 8,
+    // autoplay: {
+    //   delay: 5000,
+    // },
+    // loop: true,
+    speed: 800,
+    slidesPerView: 1,
+  });
 
   const mainSlider = new Swiper('.main-slider', {
     // navigation: {
@@ -345,4 +354,5 @@ $(document).ready(function () {
       prevEl: ".swiper-button-prev",
     },
   });
+
 });

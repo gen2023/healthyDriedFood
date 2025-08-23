@@ -7,7 +7,7 @@
 <authorUrl>sofona.com</authorUrl>
 <copyright></copyright>
 <license>Open Source License, GNU GPL</license>
-<version>1.0.6</version><!-- updated 08.06.2025 -->
+<version>1.0.7</version><!-- updated 21.08.2025 -->
 <description>MOD_CATALOG_ELEMENTS_DESCRIPTION</description>
 	<files>
 		<filename module="mod_catalog_elements">mod_catalog_elements.php</filename>
@@ -31,6 +31,17 @@
           <option value="list_category">MOD_CATALOG_ELEMENTS_LIST_CATEGORY</option>
           <option value="list_manufacturer">MOD_CATALOG_ELEMENTS_LIST_MANUFACTURER</option>
         </field>
+        <field
+						name="count_products"
+						type="radio"
+						label="MOD_CATALOG_ELEMENTS_SHOW_COUNT_PRODUCTS"
+						layout="joomla.form.field.radio.switcher"
+						default="0"
+						filter="integer"
+						>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>						
         <field
 						name="all_menu"
 						type="radio"

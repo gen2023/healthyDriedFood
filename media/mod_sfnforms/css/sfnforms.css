@@ -1,0 +1,152 @@
+.mod-sfnforms-pre-text, .mod-sfnforms-post-text {
+	margin: 9px 0;
+}
+
+.mod-sfnforms-error {
+	color: #b94a48;
+}
+
+.mod-sfnforms-loader {
+	display: none;
+	width: 30px;
+	height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mod-sfnforms-width-auto {
+	width: auto;
+}
+.mod_sfnforms-nospan{
+  display: none;
+}
+
+.mod_sfnforms-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.mod_sfnforms-modal .alert-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  position: relative;
+}
+
+.mod_sfnforms-modal .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.mod_sfnforms-modal .close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease; 
+}
+
+.mod_sfnforms-modal .close-btn:hover {
+  transform: rotate(360deg); 
+}
+
+.mod_sfnforms-modal .close-btn svg path {
+  stroke: #aaa; 
+  transition: stroke 0.3s ease; 
+}
+
+.mod_sfnforms-modal .close-btn:hover svg path {
+  stroke: #000; 
+}
+
+.mod-sfnforms-modal__container{
+  position: relative;
+  background: #fff;
+  padding: 40px;
+  text-align: center;
+}
+.sfnforms .preloader {
+  position: relative; 
+}
+
+.sfnforms .preloader::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  margin: -50px; 
+  border: 4px solid #ccc;
+  border-top: 4px solid #007bff; 
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+.rstpl-rotating {
+  -webkit-animation: rotating 2s linear infinite;
+  -moz-animation: rotating 2s linear infinite;
+  -ms-animation: rotating 2s linear infinite;
+  -o-animation: rotating 2s linear infinite;
+  animation: rotating 2s linear infinite;
+}

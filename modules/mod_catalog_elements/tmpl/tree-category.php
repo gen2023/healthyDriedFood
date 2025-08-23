@@ -2,7 +2,7 @@
 use Joomla\Component\Jshopping\Site\Helper\Helper;
 defined('_JEXEC') or die;
 
-function renderTree($list, $parent = 0, $level = 0) {
+function renderTree($list, $parent = 0, $level = 0,$count_products) {
     $branch = array_filter($list, function ($item) use ($parent) {
         return $item->parent_id == $parent;
     });
@@ -17,7 +17,12 @@ function renderTree($list, $parent = 0, $level = 0) {
     foreach ($branch as $item) {
 
         echo '<li class="item' . implode(' ', $classList) . '">';
-        echo '<a href="' . $item->link . '">' . htmlspecialchars($item->name) . '</a>';
+        echo '<a href="' . $item->link . '">';
+        echo htmlspecialchars($item->name);
+        if($count_products){
+            echo '('.$item->product_count.')';
+        }
+        echo '</a>';
         renderTree($list, $item->id, $level + 1);
         echo '</li>';
     }
@@ -27,5 +32,5 @@ function renderTree($list, $parent = 0, $level = 0) {
 
 ?>
 <div class="catalog_tree<?php echo $moduleclass_sfx; ?>">
-    <?php renderTree($list); ?>
+    <?php renderTree($list,0,0,$count_products); ?>
 </div>

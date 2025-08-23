@@ -13,6 +13,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\Component\Jshopping\Site\Lib\JSFactory;
 use Joomla\Component\Jshopping\Site\Helper\Helper;
+use Joomla\CMS\Helper\ModuleHelper;
 
 $countprod = count($this->products);
 
@@ -20,36 +21,30 @@ $currency = \JSFactory::getTable('currency', 'jshop');
 
 $currencis_list = $currency->getAllCurrencies('1');
 
-$jshopConfig = \JSFactory::getConfig();   
+$jshopConfig = \JSFactory::getConfig();
 $jshopConfig->loadCurrencyValue();
 
 $minOrderValues = [
-        '1' => 1000,
-        '2' => 30,
-    ];
-    $minValue = isset($minOrderValues[$jshopConfig->cur_currency]) ? $minOrderValues[$jshopConfig->cur_currency] : 0;
+    '1' => 1000,
+    '2' => 30,
+];
+$minValue = isset($minOrderValues[$jshopConfig->cur_currency]) ? $minOrderValues[$jshopConfig->cur_currency] : 0;
 
 ?>
 <div class="jshop mt50 mb80" id="comjshop">
-
     <div class="container">
-        <a href="<?php print $this->href_shop ?>"
-            class="back-link icon-prev mb20"><?= JText::_('TPL_CUSTOM_BACK_TO_SHOP') ?></a>
-        <div class="flex between align-center mb30">
-            <h1 class="ttl md"><?= JText::_('TPL_CUSTOM_CART') ?></h1>
-            <div class="min-order minorder-js">
-                <div class="ico"></div>
-                <div class="text"><?= JText::_('TPL_CUSTOM_MIN_ORDER_TEXT') ?> <?php echo $minValue .' '. $jshopConfig->currency_code ?></div>
+        <?php if ($countprod > 0): ?>
+
+            <a href="<?php print $this->href_shop ?>" class="back-link icon-prev mb20"><?= JText::_('TPL_CUSTOM_BACK_TO_SHOP') ?></a>
+            <div class="flex between align-center mb30">
+                <h1 class="ttl md"><?= JText::_('TPL_CUSTOM_CART') ?></h1>
             </div>
-        </div>
 
-        <?php print $this->checkout_navigator ?>
-        <form action="<?php print \JSHelper::SEFLink('index.php?option=com_jshopping&controller=cart&task=refresh') ?>"
-            method="post" name="updateCart" id="updateCart">
+            <?php print $this->checkout_navigator ?>
+            <form action="<?php print \JSHelper::SEFLink('index.php?option=com_jshopping&controller=cart&task=refresh') ?>" method="post" name="updateCart" id="updateCart">
 
-            <?php print $this->_tmp_ext_html_cart_start ?>
+                <?php print $this->_tmp_ext_html_cart_start ?>
 
-            <?php if ($countprod > 0): ?>
                 <div class="flex between mb110">
                     <div class="jshop cart">
                         <?php
@@ -83,15 +78,18 @@ $minOrderValues = [
                                         <?php print $prod['_ext_product_name'] ?>
                                         <?php if ($prod['manufacturer'] != '') { ?>
                                             <div class="manufacturer"><?php print JText::_('JSHOP_MANUFACTURER') ?>:
-                                                <span><?php print $prod['manufacturer'] ?></span></div>
+                                                <span><?php print $prod['manufacturer'] ?></span>
+                                            </div>
                                         <?php } ?>
                                         <?php if ($this->config->manufacturer_code_in_cart && $prod['manufacturer_code']) { ?>
                                             <div class="manufacturer_code"><?php print JText::_('JSHOP_MANUFACTURER_CODE') ?>:
-                                                <span><?php print $prod['manufacturer_code'] ?></span></div>
+                                                <span><?php print $prod['manufacturer_code'] ?></span>
+                                            </div>
                                         <?php } ?>
                                         <?php if ($this->config->real_ean_in_cart && $prod['real_ean']) { ?>
                                             <div class="real_ean"><?php print JText::_('JSHOP_EAN') ?>:
-                                                <span><?php print $prod['real_ean'] ?></span></div>
+                                                <span><?php print $prod['real_ean'] ?></span>
+                                            </div>
                                         <?php } ?>
                                         <?php print \JSHelper::sprintAtributeInCart($prod['attributes_value']); ?>
                                         <?php print \JSHelper::sprintFreeAtributeInCart($prod['free_attributes_value']); ?>
@@ -110,25 +108,10 @@ $minOrderValues = [
                                         <span class="block_quantity">
                                             <input class="quantity-minus" type="button" value="-">
                                             <span class="ca_qty_input">
-                                                <input type="text" size="2" value="<?php print $prod['quantity'] ?>"
-                                                    name="quantity[<?php print $key_id ?>]" class=" input-mini quan-input"
-                                                    min="0"></span>
+                                                <input type="text" size="2" value="<?php print $prod['quantity'] ?>" name="quantity[<?php print $key_id ?>]" class=" input-mini quan-input" min="0"></span>
                                             <input class="quantity-plus" type="button" value="+">
                                         </span>
-                                        <span style="display: none;" class="cart_reload icon-refresh"
-                                            title="<?php print JText::_('JSHOP_UPDATE_CART') ?>"></span>
-                                        <?php /*<span class="mobile-cart-inline">
-                       <?php print JText::_('JSHOP_NUMBER')?>:
-                   </span>
-                   <?php if ($prod['not_qty_update']){?>
-                       <span class="qtyval"><?php print $prod['quantity'] ?></span>
-                   <?php }else{?>
-                       <input type="number" name="quantity[<?php print $key_id ?>]" value="<?php print $prod['quantity'] ?>" class="inputbox" min="0">
-                   <?php }?>
-                   <?php print $prod['_qty_unit']; ?>
-                   <?php if (!$prod['not_qty_update']){?>
-                       <span class="cart_reload icon-refresh" title="<?php print JText::_('JSHOP_UPDATE_CART')?>"></span>
-                   <?php } */ ?>
+                                        <span style="display: none;" class="cart_reload icon-refresh" title="<?php print JText::_('JSHOP_UPDATE_CART') ?>"></span>
                                     </div>
                                 </div>
                                 <div class="single_price">
@@ -163,8 +146,7 @@ $minOrderValues = [
                                         <?php if ($prod['not_delete']) { ?>
                                             <?php echo $prod['not_delete_html'] ? $prod['not_delete_html'] : '-'; ?>
                                         <?php } else { ?>
-                                            <a class="close icon-close" href="<?php print $prod['href_delete'] ?>"
-                                                onclick="return confirm('<?php print JText::_('JSHOP_CONFIRM_REMOVE') ?>')">
+                                            <a class="close icon-close" href="<?php print $prod['href_delete'] ?>" onclick="return confirm('<?php print JText::_('JSHOP_CONFIRM_REMOVE') ?>')">
                                             </a>
                                         <?php } ?>
                                     </div>
@@ -181,8 +163,7 @@ $minOrderValues = [
 
                         <?php if ($this->config->show_cart_clear) { ?>
                             <div class="clear-cart">
-                                <a class="btn btn-danger clear-cart"
-                                    href="<?php print \JSHelper::SEFLink('index.php?option=com_jshopping&controller=cart&task=clear') ?>"
+                                <a class="btn btn-danger clear-cart" href="<?php print \JSHelper::SEFLink('index.php?option=com_jshopping&controller=cart&task=clear') ?>"
                                     onclick="return confirm('<?php print JText::_('JSHOP_CONFIRM_REMOVE_ALL') ?>')">
                                     <?php print JText::_('JSHOP_CLEAR_CART') ?>
                                 </a>
@@ -211,7 +192,7 @@ $minOrderValues = [
                                         <?php print JText::_('JSHOP_SUBTOTAL') ?>
                                     </td>
                                     <td class="value">
-                                        <?php print \JSHelper::formatprice($this->summ); ?>        <?php print $this->_tmp_ext_subtotal ?>
+                                        <?php print \JSHelper::formatprice($this->summ); ?>         <?php print $this->_tmp_ext_subtotal ?>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -221,10 +202,10 @@ $minOrderValues = [
                             <?php if ($this->discount > 0) { ?>
                                 <tr class="discount">
                                     <td class="name">
-                                        <?php print JText::_('JSHOP_RABATT_VALUE') ?>        <?php print $this->_tmp_ext_discount_text ?>
+                                        <?php print JText::_('JSHOP_RABATT_VALUE') ?>         <?php print $this->_tmp_ext_discount_text ?>
                                     </td>
                                     <td class="value">
-                                        <?php print \JSHelper::formatprice(-$this->discount); ?>        <?php print $this->_tmp_ext_discount ?>
+                                        <?php print \JSHelper::formatprice(-$this->discount); ?>         <?php print $this->_tmp_ext_discount ?>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -237,7 +218,7 @@ $minOrderValues = [
                                                 print \JSHelper::formattax($percent) . "%" ?>
                                             </td>
                                             <td class="value">
-                                            <?php print \JSHelper::formatprice($value); ?>            <?php print $this->_tmp_ext_tax[$percent] ?>
+                                            <?php print \JSHelper::formatprice($value); ?>             <?php print $this->_tmp_ext_tax[$percent] ?>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -248,7 +229,7 @@ $minOrderValues = [
                                     <?php print JText::_('JSHOP_PRICE_TOTAL') ?>
                                 </td>
                                 <td class="value">
-                                    <?php print \JSHelper::formatprice($this->fullsumm) ?>    <?php print $this->_tmp_ext_total ?>
+                                    <?php print \JSHelper::formatprice($this->fullsumm) ?>     <?php print $this->_tmp_ext_total ?>
                                 </td>
                             </tr>
 
@@ -257,8 +238,7 @@ $minOrderValues = [
                             <?php if ($this->config->show_plus_shipping_in_product) { ?>
                                 <tr class="plusshipping">
                                     <td colspan="2" align="right">
-                                        <span
-                                            class="plusshippinginfo"><?php print sprintf(JText::_('JSHOP_PLUS_SHIPPING'), $this->shippinginfo); ?></span>
+                                        <span class="plusshippinginfo"><?php print sprintf(JText::_('JSHOP_PLUS_SHIPPING'), $this->shippinginfo); ?></span>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -279,66 +259,51 @@ $minOrderValues = [
                         <div class="jshop cart_buttons">
                             <div id="checkout" class="d-flex justify-content-between">
                                 <?php if ($countprod > 0): ?>
-                                    <a href="<?php print $this->href_checkout ?>"
-                                        class="btn btn-success btn-checkout icon-cart">
+                                    <a href="<?php print $this->href_checkout ?>" class="btn btn-success btn-checkout icon-cart">
                                         <?php print JText::_('JSHOP_CHECKOUT') ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
                         </div>
-
                         <?php print $this->_tmp_html_after_buttons ?>
+
+                    </div>
+                </div>
+
+
             </form>
 
             <?php print $this->_tmp_ext_html_before_discount ?>
 
             <?php if ($this->use_rabatt && $countprod > 0): ?>
                 <div class="cart_block_discount">
-                    <form name="rabatt" method="post"
-                        action="<?php print \JSHelper::SEFLink('index.php?option=com_jshopping&controller=cart&task=discountsave'); ?>">
+                    <form name="rabatt" method="post" action="<?php print \JSHelper::SEFLink('index.php?option=com_jshopping&controller=cart&task=discountsave'); ?>">
                         <div class="jshop">
                             <div class="span12">
                                 <div class="name"><?php print JText::_('JSHOP_RABATT') ?></div>
                                 <input type="text" class="inputbox" name="rabatt" value="" />
-                                <input type="submit" class="button btn btn-primary"
-                                    value="<?php print JText::_('JSHOP_RABATT_ACTIVE') ?>" />
+                                <input type="submit" class="button btn btn-primary" value="<?php print JText::_('JSHOP_RABATT_ACTIVE') ?>" />
                             </div>
                         </div>
                     </form>
                 </div>
 
             <?php endif; ?>
+            <?php
+            $module = ModuleHelper::getModules('recently-viewed');
+            $attribs['style'] = 'none';
+            echo ModuleHelper::renderModule($module[0], $attribs);
+            ?>
+
+        <?php else: ?>
+            <div class="cart_empty_text ttl sm mb50"><?php print JText::_('JSHOP_CART_EMPTY') ?></div>
+            <a href="<?= JText::_('TPL_CUSTOM_HOME'); ?>" class="btn"><?= JText::_('TPL_CUSTOM_TO_HOME'); ?></a>
         </div>
-    </div>
-    <?php
-    $module = JModuleHelper::getModules('recently-viewed');
-    $attribs['style'] = 'none';
-    echo JModuleHelper::renderModule($module[0], $attribs);
-    ?>
-    </div>
-<?php else: ?>
-    <div class="cart_empty_text ttl sm mb50"><?php print JText::_('JSHOP_CART_EMPTY') ?></div>
-    <a href="<?= JText::_('TPL_CUSTOM_HOME'); ?>" class="btn"><?= JText::_('TPL_CUSTOM_TO_HOME'); ?></a>
-    </div>
-<?php endif; ?>
+    <?php endif; ?>
 </div>
+
 <?php
-$module = JModuleHelper::getModules('main-advan');
+$module = ModuleHelper::getModules('main-advan');
 $attribs['style'] = 'none';
-echo JModuleHelper::renderModule($module[0], $attribs);
+echo ModuleHelper::renderModule($module[0], $attribs);
 ?>
-
-<script>
-    const total = <?= $this->fullsumm ?>;
-    const minValue = <?= $minValue ?>;
-    const btn = document.querySelector('.btn-checkout');
-    const minorder = document.querySelector('.minorder-js');
-
-    if (total < minValue) {
-        btn.classList.add('disabled');
-        minorder.classList.add('active');
-    } else {
-        btn.classList.remove('disabled');
-        minorder.classList.remove('active');
-    }
-</script>

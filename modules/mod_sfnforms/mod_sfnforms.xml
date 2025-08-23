@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="site" method="upgrade" version="3.9.0">
+    <name>SFNForms</name>
+    <author>Sofona</author>
+    <creationDate>22.12.2024</creationDate>
+    <version>1.0.2</version>
+    <description>MOD_SFNFORMS_DESC</description>	
+	<files>
+		<filename module="mod_sfnforms">mod_sfnforms.php</filename>
+		<filename>helper.php</filename>
+		<filename>index.html</filename>
+		<folder>tmpl</folder>
+		<folder>forms</folder>
+	</files>
+	<media destination="mod_sfnforms" folder="media">
+			<folder>css</folder>
+			<folder>js</folder>
+		<filename>index.html</filename>
+	</media>
+	<languages>
+		<language tag="en-GB">language/en-GB/mod_sfnforms.ini</language>
+		<language tag="en-GB">language/en-GB/mod_sfnforms.sys.ini</language>
+		<language tag="ru-RU">language/ru-RU/mod_sfnforms.ini</language>
+		<language tag="ru-RU">language/ru-RU/mod_sfnforms.sys.ini</language>		
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field 
+					name="setkalist" 
+					type="subform" 
+					formsource="modules/mod_sfnforms/forms/list.xml" 
+					class="advancedSelect" 
+					min="0" 
+					max="9999" 
+					multiple="true" 
+					layout="joomla.form.field.subform.repeatable" 
+					groupByFieldset="true" 
+					label="Список" 
+					description="Список" 
+					/>
+			</fieldset>
+			<fieldset name="form_options" label="MOD_SFNFORMS_FORM_OPTIONS" description="MOD_SFNFORMS_FORM_OPTIONS_DESC">
+				<field name="form_pre" type="editor" rows="4" default="" filter="raw" label="MOD_SFNFORMS_FORM_BEFORE_TEXT" description="MOD_SFNFORMS_FORM_BEFORE_TEXT_DESC" />
+				<field name="form_post" type="editor" rows="4" default="" filter="raw" label="MOD_SFNFORMS_FORM_AFTER_TEXT" description="MOD_SFNFORMS_FORM_AFTER_TEXT_DESC"/>
+				<field name="css" type="textarea" default="" filter="raw" label="MOD_SFNFORMS_CUSTOM_CSS" description="MOD_SFNFORMS_CUSTOM_CSS_DESC" rows="5" cols="35" />
+				<field name="js" type="textarea" default="" filter="raw" label="MOD_SFNFORMS_CUSTOM_JS" description="MOD_SFNFORMS_CUSTOM_JS_DESC" rows="5" cols="35" />
+				<field name="req_marker" type="text" size="30" default="*" label="MOD_SFNFORMS_REQUIRED_FIELD_MARKER" description="MOD_SFNFORMS_REQUIRED_FIELD_MARKER_DESC" />
+				<field name="auto_width" class="btn-group" type="radio" label="MOD_SFNFORMS_AUTO_WIDTH" default="1" description="MOD_SFNFORMS_AUTO_WIDTH_DESC">
+						<option value="1">MOD_SFNFORMS_AUTO_WIDTH_FIELDS</option>
+						<option value="0">MOD_SFNFORMS_AUTO_WIDTH_TEMPLATE</option>
+				</field>
+				<field name="thank_you_modal" class="btn-group" type="radio" label="MOD_SFNFORMS_THANK_YOU_MODAL" default="0" description="MOD_SFNFORMS_THANK_YOU_MODAL_DESC">
+						<option value="1">JYES</option>
+						<option value="0">JNO</option>
+				</field>				
+				<field name="thank_you" type="editor" rows="4" default="" filter="raw" label="MOD_SFNFORMS_THANK_YOU" description="MOD_SFNFORMS_THANK_YOU_DESC" />
+				<field name="display_consent" class="btn-group" type="radio" label="MOD_SFNFORMS_DISPLAY_CONSENT" default="0" description="MOD_SFNFORMS_DISPLAY_CONSENT_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+    		<field name="consent_text" type="editor" filter="raw" label="MOD_SFNFORMS_CONSENT_TEXT" description="MOD_SFNFORMS_CONSENT_TEXT_DESCRIPTION" showon="display_consent:1"/>
+			</fieldset>
+			<fieldset name="email_options" label="MOD_SFNFORMS_EMAIL_OPTIONS" description="MOD_SFNFORMS_EMAIL_OPTIONS_DESC">
+				<field name="mail_to" type="text" size="40" default="" label="MOD_SFNFORMS_ADMIN_EMAIL" description="MOD_SFNFORMS_ADMIN_EMAIL_DESC" />
+				<field name="mail_cc" type="text" size="40" default="" label="MOD_SFNFORMS_CC_EMAIL" description="MOD_SFNFORMS_CC_EMAIL_DESC" />
+				<field name="mail_bcc" type="text" size="40" default="" label="MOD_SFNFORMS_BCC_EMAIL" description="MOD_SFNFORMS_BCC_EMAIL_DESC" />
+				<field name="email_subj" type="text" size="40" default="You have a new contact request from {your-website}!" label="MOD_SFNFORMS_EMAIL_SUBJECT" description="MOD_SFNFORMS_EMAIL_SUBJECT_DESC" />
+				<field name="mail_msg" type="editor" rows="15" cols="35" filter="raw" label="MOD_SFNFORMS_EMAIL_BODY" description="MOD_SFNFORMS_EMAIL_BODY_DESC" 
+				default="&lt;p&gt; From:  &lt;/p&gt;&#13;&#10;&lt;p&gt;
+						Email: {email} &lt;/p&gt;&#13;&#10;&lt;p&gt;
+						Message: {message} &lt;/p&gt;&#13;&#10;&lt;p&gt;
+						{consent} &lt;/p&gt;&#13;
+						&#10;&lt;hr / &gt;&#13;&#10;&lt;p&gt;
+						Username: {username} &lt;/p&gt;&#13;&#10;&lt;p&gt;
+						User Id: {user-id} &lt;/p&gt;&#13;&#10;&lt;p&gt;
+						User Email: {user-email} &lt;/p&gt;&#13;&#10;&lt;p&gt;
+						Date: {date} &lt;/p&gt;&#13;&#10;&lt;p&gt;
+						Date-Time: {date-time} &lt;/p&gt;&#13;&#10;&lt;p&gt;
+						IP: {ip} &lt;/p&gt;&#13;&#10;" 
+				/>
+				<field name="reply_to" class="btn-group" type="radio" label="MOD_SFNFORMS_REPLY_TO" default="0" description="MOD_SFNFORMS_REPLY_TO_DESC" >
+						<option value="1">JYES</option>
+						<option value="0">JNO</option>
+				</field>
+				<field name="reply_email" type="text" size="40" default="" label="MOD_SFNFORMS_REPLY_EMAIL" description="MOD_SFNFORMS_REPLY_EMAIL_DESC" showon="reply_to:0" />
+				<field name="reply_name" type="text" size="40" default="" label="MOD_SFNFORMS_REPLY_NAME" description="MOD_SFNFORMS_REPLY_NAME_DESC" showon="reply_to:0" />
+
+				<field name="send_copy" class="btn-group" type="radio" label="MOD_SFNFORMS_SEND_COPY" default="0" description="MOD_SFNFORMS_SEND_COPY_DESC">
+					<option value="2">MOD_SFNFORMS_USER_DECIDE</option>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+			</fieldset>
+			<fieldset name="mod_sfnforms_setting" label="MOD_SFNFORMS_SETTING">
+				<field name="send_mail" class="btn-group" type="radio" label="MOD_SFNFORMS_SEND_MAIL" default="1" description="MOD_SFNFORMS_SEND_MAIL_DESCRIPTION">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>	
+				<field name="captcha" class="btn-group" type="radio" label="MOD_SFNFORMS_CAPTCHA" default="0" description="MOD_SFNFORMS_CAPTCHA_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>			
+				<field name="sendloggen" class="btn-group" type="radio" label="MOD_SFNFORMS_LOGGED" default="0"  >
+					<option value="1">JAll</option>
+					<option value="2">MOD_SFNFORMS_LOGGED_VALUE_NOT_SEND</option>
+					<option value="0">JNO</option>
+				</field>			
+				<field name="tegram_send" class="btn-group" type="radio" label="MOD_SFNFORMS_TELEGRAM_SEND" default="0"  >
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+    		<field name="tegram_send_token" type="text" label="MOD_SFNFORMS_TELEGRAM_SEND_BOT_TOKEN" showon="tegram_send:1"/>
+    		<field name="tegram_send_id" type="text" label="MOD_SFNFORMS_TELEGRAM_SEND_CHAT_ID" showon="tegram_send:1"/>
+				<field name="jquery" class="btn-group" type="radio" label="MOD_SFNFORMS_LOAD_JQUERY" default="1" description="MOD_SFNFORMS_LOAD_JQUERY_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field name="moduleclass_sfx" type="textarea" rows="3" label="MOD_SFNFORMS_MODULECLASS_SFX_LABEL" description="MOD_SFNFORMS_MODULECLASS_SFX_DESC" />
+				</fieldset>
+			<fieldset name="advanced">
+				<field
+						name="layout"
+						type="modulelayout"
+						label="JFIELD_ALT_LAYOUT_LABEL"
+						class="form-select"
+						validate="moduleLayout"
+				/>
+				<field
+						name="cache"
+						type="list"
+						default="1"
+						label="COM_MODULES_FIELD_CACHING_LABEL"
+				>
+					<option
+							value="1">JGLOBAL_USE_GLOBAL</option>
+					<option
+							value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+				</field>
+
+				<field
+						name="cache_time"
+						type="number"
+						label="COM_MODULES_FIELD_CACHE_TIME_LABEL"
+						default="900"
+						filter="integer"
+				/>
+				<field
+						name="cachemode"
+						type="hidden"
+						default="static">
+					<option value="static"></option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+	<updateservers>
+    <server type="extension" name="Module SFNForms">https://gitvault.sofona.info/mod_sfnforms/updateSfnForms.xml</server>
+  </updateservers>
+</extension>

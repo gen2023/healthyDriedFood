@@ -34,6 +34,7 @@ $swiperclass_sfx = $params->get('swiperclass_sfx', '');
 $show_name = (int) $params->get('show_name', 0);
 $navegation_slider = (int) $params->get('navegation_slider', 0);
 $all_menu = (int) $params->get('all_menu', 0);
+$count_products = (int) $params->get('count_products', 0);
 
 $list = [];
 
@@ -66,9 +67,11 @@ if ($sourceType === 'list_manufacturer') {
             // 'm.`' . $lang->get('description') . '` AS description',
             // 'm.`' . $lang->get('short_description') . '` AS short_description',
             'm.img_alt',
-            'm.img_title'
+            'm.img_title',
+            'COUNT(p.product_id) AS product_count'
         ])
         ->from('#__jshopping_manufacturers AS m')
+        ->leftJoin('#__jshopping_products AS p ON p.product_manufacturer_id = m.manufacturer_id AND p.product_publish = 1')
         ->where('m.manufacturer_publish = 1');
 
     if (!empty($ids)) {
@@ -78,6 +81,8 @@ if ($sourceType === 'list_manufacturer') {
     if (!empty($exclude_ids)) {
         $query->where('m.manufacturer_id NOT IN (' . implode(',', $exclude_ids) . ')');
     }
+
+    $query->group('m.manufacturer_id');
 
     $query->order($orderby . ' ' . strtoupper($ordering));
     $db->setQuery($query);
@@ -130,10 +135,14 @@ if ($sourceType === 'list_manufacturer') {
             'c.`' . $lang->get('description') . '` AS description',
             'c.`' . $lang->get('short_description') . '` AS short_description',
             'c.img_alt',
-            'c.img_title'
+            'c.img_title',
+            'COUNT(p.product_id) AS product_count'
         ])
         ->from('#__jshopping_categories AS c')
+        ->leftJoin('#__jshopping_products_to_categories AS pc ON pc.category_id = c.category_id')
+        ->leftJoin('#__jshopping_products AS p ON p.product_id = pc.product_id AND p.product_publish = 1')
         ->where('c.category_publish = 1');
+
 
     if (!$all_menu) {
         if (!$first_level_category && !empty($ids)) {
@@ -149,9 +158,13 @@ if ($sourceType === 'list_manufacturer') {
         $query->where('c.category_id NOT IN (' . implode(',', $exclude_ids) . ')');
     }
 
+    $query->group('c.category_id');
+    
     $query->order($orderby . ' ' . strtoupper($ordering));
     $db->setQuery($query);
     $categories = $db->loadObjectList();
+
+    // var_dump($categories);
 
     foreach ($categories as &$curr) {
         $imageFile = $jshopConfig->image_category_path . '/' . $curr->image;

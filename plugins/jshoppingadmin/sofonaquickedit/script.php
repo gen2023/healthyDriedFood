@@ -34,6 +34,7 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
         $this->log("Выполняется удаление плагина");
         $this->deleteFiles();
         $this->deleteConfigField();
+        $this->dropLogTable();
         $this->log("Удаление завершено");
 
         return true;
@@ -44,6 +45,7 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
         $this->log("Выполняется обновление плагина");
         $this->deleteFiles();
         $this->copyFiles();
+        $this->createLogTable();
         $this->log("Обновление завершено");
 
         return true;
@@ -164,13 +166,13 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
         }
     }
 
-    protected function createLogTable()
-    {
-        $this->log("Создание таблицы логов изменений цен...");
-        try {
-            $db = Factory::getContainer()->get('DatabaseDriver');
-            $prefix = $db->getPrefix();
-            $query = "
+protected function createLogTable()
+{
+    $this->log("Проверка и создание таблицы логов изменений цен...");
+    try {
+        $db = Factory::getContainer()->get('DatabaseDriver');
+        $prefix = $db->getPrefix();
+        $query = "
             CREATE TABLE IF NOT EXISTS `{$prefix}sofonaquickedit_log` (
               `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
               `product_id` INT NOT NULL,
@@ -182,12 +184,26 @@ class PlgJshoppingadminSofonaQuickeditInstallerScript
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ";
-            $db->setQuery($query)->execute();
-            $this->log("Таблица логов успешно создана или уже существует.");
-        } catch (\Exception $e) {
-            $this->log("Ошибка при создании таблицы логов: " . $e->getMessage());
-        }
+        $db->setQuery($query)->execute();
+        $this->log("Таблица логов успешно создана или уже существует.");
+    } catch (\Exception $e) {
+        $this->log("Ошибка при создании таблицы логов: " . $e->getMessage());
     }
+}
+
+protected function dropLogTable()
+{
+    $this->log("Удаление таблицы логов...");
+    try {
+        $db = Factory::getContainer()->get('DatabaseDriver');
+        $prefix = $db->getPrefix();
+        $query = "DROP TABLE IF EXISTS `{$prefix}sofonaquickedit_log`";
+        $db->setQuery($query)->execute();
+        $this->log("Таблица логов удалена (если существовала).");
+    } catch (\Exception $e) {
+        $this->log("Ошибка при удалении таблицы логов: " . $e->getMessage());
+    }
+}
 
 
     protected function log($message)

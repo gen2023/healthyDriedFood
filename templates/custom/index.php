@@ -72,84 +72,13 @@ if ($user->guest) {
 
 <body class="header-sticky <?= $pageclass ?>">
     <div class="body-wrapper">
-        <header class="header sticky">
-            <div class="top">
-                <div class="container">
-                    <div class="flex between">
-                        <div class="header-menu">
-                            <jdoc:include type="modules" name="header-menu" style="none" />
-                        </div>
-                        <div class="header-contacts flex">
-                            <a href="https://t.me/healthyDriedFood" class="messenger icon-telegram"></a>
-                            <a href="viber://chat?number=%2B380731401664" class="messenger icon-viber"></a>
-                            <a href="tel:+380731401664" class="tel">+380 (73) 140-16-64</a>
-                            <div class="shedule icon-clock"><?= Text::_('TPL_CUSTOM_SHEDULE'); ?> 09:00-20:00</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="bottom container-wide">
-                <div class="wrapper">
-                    <div class="container">
-                        <div class="flex align-center">
-                            <a href="<?= Text::_('TPL_CUSTOM_HOME'); ?>" class="logo" title="">
-                                <?= $logo ?>
-                            </a>
-                            <div class="btn btn-white show-cat show-cat-menu icon-catalog">
-                                <?= Text::_('TPL_CUSTOM_CATALOG'); ?><span class="arr"></span>
-                                <div class="cat-wrapper">
-                                    <div class="wrapper">
-                                        <jdoc:include type="modules" name="cat-menu" style="none" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <jdoc:include type="modules" name="search" style="none" />
-                            <jdoc:include type="modules" name="lang" style="none" />
-
-                            <div class="header-links flex">
-                                <a href="index.php?Itemid=263" class="icon-user"></a>
-                                <a href="#" class="icon-search show-search"></a>
-                                <jdoc:include type="modules" name="wishlist" style="none" />
-                                <jdoc:include type="modules" name="cart" style="none" />
-                            </div>
-                            <div class="burger-menu icon-burger"></div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </header>
+        <?php include 'html/header.php'; ?>
         <main class="main">
             <jdoc:include type="message" />
             <jdoc:include type="component" />
         </main>
-        <footer class="footer">
-            <div class="container-wide">
-                <div class="wrapper">
-                    <div class="container">
-                        <div class="top">
-                            <div class="flex between">
-                                <div class="footer-contacts">
-                                    <jdoc:include type="modules" name="footer-contacts" style="none" />
-                                </div>
-                                <div class="footer-catalog">
-                                    <div class="ttl white font-size-18 mb30"><?= Text::_('TPL_CUSTOM_CATALOG'); ?></div>
-                                    <jdoc:include type="modules" name="footer-catalog" style="none" />
-                                </div>
-                                <div class="footer-menu">
-                                    <div class="ttl white font-size-18 mb30"><?= Text::_('TPL_CUSTOM_FOR_CLIENTS'); ?></div>
-                                    <jdoc:include type="modules" name="footer-menu" style="none" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bottom">
-                            <div class="copy">© All rights reserved. HealthyDriedFood. <?php echo date('Y'); ?></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <?php include 'html/footer.php'; ?>
+
         <jdoc:include type="modules" name="debug" style="none" />
     </div>
     <div id="toTop" class="icon-up"></div>

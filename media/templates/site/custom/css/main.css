@@ -3787,3 +3787,238 @@ ol.default-list li:before {
 .subcategory-list .control_swiper .swiper-button-next:after {
   font-size: 16px;
 }
+
+.contact-form {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.contact-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.contact-form .control-group {
+  margin-bottom: 10px;
+}
+.contact-form fieldset {
+  padding: 20px;
+  border-radius: var(--radius-medium);
+  background: rgba(255, 255, 255, 0.4);
+}
+.contact-form input:hover {
+  border-color: var(--primary2);
+}
+.contact-form textarea {
+  width: 100%;
+  background: #fff;
+  border: 2px solid #fff;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 24px;
+  transition: 0.5s;
+  height: 150px;
+  resize: none;
+}
+.contact-form textarea:hover, .contact-form textarea:focus {
+  border-color: var(--primary2);
+}
+.contact-form button {
+  width: 100%;
+}
+
+.content-404 .wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.content-404 .wrapper .ttl {
+  color: var(--black);
+  font-size: 24px;
+}
+.content-404 .wrapper .text-404 {
+  max-width: 550px;
+}
+.content-404 .wrapper .btn.icon-more {
+  margin: 0 auto;
+}
+
+.accountPage h1 {
+  margin-bottom: 20px;
+}
+.accountPage .jshop_profile_data {
+  width: 600px;
+}
+.accountPage .jshop_profile_data div {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  margin-bottom: 10px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 18px;
+}
+.accountPage .jshop_profile_data div.name {
+  display: block;
+}
+.accountPage .jshop_profile_data span {
+  font-weight: bold;
+}
+.accountPage .jshop_register {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.accountPage .box_button {
+  margin-top: 20px;
+}
+
+.reviews {
+  background: #fff;
+  border-radius: var(--radius-medium);
+  padding: 48px 24px 100px;
+}
+.reviews textarea {
+  height: 150px;
+}
+.reviews .inputbox {
+  background: var(--lightgrey);
+}
+.reviews .inputbox:hover, .reviews .inputbox:focus {
+  border-color: var(--primary2);
+}
+.reviews .box_user_reviews {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-bottom: 30px;
+}
+.reviews .box_user_reviews .review_item {
+  background: var(--lightgrey);
+  padding: 10px;
+  border-radius: 10px;
+}
+.reviews .box_user_reviews .review_item .review_user {
+  font-size: 18px;
+  font-weight: bold;
+}
+.reviews #jshop_review_write {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.reviews #jshop_review_write .row {
+  margin-bottom: 20px;
+}
+.reviews #jshop_review_write .box-rating {
+  display: flex;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.rating_list_container {
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: 9px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 60px;
+}
+.rating_list_container .global_info {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+}
+.rating_list_container .global_info .rating-num {
+  margin-top: 0px;
+  font-size: 48px;
+  display: inline-block;
+  border: none;
+  color: #fff;
+  border-radius: 7px;
+  line-height: 80px;
+  padding: 10px;
+  text-align: center;
+  width: 100px;
+  height: 100px;
+}
+.rating_list_container .global_info .rating-num.rat-avg-5 {
+  background: #ffb60a;
+}
+.rating_list_container .global_info .rating-num.rat-avg-4 {
+  background-color: #ffc548;
+}
+.rating_list_container .global_info .rating-num.rat-avg-3 {
+  background-color: #45a3ff;
+}
+.rating_list_container .global_info .rating-num.rat-avg-2 {
+  background-color: #ff8046;
+}
+.rating_list_container .global_info .rating-num.rat-avg-1 {
+  background-color: #ff5858;
+}
+.rating_list_container .global_info .rating-num.rat-avg-0 {
+  background-color: #eee;
+}
+.rating_list_container .swiper-reviews {
+  width: 100%;
+}
+.rating_list_container .swiper-reviews .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.rating_list_container .swiper-reviews .top .user_info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.rating_list_container .swiper-reviews .top .user_avatar {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  border-radius: 7px;
+  font-size: 25px;
+  font-weight: bold;
+}
+.rating_list_container .rating_report {
+  max-width: 400px;
+}
+.rating_list_container .rating_report .openModalReviewsShop {
+  margin-top: 20px;
+}
+.rating_list_container .stars-row {
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+  gap: 10px;
+}
+.rating_list_container .stars {
+  width: 50px;
+  font-weight: bold;
+}
+.rating_list_container .progress {
+  flex: 1;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 17px;
+}
+.rating_list_container .progress-bar {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+.rating_list_container .percent {
+  width: 45px;
+  text-align: right;
+  font-size: 13px;
+  color: #333;
+}
+.rating_list_container .count_list {
+  display: flex;
+  flex-direction: column;
+}

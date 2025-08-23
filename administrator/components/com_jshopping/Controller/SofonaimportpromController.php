@@ -14,6 +14,7 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Registry\Registry;
 // use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\Database\DatabaseInterface;
+use Joomla\Component\Jshopping\Site\Lib\ImageLib;
 
 require_once JPATH_ROOT . '/components/com_jshopping/Lib/phpoffice/autoload.php';
 
@@ -950,9 +951,23 @@ class SofonaimportpromController extends BaseadminController
 
       // Создать миниатюру
       if (!file_exists($thumbPath)) {
-        if ($this->resizeImage($destPath, $thumbPath, 300, 300)) {
+
+        if (
+          ImageLib::resizeImageMagic(
+    $destPath,
+    400,
+    400,
+    1,         // вырежет под квадрат
+    0,         // без заливки
+    $thumbPath,
+    85
+)
+        ) {
           $stats['thumbs_created']++;
         }
+        // if ($this->resizeImage($destPath, $thumbPath, 300, 300)) {
+        //   $stats['thumbs_created']++;
+        // }
       } else {
         $stats['thumbs_skipped']++;
       }
@@ -981,39 +996,39 @@ class SofonaimportpromController extends BaseadminController
     return $stats;
   }
 
-  protected function resizeImage(string $sourcePath, string $destPath, int $width, int $height): bool
-  {
-    if (!is_file($sourcePath)) {
-      return false;
-    }
+  // protected function resizeImage(string $sourcePath, string $destPath, int $width, int $height): bool
+  // {
+  //   if (!is_file($sourcePath)) {
+  //     return false;
+  //   }
 
-    $imageInfo = @getimagesize($sourcePath);
-    if (!$imageInfo) {
-      return false;
-    }
+  //   $imageInfo = @getimagesize($sourcePath);
+  //   if (!$imageInfo) {
+  //     return false;
+  //   }
 
-    [$origWidth, $origHeight, $type] = $imageInfo;
+  //   [$origWidth, $origHeight, $type] = $imageInfo;
 
-    // Обработка только JPEG
-    if ($type === IMAGETYPE_JPEG) {
-      $image = @imagecreatefromjpeg($sourcePath);
-      if (!$image) {
-        return false;
-      }
+  //   // Обработка только JPEG
+  //   if ($type === IMAGETYPE_JPEG) {
+  //     $image = @imagecreatefromjpeg($sourcePath);
+  //     if (!$image) {
+  //       return false;
+  //     }
 
-      $thumb = imagecreatetruecolor($width, $height);
-      imagecopyresampled($thumb, $image, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight);
-      $result = imagejpeg($thumb, $destPath, 90);
+  //     $thumb = imagecreatetruecolor($width, $height);
+  //     imagecopyresampled($thumb, $image, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight);
+  //     $result = imagejpeg($thumb, $destPath, 90);
 
-      imagedestroy($image);
-      imagedestroy($thumb);
+  //     imagedestroy($image);
+  //     imagedestroy($thumb);
 
-      return $result;
-    }
+  //     return $result;
+  //   }
 
-    // Если тип другой — просто копируем файл как "thumb_имя"
-    return copy($sourcePath, $destPath);
-  }
+  //   // Если тип другой — просто копируем файл как "thumb_имя"
+  //   return copy($sourcePath, $destPath);
+  // }
   protected function importCategories($categoriesXml)
   {
     $db = Factory::getContainer()->get(DatabaseInterface::class);

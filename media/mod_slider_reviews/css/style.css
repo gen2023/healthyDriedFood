@@ -1,0 +1,95 @@
+.modalReviewsShop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+.modalReviewsShop.active {
+  display: flex;
+}
+.modalReviewsShop .content-modalReviewsShop {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+      overflow: auto;
+    max-height: 505px;
+    height: 100%;
+}
+.modalReviewsShop .content-modalReviewsShop .inputbox {
+  border: 1px solid #EBE9F6;
+}
+.modalReviewsShop .content-modalReviewsShop textarea.inputbox {
+  min-height: 150px;
+  resize: vertical;
+}
+.modalReviewsShop .content-modalReviewsShop .closeModal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.modalReviewsShop .review_stars {
+  display: flex;
+  gap: 5px;
+  cursor: pointer;
+}
+.modalReviewsShop .review_stars .star {
+  font-size: 24px;
+  color: #EBE9F6;
+  transition: color 0.2s;
+}
+.modalReviewsShop .review_stars .star.active,
+.modalReviewsShop .review_stars .star:hover,
+.modalReviewsShop .review_stars .star.hovered {
+  color: #f7a001;
+}
+.capthaModReview{
+  display: none;
+}
+.msg {
+  position: absolute; 
+  top: 10px;
+  left: 20px;
+  right: 20px;
+  padding: 10px;
+  font-size: 16px;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.msg.success {
+  background: green;
+  animation: pulse 1.5s infinite;
+}
+
+.msg.error {
+  background: red;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

@@ -376,6 +376,15 @@
   .page-flex .right-side .prod-wrap {
     width: calc(33.33% - 12px);
   }
+  .rating_list_container .global_info {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .rating_list_container .global_info .info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 }
 @media (max-width: 768px) {
   .page-flex .right-side .prod-wrap {
@@ -535,6 +544,29 @@
     width: calc(49.3% - 12px);
     margin-left: 6px;
     margin-right: 6px;
+  }
+  .content-404 .wrapper {
+    justify-content: center;
+    background-position: center top;
+    background-size: contain;
+    text-align: center;
+    padding: 100% 16px 0;
+  }
+  .content-404 .wrapper .ttl {
+    margin-bottom: 30px;
+  }
+  .content-404 .wrapper .text-404 {
+    margin-bottom: 32px;
+  }
+  .content-404 .wrapper .btn {
+    margin: 0 auto;
+  }
+  .rating_list_container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .rating_list_container .rating_report {
+    max-width: unset;
   }
 }
 @media (max-width: 576px) {

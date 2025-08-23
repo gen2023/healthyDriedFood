@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="site" method="upgrade">
+    <name>Відгуки</name>
+	<creationDate>21.02.2025</creationDate>
+    <author>Sofona</author>
+    <copyright></copyright>
+    <license>Open Source License, GNU GPL</license>
+    <version>1.0.0</version>
+	<description>Показує відгуки</description>
+	<files>
+	    <filename module="mod_slider_reviews">mod_slider_reviews.php</filename>
+	    <folder>tmpl</folder>
+	</files>
+    <languages>
+		<language tag="ru-RU">language/ru-RU/mod_slider_reviews.ini</language>
+		<language tag="uk-UA">language/uk-UA/mod_slider_reviews.ini</language>
+	</languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field
+                    name="limit_reviews"
+                    type="number"
+                    label="Кількість"
+                    default="10"
+                    description=""
+                    filter="integer"/>
+            </fieldset>
+            <fieldset name="advanced">
+				<field
+					name="layout"
+					type="modulelayout"
+					label="JFIELD_ALT_LAYOUT_LABEL"
+					class="form-select"
+					validate="moduleLayout"
+				/>
+
+				<field
+					name="moduleclass_sfx"
+					type="textarea"
+					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+					rows="3"
+					validate="CssIdentifier"
+				/>
+			</fieldset>
+        </fields>
+    </config>     
+</extension>

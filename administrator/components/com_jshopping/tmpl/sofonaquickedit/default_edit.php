@@ -68,10 +68,9 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
       <div>
         <button type="button" class="btn btn-primary js-stools-btn-clear"><?php echo Text::_('JSEARCH_FILTER_CLEAR'); ?></button>
       </div>
-      <?php print $this->tmp_html_filter_end ?>
     </div>
 
-    <?php if ($params_plg['show_massedit_price']) { ?>
+    <?php if (isset($params_plg['show_massedit_price']) && $params_plg['show_massedit_price']) { ?>
       <div class="card p-3 mb-3 w-maxc">
         <div class="mass_action mt-3 mb-3">
           <h2><?= Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SELECT_MASS_OPERATION') ?></h2>
@@ -120,7 +119,7 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
       </div>
     <?php } ?>
 
-    <?php if ($params_plg['show_massedit_product']) { ?>
+    <?php if (isset($params_plg['show_massedit_product']) && $params_plg['show_massedit_product']) { ?>
       <div class="card p-3 mb-3 w-maxc">
         <h2><?= Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SELECT_MASS_OPERATION') ?></h2>
 
@@ -169,13 +168,13 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
           <th width="20">
             <input type="checkbox" name="checkall-toggle" value="" title="<?php echo Text::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)" />
           </th>
-          <?php if ($params_plg['show_id']) { ?>
+          <?php if (isset($params_plg['show_id']) && $params_plg['show_id']) { ?>
             <th width="30" class="center">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_ID'), 'product_id', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
 
-          <?php if ($params_plg['show_imageProduct']) { ?>
+          <?php if (isset($params_plg['show_imageProduct']) && $params_plg['show_imageProduct']) { ?>
             <th width="93">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_IMAGE'), 'product_name_image', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
@@ -184,124 +183,124 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
           <th>
             <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_TITLE'), 'name', $this->filter_order_Dir, $this->filter_order) ?>
           </th>
-          <?php if ($params_plg['show_short_description']) { ?>
+          <?php if (isset($params_plg['show_short_description']) && $params_plg['show_short_description']) { ?>
             <th>
               <?php echo Text::_('JSHOP_SHORT_DESCRIPTION'); ?>
             </th>
           <?php } ?>
-          <?php if ($params_plg['show_metaTitle']) { ?>
+          <?php if (isset($params_plg['show_metaTitle']) && $params_plg['show_metaTitle']) { ?>
             <th>
               <?php echo Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_META_TITLE'); ?>
             </th>
           <?php } ?>
-          <?php if ($params_plg['show_metaDescription']) { ?>
+          <?php if (isset($params_plg['show_metaDescription']) && $params_plg['show_metaDescription']) { ?>
             <th>
               <?php echo Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_META_DESCRIPTION'); ?>
             </th>
           <?php } ?>
-          <?php if ($params_plg['show_medtaKeywords']) { ?>
+          <?php if (isset($params_plg['show_medtaKeywords']) && $params_plg['show_medtaKeywords']) { ?>
             <th>
               <?php echo Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_META_KEYWORDS'); ?>
             </th>
           <?php } ?>
-          <?php if (!$category_id && $params_plg['show_category']) { ?>
+          <?php if (!$category_id && isset($params_plg['show_category']) && $params_plg['show_category']) { ?>
             <th width="80">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_CATEGORY'), 'category', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
           <?php } ?>
-          <?php if ((!$manufacturer_id && $this->config->disable_admin['product_manufacturer'] == 0 && $params_plg['show_product_manufacturer'])) { ?>
+          <?php if ((!$manufacturer_id && $this->config->disable_admin['product_manufacturer'] == 0 && isset($params_plg['show_product_manufacturer']) && $params_plg['show_product_manufacturer'])) { ?>
             <th width="80">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_MANUFACTURER'), 'product_manufacturer_id', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
           <?php } ?>
 
-          <?php if ($this->show_vendor && $params_plg['show_vendorProduct']) { ?>
+          <?php if ($this->show_vendor && isset($params_plg['show_vendorProduct']) && $params_plg['show_vendorProduct']) { ?>
             <th width="80">
               <?php echo Text::_('JSHOP_VENDOR') ?>
             </th>
           <?php } ?>
-          <?php if ($this->config->admin_show_product_labels && $params_plg['show_labelProduct']) { ?>
+          <?php if ($this->config->admin_show_product_labels && isset($params_plg['show_labelProduct']) && $params_plg['show_labelProduct']) { ?>
             <th width="80">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_LIST_PRODUCT_LABELS'), 'label_id', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
           <?php } ?>
-          <?php if (($this->config->disable_admin['product_ean'] == 0 || $this->config->admin_product_list_manufacture_code || $this->config->admin_product_list_real_ean) && $params_plg['show_product_eanProduct']) { ?>
+          <?php if (($this->config->disable_admin['product_ean'] == 0 || $this->config->admin_product_list_manufacture_code || $this->config->admin_product_list_real_ean) && isset($params_plg['show_product_eanProduct']) && $params_plg['show_product_eanProduct']) { ?>
             <th width="80">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_EAN_PRODUCT'), 'ean', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
-          <?php if ($params_plg['show_real_ean']) { ?>
+          <?php if (isset($params_plg['show_real_ean']) && $params_plg['show_real_ean']) { ?>
             <th width="80">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_EAN'), 'real_ean', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
-          <?php if ($params_plg['show_manufacturer_code']) { ?>
+          <?php if (isset($params_plg['show_manufacturer_code']) && $params_plg['show_manufacturer_code']) { ?>
             <th width="80">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_MANUFACTURER_CODE'), 'manufacturer_code', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
-          <?php if ($this->config->stock && $params_plg['show_stockProduct']) { ?>
+          <?php if ($this->config->stock && isset($params_plg['show_stockProduct']) && $params_plg['show_stockProduct']) { ?>
             <th width="60">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_QUANTITY'), 'qty', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
-          <?php if ($this->config->stock && $params_plg['show_stockProduct']) { ?>
+          <?php if ($this->config->stock && isset($params_plg['show_stockProduct']) && $params_plg['show_stockProduct']) { ?>
             <th width="60">
               <?php echo Text::_('JSHOP_UNLIMITED'); ?>
             </th>
           <?php } ?>
-          <?php if ($params_plg['show_priceProduct']) { ?>
+          <?php if (isset($params_plg['show_priceProduct']) && $params_plg['show_priceProduct']) { ?>
             <th width="80">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_PRICE'), 'price', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
 
-          <?php if ($params_plg['show_oldpriceProduct']) { ?>
+          <?php if (isset($params_plg['show_oldpriceProduct']) && $params_plg['show_oldpriceProduct']) { ?>
             <th width="60">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_OLD_PRICE'), 'price_old', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
-          <?php if ($params_plg['show_additionPriceProduct']) { ?>
+          <?php if (isset($params_plg['show_additionPriceProduct']) && $params_plg['show_additionPriceProduct']) { ?>
             <th width="30">
               <?= Text::_('JSHOP_PRODUCT_ADD_PRICE'); ?>
             </th>
           <?php } ?>
-          <?php if ($params_plg['show_currencyProduct']) { ?>
+          <?php if (isset($params_plg['show_currencyProduct']) && $params_plg['show_currencyProduct']) { ?>
             <th width="60">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_CURRENCY_PARAMETERS'), 'currency', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
 
-          <?php if ($params_plg['show_hitsProduct']) { ?>
+          <?php if (isset($params_plg['show_hitsProduct']) && $params_plg['show_hitsProduct']) { ?>
             <th width="40">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_HITS'), 'hits', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
 
-          <?php if ($params_plg['show_publishProduct']) { ?>
+          <?php if (isset($params_plg['show_publishProduct']) && $params_plg['show_publishProduct']) { ?>
             <th width="40" class="center">
               <?php echo Text::_('JSHOP_PUBLISH') ?>
             </th>
           <?php } ?>
 
-          <?php if ($params_plg['show_deleteProduct']) { ?>
+          <?php if (isset($params_plg['show_deleteProduct']) && $params_plg['show_deleteProduct']) { ?>
             <th width="40" class="center">
               <?php echo Text::_('JSHOP_DELETE') ?>
             </th>
           <?php } ?>
 
-          <?php if ($params_plg['show_dateCreateProduct']) { ?>
+          <?php if (isset($params_plg['show_dateCreateProduct']) && $params_plg['show_dateCreateProduct']) { ?>
             <th width="60">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_DATE'), 'date', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
-          <?php if ($params_plg['show_dateModifyProduct']) { ?>
+          <?php if (isset($params_plg['show_dateModifyProduct']) && $params_plg['show_dateModifyProduct']) { ?>
             <th width="60">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_ORDER_MODIFY_DATE'), 'date_modify', $this->filter_order_Dir, $this->filter_order); ?>
             </th>
           <?php } ?>
 
-          <?php if ($params_plg['show_editProduct']) { ?>
+          <?php if (isset($params_plg['show_editProduct']) && $params_plg['show_editProduct']) { ?>
             <th width="30" class="center">
               <?= Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_COLUMN_EDIT') ?>
             </th>
@@ -315,12 +314,12 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
               <?php echo HTMLHelper::_('grid.id', $i, $row->product_id); ?>
               <?php print $row->tmp_html_in_col_checkbox ?? ''; ?>
             </td>
-            <?php if ($params_plg['show_id']) { ?>
+            <?php if (isset($params_plg['show_id']) && $params_plg['show_id']) { ?>
               <td class="center">
                 <?php echo $row->product_id; ?>
               </td>
             <?php } ?>
-            <?php if ($params_plg['show_imageProduct']) { ?>
+            <?php if (isset($params_plg['show_imageProduct']) && $params_plg['show_imageProduct']) { ?>
               <td>
                 <?php if ($row->label_id) { ?>
                   <div class="product_label">
@@ -341,64 +340,64 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
             <td data-field="name_<?= $langCode ?>" data-type="text" data-product_id="<?= $row->product_id ?>">
               <span><?php echo $row->name; ?></span>
             </td>
-            <?php if ($params_plg['show_short_description']) { ?>
+            <?php if (isset($params_plg['show_short_description']) && $params_plg['show_short_description']) { ?>
               <td data-field="short_description_<?= $langCode ?>" data-type="textarea" data-product_id="<?= $row->product_id ?>">
                 <span class="small"><?php echo $row->short_description; ?></span>
               </td>
             <?php } ?>
-            <?php if ($params_plg['show_metaTitle']) { ?>
+            <?php if (isset($params_plg['show_metaTitle']) && $params_plg['show_metaTitle']) { ?>
               <td data-field="meta_title_<?= $langCode ?>" data-type="textarea" data-product_id="<?= $row->product_id ?>">
                 <span class="small"><?php echo $row->meta_title; ?></span>
               </td>
             <?php } ?>
-            <?php if ($params_plg['show_metaDescription']) { ?>
+            <?php if (isset($params_plg['show_metaDescription']) && $params_plg['show_metaDescription']) { ?>
               <td data-field="meta_description_<?= $langCode ?>" data-type="textarea" data-product_id="<?= $row->product_id ?>">
                 <span class="small"><?php echo $row->meta_description; ?></span>
               </td>
             <?php } ?>
-            <?php if ($params_plg['show_medtaKeywords']) { ?>
+            <?php if (isset($params_plg['show_medtaKeywords']) && $params_plg['show_medtaKeywords']) { ?>
               <td data-field="meta_keyword_<?= $langCode ?>" data-type="textarea" data-product_id="<?= $row->product_id ?>">
                 <span class="small"><?php echo $row->meta_keyword; ?></span>
               </td>
             <?php } ?>
-            <?php if (!$category_id && $params_plg['show_category']) { ?>
+            <?php if (!$category_id && isset($params_plg['show_category']) && $params_plg['show_category']) { ?>
               <td data-field="category" data-type="select" data-product_id="<?= $row->product_id ?>">
                 <span><?php echo $row->namescats; ?></span>
               </td>
             <?php } ?>
-            <?php if ((!$manufacturer_id && $this->config->disable_admin['product_manufacturer'] == 0) && $params_plg['show_product_manufacturer']) { ?>
+            <?php if ((!$manufacturer_id && $this->config->disable_admin['product_manufacturer'] == 0) && isset($params_plg['show_product_manufacturer']) && $params_plg['show_product_manufacturer']) { ?>
               <td data-field="manufacturer" data-type="select" data-product_id="<?= $row->product_id ?>" data-function_name="getManufacturers">
                 <span><?php echo $row->man_name; ?></span>
               </td>
             <?php } ?>
 
-            <?php if ($this->show_vendor && $params_plg['show_vendorProduct']) { ?>
+            <?php if ($this->show_vendor && isset($params_plg['show_vendorProduct']) && $params_plg['show_vendorProduct']) { ?>
               <td>
                 <?php echo $row->vendor_name; ?>
               </td>
             <?php } ?>
-            <?php if ($this->config->admin_show_product_labels && $params_plg['show_labelProduct']) { ?>
+            <?php if ($this->config->admin_show_product_labels && isset($params_plg['show_labelProduct']) && $params_plg['show_labelProduct']) { ?>
               <td data-field="label_product" data-type="select" data-product_id="<?= $row->product_id ?>" data-function_name="getLabelProduct">
                 <span><?php echo $row->label_id ? $row->_label_name : ''; ?></span>
               </td>
             <?php } ?>
 
-            <?php if ($this->config->disable_admin['product_ean'] == 0 && $params_plg['show_product_eanProduct']) { ?>
+            <?php if ($this->config->disable_admin['product_ean'] == 0 && isset($params_plg['show_product_eanProduct']) && $params_plg['show_product_eanProduct']) { ?>
               <td data-field="product_ean" data-type="text" data-product_id="<?= $row->product_id ?>">
                 <span><?php echo $row->ean ?></span>
               </td>
             <?php } ?>
-            <?php if ($params_plg['show_real_ean']) { ?>
+            <?php if (isset($params_plg['show_real_ean']) && $params_plg['show_real_ean']) { ?>
               <td data-field="real_ean" data-type="text" data-product_id="<?= $row->product_id ?>">
                 <span><?php echo $row->real_ean ?></span>
               </td>
             <?php } ?>
-            <?php if ($params_plg['show_manufacturer_code']) { ?>
+            <?php if (isset($params_plg['show_manufacturer_code']) && $params_plg['show_manufacturer_code']) { ?>
               <td data-field="manufacturer_code" data-type="text" data-product_id="<?= $row->product_id ?>">
                 <span><?php echo $row->manufacturer_code ?></span>
               </td>
             <?php } ?>
-            <?php if ($this->config->stock && $params_plg['show_stockProduct']) { ?>
+            <?php if ($this->config->stock && isset($params_plg['show_stockProduct']) && $params_plg['show_stockProduct']) { ?>
               <td data-field="product_quantity" data-type="number" data-product_id="<?= $row->product_id ?>" data-original_qty="<?= floatval($row->qty) ?>">
                 <?php if ($row->unlimited) {
                   echo '-----';
@@ -408,7 +407,7 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
               </td>
 
             <?php } ?>
-            <?php if ($this->config->stock && $params_plg['show_stockProduct']) { ?>
+            <?php if ($this->config->stock && isset($params_plg['show_stockProduct']) && $params_plg['show_stockProduct']) { ?>
               <td data-product_id="<?= $row->product_id ?>">
                 <?php if ($row->unlimited) { ?>
                   <input type="checkbox" name="unlimited" value="1" checked="checked" onclick="editUnlimited(this.checked,<?= $row->product_id ?>)">
@@ -419,19 +418,19 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
               </td>
             <?php } ?>
 
-            <?php if ($params_plg['show_priceProduct']) { ?>
+            <?php if (isset($params_plg['show_priceProduct']) && $params_plg['show_priceProduct']) { ?>
               <td data-field="product_price" data-type="number" data-product_id="<?= $row->product_id ?>">
                 <span><?= number_format($row->product_price, 2, '.', ''); ?></span>
               </td>
             <?php } ?>
 
-            <?php if ($params_plg['show_oldpriceProduct']) { ?>
+            <?php if (isset($params_plg['show_oldpriceProduct']) && $params_plg['show_oldpriceProduct']) { ?>
               <td data-field="product_old_price" data-type="number" data-product_id="<?= $row->product_id ?>">
                 <?= number_format($row->product_old_price, 2, '.', ''); ?>
               </td>
             <?php } ?>
 
-            <?php if ($params_plg['show_additionPriceProduct']) { ?>
+            <?php if (isset($params_plg['show_additionPriceProduct']) && $params_plg['show_additionPriceProduct']) { ?>
               <td data-field="product_addition_price" data-type="modal" data-product_id="<?= (int) $row->product_id; ?>">
                 <div onclick="openModalAdditionPrice(<?= $row->product_id ?>, <?= $row->product_price ?>)">
                   <?php if (!empty($row->product_add_prices) && is_array($row->product_add_prices)) { ?>
@@ -444,25 +443,25 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
               </td>
             <?php } ?>
 
-            <?php if ($params_plg['show_currencyProduct']) { ?>
+            <?php if (isset($params_plg['show_currencyProduct']) && $params_plg['show_currencyProduct']) { ?>
               <td data-field="currency" data-type="select" data-product_id="<?= $row->product_id ?>" data-function_name="getCurrencies">
                 <span><?php echo \JSHelper::sprintCurrency($row->currency_id); ?></span>
                 </th>
               <?php } ?>
 
-              <?php if ($params_plg['show_hitsProduct']) { ?>
+              <?php if (isset($params_plg['show_hitsProduct']) && $params_plg['show_hitsProduct']) { ?>
               <td data-field="hits" data-type="number" data-product_id="<?= $row->product_id ?>">
                 <span><?php echo $row->hits; ?></span>
               </td>
             <?php } ?>
 
-            <?php if ($params_plg['show_publishProduct']) { ?>
+            <?php if (isset($params_plg['show_publishProduct']) && $params_plg['show_publishProduct']) { ?>
               <td class="center">
                 <?php echo HTMLHelper::_('jgrid.published', $row->product_publish, $i); ?>
               </td>
             <?php } ?>
 
-            <?php if ($params_plg['show_deleteProduct']) { ?>
+            <?php if (isset($params_plg['show_deleteProduct']) && $params_plg['show_deleteProduct']) { ?>
               <td class="center">
                 <a class="btn btn-micro btn-nopad" href='index.php?option=com_jshopping&controller=sofonaquickedit&task=remove&cid[]=<?php print $row->product_id ?>'
                   onclick="return confirm('<?php print Text::_('JSHOP_DELETE') ?>')">
@@ -471,18 +470,18 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
               </td>
             <?php } ?>
 
-            <?php if ($params_plg['show_dateCreateProduct']) { ?>
+            <?php if (isset($params_plg['show_dateCreateProduct']) && $params_plg['show_dateCreateProduct']) { ?>
               <td>
                 <?php echo Helper::formatdate($row->product_date_added, 1); ?>
               </td>
             <?php } ?>
-            <?php if ($params_plg['show_dateModifyProduct']) { ?>
+            <?php if (isset($params_plg['show_dateModifyProduct']) && $params_plg['show_dateModifyProduct']) { ?>
               <td>
                 <?php echo Helper::formatdate($row->date_modify, 1); ?>
               </td>
             <?php } ?>
 
-            <?php if ($params_plg['show_editProduct']) { ?>
+            <?php if (isset($params_plg['show_editProduct']) && $params_plg['show_editProduct']) { ?>
               <th width="30" class="center">
                 <a href="index.php?option=com_jshopping&controller=products&task=edit&product_id=<?php print $row->product_id ?>"><i class="icon-pencil"></i></a>
               </th>
@@ -495,7 +494,7 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
       </tbody>
     </table>
 
-    <?php if ($params_plg['show_additionPriceProduct']) { ?>
+    <?php if (isset($params_plg['show_additionPriceProduct']) && $params_plg['show_additionPriceProduct']) { ?>
       <div class="modalAdditionPrice">
         <div class="modalAdditionPriceContent">
           <div class="closeModal"><i class="icon-delete"></i></div>
@@ -549,7 +548,6 @@ $lang->load('plg_jshoppingadmin_sofonaquickedit', JPATH_ADMINISTRATOR);
     <input type="hidden" name="task" value="" />
     <input type="hidden" name="hidemainmenu" value="0" />
     <input type="hidden" name="boxchecked" value="0" />
-    <?php print $this->tmp_html_end ?>
   </form>
 </div>
 <script>

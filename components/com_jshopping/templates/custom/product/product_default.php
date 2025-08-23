@@ -71,9 +71,9 @@ include(dirname(__FILE__) . "/load.js.php");
                     </div>
                     <h1 class="ttl md mb25"><?php print $this->product->name ?></h1>
                     <?php if ($product->product_quantity > 0) { ?>
-                        <div class="avail icon-check mb25"><?= JText::_('TPL_CUSTOM_AVAIL'); ?></div>
+                        <div class="avail icon-check mb25"><?= Text::_('TPL_CUSTOM_AVAIL'); ?></div>
                     <?php } else { ?>
-                        <div class="prod-not-avail icon-check mb25"><?= JText::_('TPL_CUSTOM_NOT_AVAIL'); ?></div>
+                        <div class="prod-not-avail icon-check mb25"><?= Text::_('TPL_CUSTOM_NOT_AVAIL'); ?></div>
                     <?php } ?>
                     <div class="charact mb25">
                         <?php if ($this->product->product_is_add_price) { ?>
@@ -113,7 +113,7 @@ include(dirname(__FILE__) . "/load.js.php");
                             </div>
                         <?php } ?>
 
-                       <?php if ($product->product_quantity > 0) { ?>
+                        <?php if ($product->product_quantity > 0) { ?>
                             <div class="flex between align-center">
                                 <div class="extra_fields_name"><?= Text::_('TPL_CUSTOM_ENTER_QUAN'); ?>:</div>
                                 <div class="prod_qty_input block_quantity">
@@ -151,7 +151,7 @@ include(dirname(__FILE__) . "/load.js.php");
                                     </span>
                                 </div>
                                 <?php if ($this->product->product_price_default > 0 && $this->config->product_list_show_price_default) { ?>
-                                    <div class="default_price"><?php print JText::_('JSHOP_DEFAULT_PRICE') ?>: <span
+                                    <div class="default_price"><?php print Text::_('JSHOP_DEFAULT_PRICE') ?>: <span
                                             id="pricedefault"><?php print \JSHelper::formatprice($this->product->product_price_default) ?></span>
                                     </div>
                                 <?php } ?>
@@ -181,13 +181,21 @@ include(dirname(__FILE__) . "/load.js.php");
                 </form>
             </div>
         </div>
-        <div class="prod-descr mb110">
+        <div class="prod-descr mb15">
             <div class="text-wrap">
                 <div class="ttl sm mb15"><?= Text::_('TPL_CUSTOM_PROD_DESCR') ?></div>
                 <div><?php print $this->product->description; ?></div>
             </div>
         </div>
-
+<div class="reviews">
+            <?php
+        print $this->_tmp_product_html_before_review;
+        include(__DIR__."/review.php");
+        
+        // print $this->_tmp_product_html_before_related;
+        // include(__DIR__."/related.php");
+    ?>
+</div>
         <div class="mb50">
             <?php
             $module = ModuleHelper::getModules('recently-viewed');
@@ -195,14 +203,14 @@ include(dirname(__FILE__) . "/load.js.php");
             echo ModuleHelper::renderModule($module[0], $attribs);
             ?>
         </div>
-                <div class="mb50">
-                    <h2><?= Text::_('TPL_CUSTOM_TITLE_RANDOM_PRODUCT') ?></h2>
+        <div class="mb50">
+            <h2><?= Text::_('TPL_CUSTOM_TITLE_RANDOM_PRODUCT') ?></h2>
             <?php
-    $module = ModuleHelper::getModules('random-product');
-    $attribs['style'] = 'none';
-    echo ModuleHelper::renderModule($module[0], $attribs);
-    ?>
-            </div>
+            $module = ModuleHelper::getModules('random-product');
+            $attribs['style'] = 'none';
+            echo ModuleHelper::renderModule($module[0], $attribs);
+            ?>
+        </div>
     </div>
 
 </div>

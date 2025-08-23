@@ -22,12 +22,16 @@ $attribs['style'] = 'none';
             </div>
         </div>
     </div>
-    <div class="container mb40">
-        <h2 class="ttl md mb25"><?= Text::_('TPL_CUSTOM_POPULAR_PRODUCTS'); ?></h2>
-        <?php echo ModuleHelper::renderModule(ModuleHelper::getModules('popular-home')[0], $attribs); ?>
+    <div class="mb40">
+        <?php echo ModuleHelper::renderModule(ModuleHelper::getModules('main-advan')[0], $attribs); ?>
     </div>
-    <?php echo ModuleHelper::renderModule(ModuleHelper::getModules('main-advan')[0], $attribs); ?>
-    <div class="mb40"></div>
+
+    <div class="reviews_list mb40">
+        <div class="container">
+            <?php echo ModuleHelper::renderModule(ModuleHelper::getModules('reviews-home')[0], $attribs); ?>
+        </div>
+    </div>
+
     <div class="main-catalogue mb80" id="mainCatalogue">
         <div class="container">
             <div class="ttl md mb25"><?= Text::_('TPL_CUSTOM_CATALOG'); ?></div>

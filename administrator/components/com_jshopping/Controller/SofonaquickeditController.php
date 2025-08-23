@@ -213,38 +213,38 @@ class SofonaquickeditController extends BaseadminController
     $mass_operation_type = [];
     $mass_operation_type['name_' . $langt] = Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_NAME');
 
-    if ($params_plg['show_priceProduct']) {
+    if (isset($params_plg['show_priceProduct'])) {
       $mass_operation_type['product_price'] = Text::_('JSHOP_PRICE');
     }
-    if ($params_plg['show_oldpriceProduct']) {
+    if (isset($params_plg['show_oldpriceProduct']) && $params_plg['show_oldpriceProduct']) {
       $mass_operation_type['product_old_price'] = Text::_('JSHOP_OLD_PRICE');
     }
-    if ($params_plg['show_stockProduct']) {
+    if (isset($params_plg['show_stockProduct']) && $params_plg['show_stockProduct']) {
       $mass_operation_type['product_quantity'] = Text::_('JSHOP_QUANTITY');
     }
-    if ($params_plg['show_hitsProduct']) {
+    if (isset($params_plg['show_hitsProduct']) && $params_plg['show_hitsProduct']) {
       $mass_operation_type['hits'] = Text::_('JSHOP_HITS');
     }
-    if ($params_plg['show_product_manufacturer']) {
+    if (isset($params_plg['show_product_manufacturer']) && $params_plg['show_product_manufacturer']) {
       $mass_operation_type['product_manufacturer_id'] = Text::_('JSHOP_MANUFACTURER');
     }
-    if ($params_plg['show_currencyProduct']) {
+    if (isset($params_plg['show_currencyProduct']) && $params_plg['show_currencyProduct']) {
       $mass_operation_type['currency_id'] = Text::_('JSHOP_CURRENCY_PARAMETERS');
     }
-    if ($params_plg['show_labelProduct']) {
+    if (isset($params_plg['show_labelProduct']) && $params_plg['show_labelProduct']) {
       $mass_operation_type['label_id'] = Text::_('JSHOP_LIST_PRODUCT_LABELS');
     }
     // TODO: при замене категории нужно очищать все категории продуткта в таблице категорий
-    // if ($params_plg['show_category']) {
+    // if (isset($params_plg['show_category']) && $params_plg['show_category']) {
     //   $mass_operation_type['category'] = Text::_('JSHOP_CATEGORY');
     // } 
-    if ($params_plg['show_metaTitle']) {
+    if (isset($params_plg['show_metaTitle']) && $params_plg['show_metaTitle']) {
       $mass_operation_type['meta_title_' . $langt] = Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_META_TITLE');
     }
-    if ($params_plg['show_metaDescription']) {
+    if (isset($params_plg['show_metaDescription']) && $params_plg['show_metaDescription']) {
       $mass_operation_type['meta_description_' . $langt] = Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_META_DESCRIPTION');
     }
-    if ($params_plg['show_medtaKeywords']) {
+    if (isset($params_plg['show_medtaKeywords']) && $params_plg['show_medtaKeywords']) {
       $mass_operation_type['meta_keyword_' . $langt] = Text::_('PLG_JSHOPPINGADMIN_SOFONAQUICKEDIT_SHOW_META_KEYWORDS');
     }
 
