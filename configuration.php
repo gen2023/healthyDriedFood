@@ -37,8 +37,8 @@ class JConfig {
 	public $fromname = 'HealthyDriedFood';
 	public $sendmail = '/usr/sbin/sendmail';
 	public $smtpauth = true;
-	public $smtpuser = 'system@healthydriedfood.com';
-	public $smtppass = 'eQYXVNnJGE8Tq7G';
+	public $smtpuser = 'support@healthydriedfood.com';
+	public $smtppass = '9ZU5Ex48js';
 	public $smtphost = 'mail.adm.tools';
 	public $smtpsecure = 'ssl';
 	public $smtpport = 465;
