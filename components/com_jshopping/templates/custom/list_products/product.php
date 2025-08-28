@@ -11,13 +11,11 @@ use Joomla\CMS\Language\Text;
 use Joomla\Component\Jshopping\Site\Helper\Helper as JoomShoppingHelper;
 use Joomla\CMS\Factory;
 $user = Factory::getUser();
+
 ?>
 <?php print $product->_tmp_var_start ?>
 <div class="prod-wrap">
-    <div class="product productitem_<?php print $product->product_id;
-    if (!$product->buy_link) {
-        echo " not-avail";
-    } ?>">
+    <div class="product productitem_<?php print $product->product_id; ?>">
         <div class="top_prodoct">
             <div class="image_block">
                 <?php print $product->_tmp_var_image_block; ?>
@@ -58,9 +56,10 @@ $user = Factory::getUser();
                 </div>
             </div>
             <?php if ($product->buy_link) { ?>
-                <div class="avail icon-check"><?= JText::_('TPL_CUSTOM_AVAIL'); ?></div>
+                <div class="avail icon-check"><?= Text::_('TPL_CUSTOM_AVAIL'); ?></div>
             <?php } else { ?>
-                <div class="prod-not-avail icon-check"><?= JText::_('TPL_CUSTOM_NOT_AVAIL'); ?></div>
+                <div class="prod-not-avail icon-check"><?= Text::_('TPL_CUSTOM_NOT_AVAIL'); ?></div>
+                <div class="btn toOrder" data-toOrder_product_id="<?php print $product->product_id; ?>"><?= Text::_('TPL_CUSTOM_BTN_TO_ORDER'); ?></div>
             <?php } ?>
             <?php print $product->_tmp_var_top_buttons; ?>
             <div class="buttons">

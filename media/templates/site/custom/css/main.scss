@@ -1907,7 +1907,7 @@ body .autoscroll-preloader .spinner {
   }
 
   .top_prodoct {
-    flex: 1;
+    // flex: 1;
   }
 
   .btn-wishlist {
@@ -4764,8 +4764,163 @@ ol.default-list {
     display: flex;
     flex-direction: column;
   }
-
-
-
 }
 
+.toOrder {
+  margin: 8px auto 0 auto;
+}
+
+.modal_toOrder {
+  display: none;
+
+  &.active {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .modal_toOrder-content {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    height: 500px;
+    position: relative;
+
+    .close {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      font-size: 0;
+      line-height: 1;
+      color: #9797A1;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      border: none;
+
+      &:before {
+        font-family: "icomoon" !important;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        font-size: 28px;
+        content: "\e90f";
+      }
+    }
+    .top{
+      display: grid;
+      grid-template-columns: 1fr 0.3fr;
+      gap: 20px;
+    }
+  }
+
+  h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .item {
+    margin-bottom: 15px;
+  }
+
+  label {
+    display: block;
+    font-weight: bold;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    border: 1px solid #ccc;
+  }
+  .capthaModal{
+    display: none;
+  }
+
+  .how_contactCheckbox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-bottom: 20px;
+
+    div {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      position: relative;
+
+      input {
+        display: none;
+
+        &:checked+label::before {
+          background: var(--primary2);
+          border-color: var(--primary2);
+        }
+      }
+
+      label {
+        margin: 0;
+        padding: 0;
+        margin-left: 25px; // отступ, чтобы текст не наезжал на квадрат
+        position: relative;
+
+        &::before {
+          content: "";
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          border: 2px solid var(--primary2);
+          border-radius: 8px;
+          position: absolute;
+          top: -2px;
+          left: -25px;
+          background: #fff;
+          cursor: pointer;
+          transition: background 0.2s ease, border-color 0.2s ease;
+        }
+      }
+    }
+  }
+
+  .how_contactList .item {
+    input {
+      border-color: var(--primary2);
+    }
+
+    &.disabled input {
+      pointer-events: none;
+      background: #9797A1;
+      border-color: #9797A1;
+
+    }
+  }
+}
+
+
+@media (min-width: 990px) {
+  .modal-open {
+    header {
+      .container {
+        padding-right: 15px;
+        padding-left: 0px;
+      }
+    }
+  }
+}

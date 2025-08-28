@@ -12,7 +12,7 @@ class sofonaimportpromModel extends BaseadminModel
 {
     public function getOrderProm($orderPromId)
     {
-    $db = Factory::getDbo();
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
 
                 $query = $db->getQuery(true)
             ->select('order_id')
@@ -24,7 +24,7 @@ class sofonaimportpromModel extends BaseadminModel
 
         public function getProductByProductEan($product_ean)
     {
-    $db = Factory::getDbo();
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
 
                 $query = $db->getQuery(true)
             ->select('*')
@@ -36,7 +36,7 @@ class sofonaimportpromModel extends BaseadminModel
 
     public function getProductByPromId($promId)
 {
-    $db = Factory::getDbo();
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
 
     $query = $db->getQuery(true)
         ->select('*')
@@ -46,6 +46,16 @@ class sofonaimportpromModel extends BaseadminModel
     $db->setQuery($query);
     return $db->loadObject();
 }
+    public function setEmailInOrder($orderId,$email){
+    
+          $db = Factory::getContainer()->get(DatabaseInterface::class);
+          $query = $db->getQuery(true)
+              ->update('#__jshopping_orders')
+              ->set('email = ' . $db->quote($email))
+              ->set('d_email = ' . $db->quote($email))
+              ->where('order_id = ' . (int)$orderId);
+          $db->setQuery($query)->execute();
+    }
 
 
 }

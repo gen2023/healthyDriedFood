@@ -82,39 +82,9 @@ if ($user->guest) {
         <jdoc:include type="modules" name="debug" style="none" />
     </div>
     <div id="toTop" class="icon-up"></div>
-    <div class="mobile-menu">
-        <div class="inner first">
-            <div class="top flex between align-center">
-                <a href="<?= Text::_('TPL_CUSTOM_HOME'); ?>" class="logo" title="">
-                    <?= $logo; ?>
-                </a>
-                <jdoc:include type="modules" name="lang-mob" style="none" />
-                <div class="close icon-close"></div>
-            </div>
-            <div class="btn show-cat show-cat-mobile icon-catalog"><?= Text::_('TPL_CUSTOM_CATALOG'); ?></div>
-            <div class="mob-menu">
-                <?php if ($user->guest) { ?>
-                    <a href="index.php?Itemid=263" class="icon-user"><?= Text::_('TPL_CUSTOM_REGISTER_PAGE_TEXT_LINK_LOGIN') ?></a>
-                <?php } else { ?>
-                    <jdoc:include type="modules" name="user-menu" style="none" />
-                <?php } ?>
-                <jdoc:include type="modules" name="header-menu" style="none" />
-            </div>
-            <div class="footer-contacts">
-                <jdoc:include type="modules" name="footer-contacts" style="none" />
-            </div>
-        </div>
-        <div class="inner mob-cat-menu">
-            <div class="top flex between align-center mb40">
-                <div class="ttl md"><?= Text::_('TPL_CUSTOM_CATALOG'); ?></div>
-                <div class="close icon-close"></div>
-            </div>
-            <jdoc:include type="modules" name="cat-menu" style="none" />
-        </div>
-    </div>
-    <div class="buy-caption-success">
-        <div class="close icon-close"></div><?= Text::_('TPL_CUSTOM_BUY_CAPTION_SUCCESS'); ?>
-    </div>
+    
+        <?php include 'html/modal.php'; ?>
+
     <?php
     $wa->useScript('jquery.script');
     $wa->useScript('swiper.script');

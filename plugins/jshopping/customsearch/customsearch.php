@@ -3,7 +3,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Factory;
-use JSFactory;
+// use JSFactory;
 
 class PlgJshoppingCustomsearch extends CMSPlugin
 {

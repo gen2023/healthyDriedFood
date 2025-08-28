@@ -430,7 +430,7 @@ class SofonaimportpromController extends BaseadminController
     $statusMap = [
       'closed' => 8,
       'canceled' => 9,
-      'new' => 1,
+      'accepted' => 8,
     ];
 
     $shippingMethods = [
@@ -469,8 +469,8 @@ class SofonaimportpromController extends BaseadminController
         'd_f_name' => $fio,
         'phone' => $phone,
         'd_phone' => $phone,
-        'email' => $email,
-        'd_email' => $email,
+        // 'email' => $email,
+        // 'd_email' => $email,
         'shipping_params' => $address,
         'street' => $address,
         'd_street' => $address,
@@ -552,7 +552,7 @@ class SofonaimportpromController extends BaseadminController
       unset($order['products']);
 
       // Сохраняем заказ
-// Проверяем, существует ли заказ с таким id_order_prom
+      // Проверяем, существует ли заказ с таким id_order_prom
       $existsOrderId = $importModel->getOrderProm($orderPromId);
       if ($existsOrderId) {
         $this->log("Заказ Prom ID: {$orderPromId} уже существует в системе (order_id: {$existsOrderId}), пропускаем.");
@@ -566,7 +566,13 @@ class SofonaimportpromController extends BaseadminController
         continue;
       }
 
-      $this->log("Заказ Prom ID: {$orderPromId} сохранен с ID: {$savedOrder->order_id}");
+      if ($savedOrder) {
+          $orderId = $savedOrder->order_id;
+
+        $importModel->setEmailInOrder($orderId,$email);
+
+          $this->log("Заказ Prom ID: {$orderPromId} сохранен с ID: {$orderId}, email обновлен без отправки писем");
+      }
 
     }
   }

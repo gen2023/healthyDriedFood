@@ -43,12 +43,12 @@ use Joomla\CMS\Uri\Uri;
           <jdoc:include type="modules" name="lang" style="none" />
 
           <div class="header-links flex">
-            <?php if($user->guest){ ?>
+            <?php if ($user->guest) { ?>
               <a href="index.php?Itemid=263" class="icon-user"></a>
-            <?php }else{?>
+            <?php } else { ?>
               <a href="index.php?Itemid=331" class="icon-user"></a>
-              <?php } ?>
-            
+            <?php } ?>
+
             <a href="#" class="icon-search show-search"></a>
             <jdoc:include type="modules" name="wishlist" style="none" />
             <jdoc:include type="modules" name="cart" style="none" />
@@ -60,3 +60,34 @@ use Joomla\CMS\Uri\Uri;
     </div>
   </div>
 </header>
+
+<div class="mobile-menu">
+  <div class="inner first">
+    <div class="top flex between align-center">
+      <a href="<?= Text::_('TPL_CUSTOM_HOME'); ?>" class="logo" title="">
+        <?= $logo; ?>
+      </a>
+      <jdoc:include type="modules" name="lang-mob" style="none" />
+      <div class="close icon-close"></div>
+    </div>
+    <div class="btn show-cat show-cat-mobile icon-catalog"><?= Text::_('TPL_CUSTOM_CATALOG'); ?></div>
+    <div class="mob-menu">
+      <?php if ($user->guest) { ?>
+        <a href="index.php?Itemid=263" class="icon-user"><?= Text::_('TPL_CUSTOM_REGISTER_PAGE_TEXT_LINK_LOGIN') ?></a>
+      <?php } else { ?>
+        <jdoc:include type="modules" name="user-menu" style="none" />
+      <?php } ?>
+      <jdoc:include type="modules" name="header-menu" style="none" />
+    </div>
+    <div class="footer-contacts">
+      <jdoc:include type="modules" name="footer-contacts" style="none" />
+    </div>
+  </div>
+  <div class="inner mob-cat-menu">
+    <div class="top flex between align-center mb40">
+      <div class="ttl md"><?= Text::_('TPL_CUSTOM_CATALOG'); ?></div>
+      <div class="close icon-close"></div>
+    </div>
+    <jdoc:include type="modules" name="cat-menu" style="none" />
+  </div>
+</div>

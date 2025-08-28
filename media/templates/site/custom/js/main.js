@@ -90,15 +90,6 @@ $(document).ready(function () {
       $("html, body").animate({ scrollTop: 0 }, 1200);
     });
   }
-  // $('.button_buy, .button-buy').click(function (e) {
-  //   $('.buy-caption-success').addClass('open')
-  //   setTimeout(function () {
-  //     $('.buy-caption-success').removeClass('open');
-  //   }, 3000);
-  // })
-  // $('.buy-caption-success .close').click(function (e) {
-  //   $('.buy-caption-success').removeClass('open');
-  // })
 
   $('.burger-menu').click(function (e) {
     e.stopPropagation()
@@ -213,9 +204,9 @@ $(document).ready(function () {
 
   const swiper_reviews = new Swiper('.swiper-reviews', {
     spaceBetween: 8,
-    // autoplay: {
-    //   delay: 5000,
-    // },
+    autoplay: {
+      delay: 5000,
+    },
     // loop: true,
     speed: 800,
     slidesPerView: 1,
@@ -354,5 +345,126 @@ $(document).ready(function () {
       prevEl: ".swiper-button-prev",
     },
   });
+
+  const modal_toOrder = document.querySelector('.modal_toOrder');
+
+  if (modal_toOrder) {
+    const toOrder = document.querySelectorAll('.toOrder');
+    toOrder.forEach(function (item) {
+      item.addEventListener('click', function () {
+        modal_toOrder.classList.add('active');
+        const productId = item.getAttribute('data-toOrder_product_id');
+
+        const inputPId = document.querySelector('input[name="to_order_product_id"]');
+        inputPId.value = productId;
+
+        const close = modal_toOrder.querySelector('.close');
+        close.addEventListener('click', function () {
+          modal_toOrder.classList.remove('active');
+        });
+      });
+    });
+
+    const toggleMap = {
+      checkPhone: ".checkPhone",
+      checkEmail: ".checkEmail",
+      checkViber: ".checkViber",
+      checkTelegram: ".checkTelegram",
+      checkWhatsapp: ".checkWhatsapp"
+    };
+
+    Object.keys(toggleMap).forEach(id => {
+      const checkbox = modal_toOrder.querySelector(`#${id}`);
+      const targetSelector = toggleMap[id];
+      if (checkbox) {
+        checkbox.addEventListener("change", function () {
+          const target = modal_toOrder.querySelector(targetSelector);
+          if (target) {
+            target.classList.toggle("disabled");
+          }
+        });
+      }
+    });
+
+    // === Отправка данных ===
+    const form = modal_toOrder.querySelector("form"); 
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        let errors = [];
+
+        const name = form.querySelector("#orderName").value.trim();
+        if (name.length < 3 || name.length > 15) {
+          errors.push(Joomla.Text._('TPL_CUSTOM_TG_ERROR_NAME'));
+        }
+
+        const quantity = form.querySelector("#orderQuantity").value.trim();
+        if (!quantity || isNaN(quantity) || quantity < 1) {
+          errors.push(Joomla.Text._('TPL_CUSTOM_TG_ERROR_QUANTITY'));
+        }
+
+        // Проверяем чекбоксы
+        const checkedMethods = form.querySelectorAll(
+          "input[name='contact_methods[]']:checked"
+        );
+        if (checkedMethods.length === 0) {
+          errors.push(Joomla.Text._('TPL_CUSTOM_TG_ERROR_METHODS'));
+        } else {
+          checkedMethods.forEach((checkbox) => {
+            const method = checkbox.value;
+            const input = form.querySelector(`[name='contact_${method}']`);
+            if (input && input.value.trim() === "") {
+              errors.push(`Вкажіть дані для ${method}`);
+            }
+          });
+        }
+
+        // Проверка телефона (если есть)
+        const phone = form.querySelector("#contactPhone");
+        if (phone && phone.value.trim() !== "") {
+          const phoneDigits = phone.value.replace(/\D/g, "");
+          if (phoneDigits.length < 10 || phoneDigits.length > 12) {
+            errors.push(Joomla.Text._('TPL_CUSTOM_TG_ERROR_METHODS_PHONE'));
+          }
+        }
+
+        // Если ошибки есть — показываем и не отправляем
+        if (errors.length > 0) {
+          alert("❌ "+Joomla.Text._('TPL_CUSTOM_TG_ERROR') + ":\n\n" + errors.join("\n"));
+          return;
+        }
+
+        // === Отправка данных ===
+        const formData = new FormData(form);
+
+        for (let [key, value] of formData.entries()) {
+          console.log(key, value);
+        }
+
+        fetch("/telegram", {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => res.text())
+          .then((data) => {
+            console.log("Ответ сервера:", data);
+
+            form.reset();
+
+            document
+              .querySelectorAll(".how_contactList .item")
+              .forEach((el) => el.classList.add("disabled"));
+
+            alert(Joomla.Text._('TPL_CUSTOM_TG_SUCCESS'));
+          })
+          .catch((err) => {
+            console.error("Ошибка:", err);
+            alert(Joomla.Text._('TPL_CUSTOM_TG_ERROR_FETCH'));
+          });
+      });
+    }
+
+  }
 
 });
