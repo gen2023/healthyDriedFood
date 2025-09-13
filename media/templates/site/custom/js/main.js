@@ -386,42 +386,38 @@ $(document).ready(function () {
       }
     });
 
-    // === Отправка данных ===
-    const form = modal_toOrder.querySelector("form"); 
-    if (form) {
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
+    // === Отправка ===
+    const formContainer = modal_toOrder.querySelector('[data-role="form"]');
+    const sendBtn = modal_toOrder.querySelector("#sendOrder");
 
+    if (formContainer && sendBtn) {
+      sendBtn.addEventListener("click", function () {
         let errors = [];
 
-        const name = form.querySelector("#orderName").value.trim();
+        const name = formContainer.querySelector("#orderName").value.trim();
         if (name.length < 3 || name.length > 15) {
           errors.push(Joomla.Text._('TPL_CUSTOM_TG_ERROR_NAME'));
         }
 
-        const quantity = form.querySelector("#orderQuantity").value.trim();
+        const quantity = formContainer.querySelector("#orderQuantity").value.trim();
         if (!quantity || isNaN(quantity) || quantity < 1) {
           errors.push(Joomla.Text._('TPL_CUSTOM_TG_ERROR_QUANTITY'));
         }
 
-        // Проверяем чекбоксы
-        const checkedMethods = form.querySelectorAll(
-          "input[name='contact_methods[]']:checked"
-        );
+        const checkedMethods = formContainer.querySelectorAll("input[name='contact_methods[]']:checked");
         if (checkedMethods.length === 0) {
           errors.push(Joomla.Text._('TPL_CUSTOM_TG_ERROR_METHODS'));
         } else {
           checkedMethods.forEach((checkbox) => {
             const method = checkbox.value;
-            const input = form.querySelector(`[name='contact_${method}']`);
+            const input = formContainer.querySelector(`[name='contact_${method}']`);
             if (input && input.value.trim() === "") {
               errors.push(`Вкажіть дані для ${method}`);
             }
           });
         }
 
-        // Проверка телефона (если есть)
-        const phone = form.querySelector("#contactPhone");
+        const phone = formContainer.querySelector("#contactPhone");
         if (phone && phone.value.trim() !== "") {
           const phoneDigits = phone.value.replace(/\D/g, "");
           if (phoneDigits.length < 10 || phoneDigits.length > 12) {
@@ -429,18 +425,20 @@ $(document).ready(function () {
           }
         }
 
-        // Если ошибки есть — показываем и не отправляем
         if (errors.length > 0) {
-          alert("❌ "+Joomla.Text._('TPL_CUSTOM_TG_ERROR') + ":\n\n" + errors.join("\n"));
+          alert("❌ " + Joomla.Text._('TPL_CUSTOM_TG_ERROR') + ":\n\n" + errors.join("\n"));
           return;
         }
 
-        // === Отправка данных ===
-        const formData = new FormData(form);
-
-        for (let [key, value] of formData.entries()) {
-          console.log(key, value);
-        }
+        // собираем данные вручную
+        const inputs = formContainer.querySelectorAll("input, textarea, select");
+        const formData = new FormData();
+        inputs.forEach(el => {
+          if ((el.type === "checkbox" && el.checked) || (el.type !== "checkbox" && el.value.trim() !== "")) {
+            formData.append(el.name, el.value);
+          }
+        });
+        // modal_toOrder.classList.remopve('active');
 
         fetch("/telegram", {
           method: "POST",
@@ -448,15 +446,18 @@ $(document).ready(function () {
         })
           .then((res) => res.text())
           .then((data) => {
-            console.log("Ответ сервера:", data);
 
-            form.reset();
+            inputs.forEach(el => {
+              if (el.type === "checkbox" || el.type === "radio") el.checked = false;
+              else el.value = "";
+            });
 
-            document
-              .querySelectorAll(".how_contactList .item")
-              .forEach((el) => el.classList.add("disabled"));
+            formContainer.querySelectorAll(".how_contactList .item").forEach(el => el.classList.add("disabled"));
 
             alert(Joomla.Text._('TPL_CUSTOM_TG_SUCCESS'));
+            setTimeout(() => {
+              modal_toOrder.classList.remove("active");
+            }, 2000);
           })
           .catch((err) => {
             console.error("Ошибка:", err);
@@ -464,7 +465,7 @@ $(document).ready(function () {
           });
       });
     }
-
   }
+
 
 });

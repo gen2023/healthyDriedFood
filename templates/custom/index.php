@@ -67,7 +67,16 @@ if ($user->guest) {
 <head>
     <jdoc:include type="metas" />
     <jdoc:include type="styles" />
-    <jdoc:include type="scripts" /> <?php // по возможности переносим в футер ?>
+    <jdoc:include type="scripts" />
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PFZG2W0NY4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PFZG2W0NY4');
+</script>
 </head>
 
 <body class="header-sticky <?= $pageclass ?>">
@@ -92,7 +101,7 @@ if ($user->guest) {
     $wa->useScript('inputmask.script');
     $wa->useScript('main.custom.script');
     ?>
-    <script src="/templates/custom/uForm/js/script.js"></script> <!-- uform -->
+
 </body>
 
 </html>

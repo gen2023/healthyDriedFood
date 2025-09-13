@@ -31,6 +31,9 @@ $minOrderValues = [
 ];
 $minValuec = isset($minOrderValues[$jshopConfig->cur_currency]) ? $minOrderValues[$jshopConfig->cur_currency] : 0;
 
+$doc = Factory::getApplication()->getDocument();
+$doc->setMetaData('robots', 'noindex, nofollow');
+
 ?>
 <div class="checkoutPage">
 	<div class="container checkoutPage_container">

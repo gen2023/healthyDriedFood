@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshopping" method="upgrade">
+    <name>Дополнмитьные настрйоки для проекта</name>
+    <author>Ваше Имя</author>
+    <creationDate>2025-08-29</creationDate>
+    <version>1.0.0</version>
+    <description>Дополнительные настройки для проекта</description>
+    <files>
+        <filename plugin="extrasettings">extrasettings.php</filename>
+    </files>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+
+            </fieldset>
+        </fields>
+    </config>
+</extension>

@@ -56,41 +56,41 @@ $lists = $this->lists;
             <thead>
                 <tr>
                     <th>#</th>
-                    <?php if ($params['column_product_id']) { ?>
+                    <?php if (isset($params['column_product_id']) && $params['column_product_id']) { ?>
                         <th><?php echo HTMLHelper::_('grid.sort', 'JSHOP_ID', 'product_id', $this->filter_order_Dir, $this->filter_order); ?></th>
                     <?php } ?>
                     <th>
                         <?php echo HTMLHelper::_('grid.sort', Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_LABEL_NAME'), 'product_name', $this->filter_order_Dir, $this->filter_order); ?>
                     </th>
 
-                    <?php if ($params['column_manufacturer_code']) { ?>
+                    <?php if (isset($params['column_manufacturer_code']) && $params['column_manufacturer_code']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_MANUFACTURER_CODE'), 'product_ean', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
                     <?php } ?>
-                    <?php if ($params['column_product_ean']) { ?>
+                    <?php if (isset($params['column_product_ean']) && $params['column_product_ean']) { ?>
                         <th>
                             <?php /* echo HTMLHelper::_('grid.sort', Text::_('JSHOP_EAN_PRODUCT'), 'manufacturer_code', $this->filter_order_Dir, $this->filter_order); */ ?>
                             <?= Text::_('JSHOP_EAN_PRODUCT'); ?>
                         </th>
                     <?php } ?>
 
-                    <?php if ($params['column_count_product']) { ?>
+                    <?php if (isset($params['column_count_product']) && $params['column_count_product']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_LABEL_COUNT_SOLD'), 'total_quantity', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
                     <?php } ?>
-                    <?php if ($params['column_hits']) { ?>
+                    <?php if (isset($params['column_hits']) && $params['column_hits']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_LABEL_HITS'), 'hits', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
                     <?php } ?>
-                    <?php if ($params['column_sum_sold']) { ?>
+                    <?php if (isset($params['column_sum_sold']) && $params['column_sum_sold']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_LABEL_SUM_SOLD'), 'total_sum', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
                     <?php } ?>
-                    <?php if ($params['column_count_orders']) { ?>
+                    <?php if (isset($params['column_count_orders']) && $params['column_count_orders']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_LABEL_COUNT_ORDERS'), 'orders_count', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
@@ -102,7 +102,7 @@ $lists = $this->lists;
                     <?php foreach ($this->productRows as $i => $row): ?>
                         <tr>
                             <td><?php echo $this->pageNavProducts->getRowOffset($i); ?></td>
-                            <?php if ($params['column_product_id']) { ?>
+                            <?php if (isset($params['column_product_id']) && $params['column_product_id']) { ?>
                                 <td><?php echo (int) $row->product_id; ?></td>
                             <?php } ?>
                             <td>
@@ -110,23 +110,23 @@ $lists = $this->lists;
                                     <?php echo htmlspecialchars($row->product_name); ?>
                                 </a>
                             </td>
-                            <?php if ($params['column_manufacturer_code']) { ?>
+                            <?php if (isset($params['column_manufacturer_code']) && $params['column_manufacturer_code']) { ?>
                                 <td><?= $row->manufacturer_code ?></td><?php } ?>
-                            <?php if ($params['column_product_ean']) { ?>
+                            <?php if (isset($params['column_product_ean']) && $params['column_product_ean']) { ?>
                                 <td><?= $row->product_ean ?></td><?php } ?>
 
-                            <?php if ($params['column_count_product']) { ?>
+                            <?php if (isset($params['column_count_product']) && $params['column_count_product']) { ?>
                                 <td class="text-center"><?php echo (int) $row->total_quantity; ?></td>
                             <?php } ?>
-                            <?php if ($params['column_hits']) { ?>
+                            <?php if (isset($params['column_hits']) && $params['column_hits']) { ?>
                                 <td><?= $row->hits ?></td><?php } ?>
 
-                            <?php if ($params['column_sum_sold']) { ?>
+                            <?php if (isset($params['column_sum_sold']) && $params['column_sum_sold']) { ?>
                                 <td class="text-end">
                                     <?php echo number_format($row->total_sum, 2) . ' ' . $row->currency_name; ?>
                                 </td>
                             <?php } ?>
-                            <?php if ($params['column_count_orders']) { ?>
+                            <?php if (isset($params['column_count_orders']) && $params['column_count_orders']) { ?>
                                 <td class="text-center"><?php echo (int) $row->orders_count; ?></td>
                             <?php } ?>
                         </tr>

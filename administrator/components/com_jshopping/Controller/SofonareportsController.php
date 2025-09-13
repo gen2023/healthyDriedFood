@@ -32,6 +32,12 @@ class SofonareportsController extends BaseadminController
 
         $view = $this->getView('sofonareports', 'html');
         $view->set('settingsPlg', $settingsPlg);
+        $view->tmp_html_start = "";
+        $view->tmp_html_end = "";
+
+        $dispatcher = Factory::getApplication();
+        $dispatcher->triggerEvent('onBeforeDisplaySofonareportsDefault', array(&$view));
+
         $view->display();
 
     }
@@ -74,7 +80,7 @@ class SofonareportsController extends BaseadminController
         $client_id = $app->getUserStateFromRequest($context . 'client_id', 'client_id', 0, 'string');
         $selectedCurrency = $app->getUserStateFromRequest($context . 'currency_id', 'currency_id', 0, 'int');
 
-        if ($selectedCurrency === -1) {
+        if ($selectedCurrency === -1 && isset($settingsPlg['default_currency_orders'])) {
             $selectedCurrency = $settingsPlg['default_currency_orders'];
         }
 
@@ -266,7 +272,7 @@ class SofonareportsController extends BaseadminController
             }
 
             $chartData[$date]++;
-            
+
             $rate = (float) $order->currency_exchange;
 
             if ($rate > 0) {
@@ -340,11 +346,11 @@ class SofonareportsController extends BaseadminController
         // $statusOrder_id = $app->getUserStateFromRequest($context . 'statusOrder_id', 'statusOrder_id', 'string');
         $statusOrder_id = $app->getUserStateFromRequest($context . 'statusOrder_id', 'statusOrder_id', [], 'array');
 
-        if (empty($statusOrder_id) || (count($statusOrder_id) === 1 && $statusOrder_id[0] === "0")) {
+        if (empty($statusOrder_id) || (count($statusOrder_id) === 1 && $statusOrder_id[0] === "0") && isset($settingsPlg['statusOrder_id_products'])) {
             $statusOrder_id = $settingsPlg['statusOrder_id_products'];
         }
 
-        if ($selectedCurrency === -1) {
+        if ($selectedCurrency === -1 && isset($settingsPlg['default_currency_products'])) {
             $selectedCurrency = $settingsPlg['default_currency_products'];
         }
 
@@ -403,7 +409,7 @@ class SofonareportsController extends BaseadminController
         $this->prepareFilterDates($filter);
 
         $mergeLang = false;
-        if ($settingsPlg['merge_product']) {
+        if (isset($settingsPlg['merge_product']) && $settingsPlg['merge_product']) {
             $mergeLang = true;
         }
 
@@ -459,11 +465,12 @@ class SofonareportsController extends BaseadminController
         $selectedCurrency = $app->getUserStateFromRequest($context . 'currency_id', 'currency_id', 0, 'int');
         $statusOrder_id = $app->getUserStateFromRequest($context . 'statusOrder_id', 'statusOrder_id', [], 'array');
 
-        if (empty($statusOrder_id) || (count($statusOrder_id) === 1 && $statusOrder_id[0] === "0")) {
+        if (empty($statusOrder_id) || (count($statusOrder_id) === 1 && $statusOrder_id[0] === "0") && isset($settingsPlg['statusOrder_id_products'])) {
             $statusOrder_id = $settingsPlg['statusOrder_id_products'];
         }
+        
 
-        if ($selectedCurrency === -1) {
+        if ($selectedCurrency === -1 && isset($settingsPlg['default_currency_clients'])) {
             $selectedCurrency = $settingsPlg['default_currency_clients'];
         }
 
@@ -612,11 +619,11 @@ class SofonareportsController extends BaseadminController
         $statusOrder_id = array_map('intval', $app->input->get('statusOrder_id', [], 'array'));
 
         if ($type == 'products') {
-            if (empty($statusOrder_id) || (count($statusOrder_id) === 1 && $statusOrder_id[0] === "0")) {
+            if (empty($statusOrder_id) || (count($statusOrder_id) === 1 && $statusOrder_id[0] === "0") && isset($settingsPlg['statusOrder_id_products'])) {
                 $statusOrder_id = $settingsPlg['statusOrder_id_products'];
             }
         } elseif ($type == 'clients') {
-            if (empty($statusOrder_id) || (count($statusOrder_id) === 1 && $statusOrder_id[0] === "0")) {
+            if (empty($statusOrder_id) || (count($statusOrder_id) === 1 && $statusOrder_id[0] === "0") && isset($settingsPlg['statusOrder_id_products'])) {
                 $statusOrder_id = $settingsPlg['statusOrder_id_products'];
             }
         }
@@ -849,8 +856,8 @@ class SofonareportsController extends BaseadminController
             $display_info_only_my_order = 1;
         }
 
-        $statusOrder_id_products = $settingsPlg['statusOrder_id_products'];
-        $statusOrder_id_clients = $settingsPlg['statusOrder_id_clients'];
+        $statusOrder_id_products = (isset($settingsPlg['statusOrder_id_products']) && $settingsPlg['statusOrder_id_products']) ? $settingsPlg['statusOrder_id_products'] : array();
+        $statusOrder_id_clients =(isset($settingsPlg['statusOrder_id_clients']) && $settingsPlg['statusOrder_id_clients']) ? $settingsPlg['statusOrder_id_products'] : array();
 
         $lists['statusOrder_id_products'] = HTMLHelper::_(
             'select.genericlist',
@@ -887,9 +894,9 @@ class SofonareportsController extends BaseadminController
             ];
         }
 
-        $currencySettingsProducts = $settingsPlg['default_currency_products'];
-        $currencySettingsClients = $settingsPlg['default_currency_clients'];
-        $currencySettingsOrders = $settingsPlg['default_currency_orders'];
+        $currencySettingsProducts = (isset($settingsPlg['default_currency_products']) && $settingsPlg['default_currency_products']) ? $settingsPlg['default_currency_products'] : 0;
+        $currencySettingsClients = (isset($settingsPlg['default_currency_clients']) && $settingsPlg['default_currency_clients']) ? $settingsPlg['default_currency_clients'] : 0;
+        $currencySettingsOrders = (isset($settingsPlg['default_currency_orders']) && $settingsPlg['default_currency_orders']) ? $settingsPlg['default_currency_orders'] : 0;
 
         $lists['default_currency_products'] = HTMLHelper::_(
             'select.genericlist',
@@ -938,7 +945,6 @@ class SofonareportsController extends BaseadminController
 
             if ($model->saveConfigsSettings($post)) {
                 $msg = 'Настрйоки сохранены успешно';
-                // var_dump($this->getTask());die;
 
                 $this->setRedirect("index.php?option=com_jshopping&controller=sofonareports&task=settings", $msg);
 

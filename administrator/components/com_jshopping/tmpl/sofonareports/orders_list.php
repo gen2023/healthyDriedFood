@@ -69,7 +69,7 @@ $params = $this->settingsPlg;
         </a>
       </div>
     </div>
-    <?php if ($params['show_chart_order']) { ?>
+    <?php if (isset($params['show_chart_order']) && $params['show_chart_order']) { ?>
       <div class="container-graphic">
         <div class="card p-4 mt-3 mb-3">
           <h3><?php echo Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_HEADING_CHART_ORDER'); ?></h3>
@@ -93,86 +93,86 @@ $params = $this->settingsPlg;
             <?php echo HTMLHelper::_('grid.sort', 'JSHOP_ID', 'order_id', $this->filter_order_Dir, $this->filter_order); ?>
           </th>
 
-          <?php if ($params['order_number']) { ?>
+          <?php if (isset($params['order_number']) && $params['order_number']) { ?>
             <th width="20">
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_NUMBER'), 'order_number', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
           <?php } ?>
 
-          <?php if ($params['order_user']) { ?>
+          <?php if (isset($params['order_user']) && $params['order_user']) { ?>
             <th>
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_USER'), 'name', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
           <?php } ?>
-          <?php if ($params['order_email']) { ?>
+          <?php if (isset($params['order_email']) && $params['order_email']) { ?>
             <th>
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_EMAIL'), 'email', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
           <?php } ?>
-          <?php if ($params['order_phone']) { ?>
+          <?php if (isset($params['order_phone']) && $params['order_phone']) { ?>
             <th>
               <?= Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_LABEL_USER_PHONE') ?>
             </th>
           <?php } ?>
-          <?php if ($params['order_countProduct']) { ?>
+          <?php if (isset($params['order_countProduct']) && $params['order_countProduct']) { ?>
             <th>
               <?= Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_COUNT_PRODUCT') ?>
             </th>
           <?php } ?>
-          <?php if ($params['order_nameProduct']) { ?>
+          <?php if (isset($params['order_nameProduct']) && $params['order_nameProduct']) { ?>
             <th>
               <?= Text::_('JSHOP_NAME_PRODUCT') ?>
             </th>
           <?php } ?>
 
-          <?php if ($this->show_vendor && $params['order_vendor']) { ?>
+          <?php if ($this->show_vendor && isset($params['order_vendor']) && $params['order_vendor']) { ?>
             <th>
               <?php echo Text::_('JSHOP_VENDOR') ?>
             </th>
           <?php } ?>
-          <?php if ($params['order_pdf']) { ?>
+          <?php if (isset($params['order_pdf']) && $params['order_pdf']) { ?>
             <th class="center">
               <?php echo Text::_('JSHOP_ORDER_PRINT_VIEW') ?>
             </th>
           <?php } ?>
-          <?php if ($params['order_date']) { ?>
+          <?php if (isset($params['order_date']) && $params['order_date']) { ?>
             <th>
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_DATE'), 'order_date', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
           <?php } ?>
-          <?php if ($params['order_m_date']) { ?>
+          <?php if (isset($params['order_m_date']) && $params['order_m_date']) { ?>
             <th>
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_ORDER_MODIFY_DATE'), 'order_m_date', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
           <?php } ?>
-          <?php if (!$jshopConfig->without_payment && $params['order_payment']) { ?>
+          <?php if (!$jshopConfig->without_payment && isset($params['order_payment']) && $params['order_payment']) { ?>
             <th>
               <?php echo Text::_('JSHOP_PAYMENT') ?>
             </th>
           <?php } ?>
-          <?php if (!$jshopConfig->without_shipping && $params['order_shipping']) { ?>
+          <?php if (!$jshopConfig->without_shipping && isset($params['order_shipping']) && $params['order_shipping']) { ?>
             <th>
               <?php echo Text::_('JSHOP_SHIPPINGS') ?>
             </th>
           <?php } ?>
-          <?php if ($params['order_status']) { ?>
+          <?php if (isset($params['order_status']) && $params['order_status']) { ?>
             <th>
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_STATUS'), 'order_status', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
           <?php } ?>
-          <?php if ($params['order_total']) { ?>
+          <?php if (isset($params['order_total']) && $params['order_total']) { ?>
             <th>
               <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_ORDER_TOTAL'), 'order_total', $this->filter_order_Dir, $this->filter_order) ?>
             </th>
           <?php } ?>
 
-          <?php if ($params['order_add_info']) { ?>
+          <?php if (isset($params['order_add_info']) && $params['order_add_info']) { ?>
             <th>
               <?php echo Text::_('JSHOP_COMMENT') ?>
             </th>
           <?php } ?>
 
-          <?php if ($jshopConfig->shop_mode == 1 && $params['order_shop_mode']) { ?>
+          <?php if ($jshopConfig->shop_mode == 1 && isset($params['order_shop_mode']) && $params['order_shop_mode']) { ?>
             <th class="center">
               <?php echo Text::_('JSHOP_TRANSACTIONS') ?>
             </th>
@@ -199,14 +199,14 @@ $params = $this->settingsPlg;
           <td class="center">
             <a class="order_detail" href="index.php?option=com_jshopping&controller=orders&task=show&order_id=<?php echo $row->order_id ?>"><?php echo $row->order_id; ?></a>
           </td>
-          <?php if ($params['order_number']) { ?>
+          <?php if (isset($params['order_number']) && $params['order_number']) { ?>
             <td>
               <a class="order_detail" href="index.php?option=com_jshopping&controller=orders&task=show&order_id=<?php echo $row->order_id ?>"><?php echo $row->order_number; ?></a>
               <?php if (!$row->order_created)
                 print "(" . Text::_('JSHOP_NOT_FINISHED') . ")"; ?>
             </td>
           <?php } ?>
-          <?php if ($params['order_user']) { ?>
+          <?php if (isset($params['order_user']) && $params['order_user']) { ?>
             <td>
               <?php if ($row->user_id > 0) { ?>
                 <a href="index.php?option=com_jshopping&controller=users&task=edit&user_id=<?php print $row->user_id ?>">
@@ -218,25 +218,25 @@ $params = $this->settingsPlg;
             </td>
           <?php } ?>
 
-          <?php if ($params['order_email']) { ?>
+          <?php if (isset($params['order_email']) && $params['order_email']) { ?>
             <td><?php echo $row->email ?></td>
           <?php } ?>
-          <?php if ($params['order_phone']) { ?>
+          <?php if (isset($params['order_phone']) && $params['order_phone']) { ?>
             <td><?php echo $row->phone ?></td>
           <?php } ?>
-          <?php if ($params['order_countProduct']) { ?>
+          <?php if (isset($params['order_countProduct']) && $params['order_countProduct']) { ?>
             <td><?php echo $row->countProduct; ?></td>
           <?php } ?>
-          <?php if ($params['order_nameProduct']) { ?>
+          <?php if (isset($params['order_nameProduct']) && $params['order_nameProduct']) { ?>
             <td><?php echo $row->products; ?></td>
           <?php } ?>
 
-          <?php if ($this->show_vendor && $params['order_vendor']) { ?>
+          <?php if ($this->show_vendor && isset($params['order_vendor']) && $params['order_vendor']) { ?>
             <td>
               <?php print $row->vendor_name; ?>
             </td>
           <?php } ?>
-          <?php if ($params['order_pdf']) { ?>
+          <?php if (isset($params['order_pdf']) && $params['order_pdf']) { ?>
             <td class="center">
               <?php if ($jshopConfig->generate_pdf) { ?>
                 <?php if ($display_info_order) { ?>
@@ -260,41 +260,41 @@ $params = $this->settingsPlg;
                 echo $row->_ext_order_info; ?>
             </td>
           <?php } ?>
-          <?php if ($params['order_date']) { ?>
+          <?php if (isset($params['order_date']) && $params['order_date']) { ?>
             <td>
               <?php echo Helper::formatdate($row->order_date, 1); ?>
             </td>
           <?php } ?>
-          <?php if ($params['order_m_date']) { ?>
+          <?php if (isset($params['order_m_date']) && $params['order_m_date']) { ?>
             <td>
               <?php echo Helper::formatdate($row->order_m_date, 1); ?>
             </td>
           <?php } ?>
-          <?php if (!$jshopConfig->without_payment && $params['order_payment']) { ?>
+          <?php if (!$jshopConfig->without_payment && isset($params['order_payment']) && $params['order_payment']) { ?>
             <td>
               <?php echo $row->payment_name ?>
             </td>
           <?php } ?>
-          <?php if (!$jshopConfig->without_shipping && $params['order_shipping']) { ?>
+          <?php if (!$jshopConfig->without_shipping && isset($params['order_shipping']) && $params['order_shipping']) { ?>
             <td>
               <?php echo $row->shipping_name ?>
             </td>
           <?php } ?>
-          <?php if ($params['order_status']) { ?>
+          <?php if (isset($params['order_status']) && $params['order_status']) { ?>
             <td><?= $row->status_name; ?></td>
           <?php } ?>
-          <?php if ($params['order_total']) { ?>
+          <?php if (isset($params['order_total']) && $params['order_total']) { ?>
             <td>
               <?php if ($display_info_order)
                 echo Helper::formatprice($row->order_total, $row->currency_code) ?>
               </td>
           <?php } ?>
-          <?php if ($params['order_add_info']) { ?>
+          <?php if (isset($params['order_add_info']) && $params['order_add_info']) { ?>
             <td>
               <?php echo $row->order_add_info ?>
             </td>
           <?php } ?>
-          <?php if ($jshopConfig->shop_mode == 1 && $params['order_shop_mode']) { ?>
+          <?php if ($jshopConfig->shop_mode == 1 && isset($params['order_shop_mode']) && $params['order_shop_mode']) { ?>
             <td class="center">
               <a class="btn btn-micro btn-nopad" href='index.php?option=com_jshopping&controller=orders&task=transactions&order_id=<?php print $row->order_id; ?>'>
                 <i class="icon-tree-2"></i>

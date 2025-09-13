@@ -20,7 +20,7 @@ $params = $this->settingsPlg;
 
         <div class="js-filters">
             <div class="filters-containers">
-                <?php if ($params['show_filter_statusOrder_products']) { ?>
+                <?php if (isset($params['show_filter_statusOrder_products']) && $params['show_filter_statusOrder_products']) { ?>
                     <div class="selectStatusOrder">
                         <div class="text"><?= Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_MULTIPLE_SELECT_STATUS_ORDER') ?></div>
                         <div id="statusOrder" class="form-control"><?= Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_MULTIPLE_SELECT_STATUS_ORDER') ?></div>
@@ -75,32 +75,32 @@ $params = $this->settingsPlg;
                     <th>
                         <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_USER'), 'client_name', $this->filter_order_Dir, $this->filter_order); ?>
                     </th>
-                    <?php if ($params['client_column_email']) { ?>
+                    <?php if (isset($params['client_column_email']) && $params['client_column_email']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_EMAIL'), 'email', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
                     <?php } ?>
-                    <?php if ($params['client_column_phone']) { ?>
+                    <?php if (isset($params['client_column_phone']) && $params['client_column_phone']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_TELEFON'), 'phone', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
                     <?php } ?>
-                    <?php if ($params['client_column_orders_count']) { ?>
+                    <?php if (isset($params['client_column_orders_count']) && $params['client_column_orders_count']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_LABEL_COUNT_ORDERS'), 'total_orders', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
                     <?php } ?>
-                    <?php if ($params['client_column_total_sum']) { ?>
+                    <?php if (isset($params['client_column_total_sum']) && $params['client_column_total_sum']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('JSHOP_TOTAL'), 'total_sum', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
                     <?php } ?>
-                    <?php if ($params['client_column_first_order_date']) { ?>
+                    <?php if (isset($params['client_column_first_order_date']) && $params['client_column_first_order_date']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_LABEL_FIRST_ORDER_DATE'), 'first_order_date', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
                     <?php } ?>
-                    <?php if ($params['client_column_last_order_date']) { ?>
+                    <?php if (isset($params['client_column_last_order_date']) && $params['client_column_last_order_date']) { ?>
                         <th>
                             <?php echo HTMLHelper::_('grid.sort', Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_LABEL_LAST_ORDER_DATE'), 'last_order_date', $this->filter_order_Dir, $this->filter_order); ?>
                         </th>
@@ -115,27 +115,27 @@ $params = $this->settingsPlg;
                                 <?php echo $pageNav->getRowOffset($k); ?>
                             </td>
                             <td><?php echo htmlspecialchars($row->client_name); ?></td>
-                            <?php if ($params['client_column_email']) { ?>
+                            <?php if (isset($params['client_column_email']) && $params['client_column_email']) { ?>
                                 <td><?php echo htmlspecialchars($row->email); ?></td>
                             <?php } ?>
-                            <?php if ($params['client_column_phone']) { ?>
+                            <?php if (isset($params['client_column_phone']) && $params['client_column_phone']) { ?>
                                 <td><?php echo $row->phone; ?></td>
                             <?php } ?>
 
-                            <?php if ($params['client_column_orders_count']) { ?>
+                            <?php if (isset($params['client_column_orders_count']) && $params['client_column_orders_count']) { ?>
                                 <td><?php echo (int) $row->total_orders; ?></td>
                             <?php } ?>
-                            <?php if ($params['client_column_total_sum']) { ?>
+                            <?php if (isset($params['client_column_total_sum']) && $params['client_column_total_sum']) { ?>
                                 <td>
                                     <?php echo number_format($row->total_sum, 2) . ' ' . $row->currency_name; ?>
                                 </td>
                             <?php } ?>
-                            <?php if ($params['client_column_first_order_date']) { ?>
+                            <?php if (isset($params['client_column_first_order_date']) && $params['client_column_first_order_date']) { ?>
                                 <td>
                                     <?php echo $row->first_order_date ? Helper::formatdate($row->first_order_date, 1) : '-'; ?>
                                 </td>
                             <?php } ?>
-                            <?php if ($params['client_column_last_order_date']) { ?>
+                            <?php if (isset($params['client_column_last_order_date']) && $params['client_column_last_order_date']) { ?>
                                 <td>
                                     <?php echo $row->last_order_date ? Helper::formatdate($row->last_order_date, 1) : '-'; ?>
                                 </td>

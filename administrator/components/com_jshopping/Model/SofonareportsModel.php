@@ -269,7 +269,7 @@ class SofonareportsModel extends BaseDatabaseModel
     $query = $this->applyFilter($query, $filter);
 
     if ($mergeLang) {
-      $query->group('oi.product_id, p.product_ean, p.manufacturer_code, p.hits, currency_name');
+      $query->group('oi.product_id, p.product_ean, p.manufacturer_code');
     } else {
       $query->group('oi.product_id, oi.product_name, p.product_ean, p.manufacturer_code, p.hits, currency_name');
     }
@@ -295,35 +295,35 @@ class SofonareportsModel extends BaseDatabaseModel
     return $db->loadObjectList();
   }
 
-public function getCountAllOrders($filters)
-{
+  public function getCountAllOrders($filters)
+  {
     $db = Factory::getDBO();
     $conditions = $this->_getAllOrdersQueryForFilter($filters);
 
     if (!empty($filters['vendor_id'])) {
-        $query = $db->getQuery(true)
-            ->select('COUNT(DISTINCT O.order_id)')
-            ->from($db->quoteName('#__jshopping_orders', 'O'))
-            ->leftJoin($db->quoteName('#__jshopping_order_item', 'OI') . ' ON OI.order_id = O.order_id');
+      $query = $db->getQuery(true)
+        ->select('COUNT(DISTINCT O.order_id)')
+        ->from($db->quoteName('#__jshopping_orders', 'O'))
+        ->leftJoin($db->quoteName('#__jshopping_order_item', 'OI') . ' ON OI.order_id = O.order_id');
     } else {
-        $query = $db->getQuery(true)
-            ->select('COUNT(O.order_id)')
-            ->from($db->quoteName('#__jshopping_orders', 'O'));
+      $query = $db->getQuery(true)
+        ->select('COUNT(O.order_id)')
+        ->from($db->quoteName('#__jshopping_orders', 'O'));
     }
 
     // Добавляем условия
     if (!empty($conditions)) {
-        foreach ($conditions as $cond) {
-            $query->where($cond);
-        }
+      foreach ($conditions as $cond) {
+        $query->where($cond);
+      }
     }
 
     $db->setQuery($query);
     return (int) $db->loadResult();
-}
+  }
 
-public function getAllOrders($limitstart, $limit, $filters, $filter_order, $filter_order_Dir)
-{
+  public function getAllOrders($limitstart, $limit, $filters, $filter_order, $filter_order_Dir)
+  {
     $db = Factory::getDBO();
     $conditions = $this->_getAllOrdersQueryForFilter($filters);
 
@@ -333,28 +333,28 @@ public function getAllOrders($limitstart, $limit, $filters, $filter_order, $filt
     $query = $db->getQuery(true);
 
     if (!empty($filters['vendor_id'])) {
-        $query->select('DISTINCT O.*')
-              ->from($db->quoteName('#__jshopping_orders', 'O'))
-              ->leftJoin($db->quoteName('#__jshopping_order_item', 'OI') . ' ON OI.order_id = O.order_id');
+      $query->select('DISTINCT O.*')
+        ->from($db->quoteName('#__jshopping_orders', 'O'))
+        ->leftJoin($db->quoteName('#__jshopping_order_item', 'OI') . ' ON OI.order_id = O.order_id');
     } else {
-        $query->select('O.*, V.l_name AS v_name, V.f_name AS v_fname, CONCAT(O.f_name, " ", O.l_name) AS name')
-              ->from($db->quoteName('#__jshopping_orders', 'O'))
-              ->leftJoin($db->quoteName('#__jshopping_vendors', 'V') . ' ON V.id = O.vendor_id');
+      $query->select('O.*, V.l_name AS v_name, V.f_name AS v_fname, CONCAT(O.f_name, " ", O.l_name) AS name')
+        ->from($db->quoteName('#__jshopping_orders', 'O'))
+        ->leftJoin($db->quoteName('#__jshopping_vendors', 'V') . ' ON V.id = O.vendor_id');
     }
 
-    if (!empty($filters['currency_id']) && (int)$filters['currency_id'] > 0) {
-        $subQuery = $db->getQuery(true)
-            ->select('currency_code')
-            ->from($db->quoteName('#__jshopping_currencies'))
-            ->where('currency_id = ' . (int)$filters['currency_id']);
+    if (!empty($filters['currency_id']) && (int) $filters['currency_id'] > 0) {
+      $subQuery = $db->getQuery(true)
+        ->select('currency_code')
+        ->from($db->quoteName('#__jshopping_currencies'))
+        ->where('currency_id = ' . (int) $filters['currency_id']);
 
-        $query->where('O.currency_code = (' . $subQuery . ')');
+      $query->where('O.currency_code = (' . $subQuery . ')');
     }
 
     if (!empty($conditions)) {
-        foreach ($conditions as $cond) {
-            $query->where($cond);
-        }
+      foreach ($conditions as $cond) {
+        $query->where($cond);
+      }
     }
 
     $query->order($order);
@@ -362,39 +362,39 @@ public function getAllOrders($limitstart, $limit, $filters, $filter_order, $filt
     $db->setQuery($query, $limitstart, $limit);
 
     return $db->loadObjectList();
-}
+  }
 
-protected function _getAllOrdersQueryForFilter($filters)
-{
+  protected function _getAllOrdersQueryForFilter($filters)
+  {
     $jshopConfig = JSFactory::getConfig();
     $db = Factory::getDBO();
 
     $conditions = [];
 
     if (!empty($filters['status_id'])) {
-        $conditions[] = "O.order_status = " . $db->q($filters['status_id']);
+      $conditions[] = "O.order_status = " . $db->q($filters['status_id']);
     }
 
     if (!empty($filters['user_id'])) {
-        if (strpos($filters['user_id'], 'g_') === 0) {
-            $guestHash = substr($filters['user_id'], 2);
-            $conditions[] = "MD5(CONCAT(O.email, O.phone, O.f_name, O.l_name)) = " . $db->quote($guestHash);
-        } else {
-            $conditions[] = "O.user_id = " . $db->q($filters['user_id']);
-        }
+      if (strpos($filters['user_id'], 'g_') === 0) {
+        $guestHash = substr($filters['user_id'], 2);
+        $conditions[] = "MD5(CONCAT(O.email, O.phone, O.f_name, O.l_name)) = " . $db->quote($guestHash);
+      } else {
+        $conditions[] = "O.user_id = " . $db->q($filters['user_id']);
+      }
     }
 
     if (!empty($filters['client_type'])) {
-        if ($filters['client_type'] == 'registered') {
-            $conditions[] = "O.user_id > 0";
-        } elseif ($filters['client_type'] == 'guests') {
-            $conditions[] = "O.user_id < 1";
-        }
+      if ($filters['client_type'] == 'registered') {
+        $conditions[] = "O.user_id > 0";
+      } elseif ($filters['client_type'] == 'guests') {
+        $conditions[] = "O.user_id < 1";
+      }
     }
 
     if (!empty($filters['text_search'])) {
-        $search = $db->escape($filters['text_search']);
-        $conditions[] = "(
+      $search = $db->escape($filters['text_search']);
+      $conditions[] = "(
             O.order_number LIKE '%" . $search . "%' OR
             O.f_name LIKE '%" . $search . "%' OR
             O.l_name LIKE '%" . $search . "%' OR
@@ -411,35 +411,35 @@ protected function _getAllOrdersQueryForFilter($filters)
 
     $filters['notfinished'] = $filters['notfinished'] ?? 0;
     if ($filters['notfinished'] == 2) {
-        $conditions[] = "O.order_created = 0";
+      $conditions[] = "O.order_created = 0";
     } elseif ($filters['notfinished'] < 1) {
-        $conditions[] = "O.order_created = 1";
+      $conditions[] = "O.order_created = 1";
     }
 
     if (!empty($filters['date_from'])) {
-        $date = Helper::getJsDateDB($filters['date_from'], $jshopConfig->store_date_format);
-        $conditions[] = 'O.order_date >= "' . $db->escape($date) . '"';
+      $date = Helper::getJsDateDB($filters['date_from'], $jshopConfig->store_date_format);
+      $conditions[] = 'O.order_date >= "' . $db->escape($date) . '"';
     }
 
     if (!empty($filters['date_to'])) {
-        $date = Helper::getJsDateDB($filters['date_to'], $jshopConfig->store_date_format);
-        $conditions[] = 'O.order_date <= "' . $db->escape($date) . ' 23:59:59"';
+      $date = Helper::getJsDateDB($filters['date_to'], $jshopConfig->store_date_format);
+      $conditions[] = 'O.order_date <= "' . $db->escape($date) . ' 23:59:59"';
     }
 
     if (!empty($filters['payment_id'])) {
-        $conditions[] = "O.payment_method_id = " . $db->q($filters['payment_id']);
+      $conditions[] = "O.payment_method_id = " . $db->q($filters['payment_id']);
     }
 
     if (!empty($filters['shipping_id'])) {
-        $conditions[] = "O.shipping_method_id = " . $db->q($filters['shipping_id']);
+      $conditions[] = "O.shipping_method_id = " . $db->q($filters['shipping_id']);
     }
 
     if (!empty($filters['vendor_id'])) {
-        $conditions[] = "OI.vendor_id = " . $db->q($filters['vendor_id']);
+      $conditions[] = "OI.vendor_id = " . $db->q($filters['vendor_id']);
     }
 
     return $conditions;
-}
+  }
 
   protected function applyFilter($query, $filter)
   {
@@ -454,7 +454,7 @@ protected function _getAllOrdersQueryForFilter($filters)
         $query->where('o.user_id = ' . (int) $filter['client_id']);
       }
     }
-    
+
 
     // Фильтры по датам
     if (!empty($filter['date_from'])) {

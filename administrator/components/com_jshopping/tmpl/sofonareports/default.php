@@ -10,6 +10,8 @@ $params = $this->settingsPlg;
 ?>
 
 <div id="cpanel">
+    <?php print $this->tmp_html_start; ?>
+
     <?php if ($params['show_repport_order']) { ?>
         <div style="float:left;">
             <div class="icon">
@@ -40,6 +42,8 @@ $params = $this->settingsPlg;
             </div>
         </div>
     <?php } ?>
+    <?php print $this->tmp_html_end; ?>
+
     <?php if (!$params['show_repport_order'] && !$params['show_repport_products'] && !$params['show_repport_clients']) { ?>
         <h2><?= Text::_('PLG_JSHOPPINGADMIN_SOFONAREPORTS_MSG_ERR_NOT_SETTING'); ?></h2>
     <?php } ?>

@@ -1,9 +1,10 @@
 .idea
 
-/administrator/logs/
-/cache/
-/logs/
-/tmp
-
+/administrator/logs/*
+/administrator/cache/*
+/cache/*
+/logs/*
+/tmp/*
+/components/com_jshopping/files/*
 *Zone.Identifier
 
