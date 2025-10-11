@@ -3,6 +3,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\Component\Jshopping\Site\Helper\Helper;
 use Joomla\CMS\HTML\HTMLHelper;
 
+use Joomla\CMS\Helper\ModuleHelper;
 /**
  * @version      5.0.0 15.09.2018
  * @author       MAXXmarketing GmbH
@@ -51,7 +52,17 @@ $is_uname = $this->config_fields["u_name"]["display"];
                     <a href="<?php print $this->href_lost_pass ?>"><?php print Text::_('JSHOP_LOST_PASSWORD') ?>?</a>
                 </div>
         </div>
+                <?php
+    
+    $modules = ModuleHelper::getModules('social_auth');
+    $attribs = ['style' => 'none'];
+    if (!empty($modules)) {
+        echo ModuleHelper::renderModule($modules[0], $attribs);
+    }
+    
+    ?>
     </div>
+
     <?php echo $this->tmpl_login_html_4 ?>
     <?php echo $this->tmpl_login_html_5 ?>
     <?php echo $this->tmpl_login_html_6 ?>

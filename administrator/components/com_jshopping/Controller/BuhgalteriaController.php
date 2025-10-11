@@ -73,7 +73,20 @@ class BuhgalteriaController extends BaseadminController
     $db->setQuery($query);
     $consumablesList = $db->loadObjectList();
 
+    $totalIncome = 0;
+    foreach ($productRows as $product) {
+      $totalIncome += (float) $product->total_sum;
+    }
 
+    $totalExpenseProducts = 0;
+    foreach ($productRows as $product) {
+      $totalExpenseProducts += (float) $product->total_sum_expenses;
+    }
+
+    $totalExpenseConsumables = 0;
+    foreach ($consumablesList as $consumable) {
+      $totalExpenseConsumables += (float) $consumable->total_sum;
+    }
 
 
 
@@ -84,7 +97,9 @@ class BuhgalteriaController extends BaseadminController
     $view->set('filter_order_Dir', $filter_order_Dir);
     $view->set('filter_order', $filter_order);
     $view->set('consumablesList', $consumablesList);
-
+    $view->set('totalIncome', $totalIncome);
+    $view->set('totalExpenseProducts', $totalExpenseProducts);
+    $view->set('totalExpenseConsumables', $totalExpenseConsumables);
 
     $view->display();
 
@@ -133,7 +148,7 @@ class BuhgalteriaController extends BaseadminController
     $db = Factory::getContainer()->get(DatabaseInterface::class);
     $query = $db->getQuery(true);
 
-    $columns = ['expenses', 'product_id', 'consumable_id', 'date','comments'];
+    $columns = ['expenses', 'product_id', 'consumable_id', 'date', 'comments'];
     $values = [
       $db->quote($expenses),
       $db->quote($product_id),
@@ -242,16 +257,16 @@ class BuhgalteriaController extends BaseadminController
         continue;
       }
 
-      $convertDate=null;
+      $convertDate = null;
       if (!empty($data['date'])) {
         $dt = \DateTime::createFromFormat('d.m.Y', $data['date']);
         if ($dt) {
-            $convertDate = $dt->format('Y-m-d');
+          $convertDate = $dt->format('Y-m-d');
         } else {
-            // если дата уже в нужном формате — оставляем как есть
-            $convertDate = $data['date'];
+          // если дата уже в нужном формате — оставляем как есть
+          $convertDate = $data['date'];
         }
-    }
+      }
 
       // Обновление
       $fields = [
@@ -268,12 +283,12 @@ class BuhgalteriaController extends BaseadminController
     }
 
     $app->enqueueMessage('Изменения сохранены', 'message');
-    if($consumable_id){
-$this->setRedirect("index.php?option=com_jshopping&controller=buhgalteria&task=editConsumable&consumable_id={$consumable_id}");
-    }else{
-$this->setRedirect("index.php?option=com_jshopping&controller=buhgalteria&task=editProduct&product_id={$product_id}");
+    if ($consumable_id) {
+      $this->setRedirect("index.php?option=com_jshopping&controller=buhgalteria&task=editConsumable&consumable_id={$consumable_id}");
+    } else {
+      $this->setRedirect("index.php?option=com_jshopping&controller=buhgalteria&task=editProduct&product_id={$product_id}");
     }
-    
+
   }
 
   public function addConsumable()

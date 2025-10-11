@@ -34,9 +34,112 @@ class SofonaimportpromController extends BaseController
   //   $view->display();
   // }
 
+  protected function updateStatusProducts()
+  {
+    $apiToken = "18c07c4c55093132d3bf20a7c569c1527eb0e069";
+    $url = "https://my.prom.ua/api/v1/products/list";
+
+    $headers = [
+      "Authorization: Bearer $apiToken",
+      "Accept: application/json"
+    ];
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode !== 200) {
+      echo "Ошибка: $httpCode<br>";
+      echo "Ответ сервера: $response<br>";
+      return [
+        'on_display' => 0,
+        'draft' => 0,
+        'default' => 0,
+        'errors' => 1
+      ];
+    }
+
+    $data = json_decode($response, true);
+
+    if (!isset($data['products']) || !is_array($data['products'])) {
+      echo "Ошибка: неверный формат ответа API<br>";
+      echo "<pre>";
+      print_r($data);
+      echo "</pre>";
+      return [
+        'on_display' => 0,
+        'draft' => 0,
+        'default' => 0,
+        'errors' => 1
+      ];
+    }
+
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
+
+    $count_onDisplay = 0;
+    $count_draft = 0;
+    $count_default = 0;
+    $count_not_found = 0;
+
+    foreach ($data['products'] as $value) {
+      $ean = $value['sku'];
+      $status = $value['status'] ?? '';
+
+      switch ($status) {
+        case 'on_display':
+          $statusProduct = 1;
+          $count_onDisplay++;
+          break;
+
+        case 'draft':
+          $statusProduct = 0;
+          $count_draft++;
+          break;
+
+        default:
+          $statusProduct = 0;
+          $count_default++;
+          break;
+      }
+
+      $query = $db->getQuery(true)
+        ->select('product_id')
+        ->from('#__jshopping_products')
+        ->where('product_ean = ' . $db->quote($ean));
+
+      $db->setQuery($query);
+      $productId = (int) $db->loadResult();
+
+      if ($productId) {
+        $product = [
+          'product_id' => $productId,
+          'product_publish' => $statusProduct
+        ];
+        $productObj = (object) $product;
+        $db->updateObject('#__jshopping_products', $productObj, 'product_id');
+      } else {
+        $count_not_found++;
+      }
+    }
+
+    // Возвращаем статистику
+    return [
+      'on_display' => $count_onDisplay,
+      'draft' => $count_draft,
+      'default' => $count_default,
+      'not_found' => $count_not_found,
+      'errors' => 0
+    ];
+  }
+
+
   public function importProduct()
   {
-    
+
     $plugin = PluginHelper::getPlugin('jshopping', 'import_prom');
 
     if (!$plugin) {
@@ -341,8 +444,13 @@ class SofonaimportpromController extends BaseController
       //     break;
     }
 
+    $statusStats = $this->updateStatusProducts();
+
+
+    echo "<div class='container'>";
     echo "Импорт завершён.<br>";
     echo "Статистика.<br>";
+
 
     echo "<br><b>Категории.</b><br>";
     echo "Категории добавлено: " . $countCategoriesAdded . "<br>";
@@ -352,6 +460,12 @@ class SofonaimportpromController extends BaseController
     echo "Всего товаров обработано: " . $countTotal . "<br>";
     echo "Добавлено новых товаров: " . $countAdded . "<br>";
     echo "Обновлено существующих товаров: " . $countUpdated . "<br>";
+
+    echo "<br><b>Обновление статусов товаров:</b><br>";
+    echo "Опубликованы: {$statusStats['on_display']}<br>";
+    echo "Скрыты (draft): {$statusStats['draft']}<br>";
+    echo "Неопознанный статус: {$statusStats['default']}<br>";
+    echo "Не найдены в базе: {$statusStats['not_found']}<br>";
 
     echo "<br><b>Характеристики:</b><br>";
     echo "Создано новых полей: " . $charStats['created_fields'] . "<br>";
@@ -368,6 +482,7 @@ class SofonaimportpromController extends BaseController
     echo "Полных уже было: {$imageStats['full_skipped']}<br>";
     echo "Добавлено в БД: {$imageStats['inserted']}<br>";
     echo "Уже были в БД: {$imageStats['exists_in_db']}<br>";
+    echo "</div>";
 
     $logText = "[$now] Импорт завершён.\n";
     $logText .= "Статистика:\n\n";
@@ -380,6 +495,12 @@ class SofonaimportpromController extends BaseController
     $logText .= "- Всего обработано: $countTotal\n";
     $logText .= "- Добавлено: $countAdded\n";
     $logText .= "- Обновлено: $countUpdated\n\n";
+
+    $logText .= "Статусы товаров:\n";
+    $logText .= "- Опубликованы: {$statusStats['on_display']}\n";
+    $logText .= "- Скрыты: {$statusStats['draft']}\n";
+    $logText .= "- Неопознанные: {$statusStats['default']}\n";
+    $logText .= "- Не найдены: {$statusStats['not_found']}\n\n";
 
     $logText .= "Характеристики:\n";
     $logText .= "- Новые поля: " . $charStats['created_fields'] . "\n";
@@ -431,7 +552,7 @@ class SofonaimportpromController extends BaseController
     // Справочники (как в importOrderFile)
     $statusMap = [
       'closed' => 8,
-      'declined' => 9,
+      'canceled' => 9,//отменен
       'accepted' => 8,
     ];
 
@@ -501,7 +622,7 @@ class SofonaimportpromController extends BaseController
 
         // Ищем продукт по prom_id
         $product = $importModel->getProductByPromId($promId);
-        $this->log("Данные товара по prom_id: {$promId}", $product);
+        // $this->log("Данные товара по prom_id: {$promId}", $product);
 
         $productId = $product->product_id ?? 0;
         $categoryId = $product->category_id ?? 0;
@@ -569,12 +690,15 @@ class SofonaimportpromController extends BaseController
       }
 
       if ($savedOrder) {
-          $orderId = $savedOrder->order_id;
+        sleep(10);
+        $orderId = $savedOrder->order_id;
 
-        $importModel->setEmailInOrder($orderId,$email);
+        $importModel->setEmailInOrder($orderId, $email);
+        $ordersModel->saveOrderHistory(1, 'Добавлен Email - ' . $email);
 
-          $this->log("Заказ Prom ID: {$orderPromId} сохранен с ID: {$orderId}, email обновлен без отправки писем");
+        $this->log("Заказ Prom ID: {$orderPromId} сохранен с ID: {$orderId}, email обновлен без отправки писем");
       }
+      sleep(10);
 
     }
   }
@@ -680,7 +804,7 @@ class SofonaimportpromController extends BaseController
 
       // Получаем товар из базы по артикулу
       $product = $importModel->getProductByProductEan($productSku);
-      $this->log("данные товара по артикулу: {$productSku}", $product);
+      // $this->log("данные товара по артикулу: {$productSku}", $product);
 
       $productId = $product->product_id ?? 0;
       $categoryId = $product->category_id ?? 0;
@@ -763,8 +887,6 @@ class SofonaimportpromController extends BaseController
     }
     file_put_contents($logFile, $entry . PHP_EOL, FILE_APPEND);
   }
-
-
 
   protected function addProductExtraField($productId, $fieldName, $value)
   {
@@ -962,14 +1084,14 @@ class SofonaimportpromController extends BaseController
 
         if (
           ImageLib::resizeImageMagic(
-    $destPath,
-    400,
-    400,
-    1,         // вырежет под квадрат
-    0,         // без заливки
-    $thumbPath,
-    85
-)
+            $destPath,
+            400,
+            400,
+            1,         // вырежет под квадрат
+            0,         // без заливки
+            $thumbPath,
+            85
+          )
         ) {
           $stats['thumbs_created']++;
         }

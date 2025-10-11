@@ -3,24 +3,11 @@
 namespace Joomla\Component\Jshopping\Administrator\Controller;
 // use Joomla\Component\Jshopping\Administrator\Helper\HelperAdmin;
 use Joomla\CMS\Factory;
-use Joomla\Component\Jshopping\Site\Lib\JSFactory;
-// use Joomla\CMS\HTML\HTMLHelper;
-// use Joomla\Component\Jshopping\Site\Helper\SelectOptions;
-// use Joomla\CMS\Pagination\Pagination;
-// use Joomla\CMS\Language\Text;
-// use Joomla\CMS\Response\JsonResponse;
-// use Joomla\Component\Jshopping\Site\Helper\Helper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Registry\Registry;
-// use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\Database\DatabaseInterface;
-use Joomla\Component\Jshopping\Site\Lib\ImageLib;
 
 require_once JPATH_ROOT . '/components/com_jshopping/Lib/phpoffice/autoload.php';
-
-use PhpOffice\PhpSpreadsheet\IOFactory;
-// use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use Joomla\CMS\Table\Table;
 
 defined('_JEXEC') or die;
 

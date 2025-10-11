@@ -10,6 +10,27 @@ $jshopConfig = JSFactory::getConfig();
 <div class="tab-pane fade active show" id="products" role="tabpanel" aria-labelledby="products-tab">
 
 <div id="j-main-container" class="j-main-container">
+<div class="card p-4">
+  <table>
+    <tr>
+      <td width="300px"><b>Сумма дохода по товарам:</b></td>
+      <td><?= number_format($this->totalIncome, 2, '.', ' '); ?></td>
+    </tr>
+    <tr>
+      <td width="300px"><b>Сумма расхода по товарам:</b></td>
+      <td><?= number_format($this->totalExpenseProducts, 2, '.', ' '); ?></td>
+    </tr>
+    <tr>
+      <td width="300px"><b>Сумма расхода по расходникам:</b></td>
+      <td><?= number_format($this->totalExpenseConsumables, 2, '.', ' '); ?></td>
+    </tr>
+    <tr>
+      <td width="300px"><b>ИТОГО:</b></td>
+      <td><?= number_format($this->totalIncome - $this->totalExpenseProducts - $this->totalExpenseConsumables,2, '.', ' '); ?></td>
+    </tr>    
+  </table>
+</div>
+
   
   <form name="adminForm" id="adminForm" method="post" action="index.php?option=com_jshopping&controller=buhgalteria">
     <?php echo HTMLHelper::_('form.token'); ?>
