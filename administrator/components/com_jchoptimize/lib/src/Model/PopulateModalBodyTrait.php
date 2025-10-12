@@ -76,7 +76,7 @@ trait PopulateModalBodyTrait
      */
     private function getDynamicJavaScript(UriInterface $uri): array
     {
-        $htmlArray = $this->htmlCrawler->getCrawledHtmls(['crawl_limit' => 1, 'base_url' => $uri]);
+        $htmlArray = $this->htmlCrawler->getCrawledHtmls(['crawl_limit' => 1, 'base_url' => (string) $uri]);
 
         if (empty($htmlArray) || !isset($htmlArray[0]['html'])) {
             throw new Exception('No HTML returned');

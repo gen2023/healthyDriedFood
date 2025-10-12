@@ -2,8 +2,8 @@
 <extension type="plugin" group="jshoppingcheckout" method="upgrade">
     <name>PLG_JSCHECKOUT_TELEGRAMBOT</name>
 		<creationDate>2024-10-02</creationDate>
-		<updateDate>2025-07-13</updateDate>
-    <version>1.0.6</version>
+		<updateDate>2025-10-06</updateDate>
+    <version>1.0.7.1</version>
     <author>Sofona</author>
     <authorUrl>https://sofona.com/</authorUrl>
     <description>PLG_JSCHECKOUT_TELEGRAMBOT_DESCRIPTION</description>
@@ -39,6 +39,28 @@
 								/>
             </fieldset>
             <fieldset name="setting" label="PLG_JSCHECKOUT_TELEGRAMBOT_SEND_SETTINGS">
+						  <field
+								name="show_source"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_SOURCE"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+						  <field
+								name="show_action"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_ACTION"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>							
             	<field
 								name="show_order_id"
 								type="radio"
@@ -139,6 +161,50 @@
 								<option value="1">JON</option>
 							</field>
               <field
+								name="show_shipping_params"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_SHIPPING_PARAMS"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+              <field
+								name="show_street"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_STREET"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>			
+              <field
+								name="show_city"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_CITY"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>	
+              <field
+								name="show_zip"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_ZIP"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>																			
+              <field
 								name="show_payment"
 								type="radio"
 								layout="joomla.form.field.radio.switcher"
@@ -198,6 +264,17 @@
 								type="radio"
 								layout="joomla.form.field.radio.switcher"
 								label="PLG_JSCHECKOUT_TELEGRAMBOT_LANG_SITE"
+								default="0"
+								filter="integer"
+								>
+								<option value="0">JOFF</option>
+								<option value="1">JON</option>
+							</field>
+							<field
+								name="show_comment"
+								type="radio"
+								layout="joomla.form.field.radio.switcher"
+								label="PLG_JSCHECKOUT_TELEGRAMBOT_COMMENT"
 								default="0"
 								filter="integer"
 								>

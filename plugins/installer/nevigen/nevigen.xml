@@ -2,12 +2,12 @@
 <extension type="plugin" group="installer" method="upgrade">
     <name>PLG_INSTALLER_NEVIGEN</name>
     <author>Nevigen.com</author>
-    <creationDate>June 2025</creationDate>
+    <creationDate>October 2025</creationDate>
     <copyright>copyright © Nevigen.com. All rights reserved</copyright>
     <license>Proprietary. Copyrighted Commercial Software</license>
     <authorEmail>support@nevigen.com</authorEmail>
     <authorUrl>https://nevigen.com</authorUrl>
-    <version>2.1.1</version>
+    <version>2.2.0</version>
     <description>PLG_INSTALLER_NEVIGEN_DESCRIPTION</description>
     <namespace path="src">Joomla\Plugin\Installer\Nevigen</namespace>
     <scriptfile>script.php</scriptfile>

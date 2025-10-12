@@ -94,6 +94,8 @@ class Combiner implements ContainerAwareInterface, LoggerAwareInterface, Seriali
         if ($type == 'css') {
             if (!$this->params->get('optimizeCssDelivery_enable', '0')) {
                 $resultObj->prependContents($resultObj->getImports());
+            } else {
+                $resultObj->setCriticalCss($resultObj->getImports() . $resultObj->getCriticalCss());
             }
 
             $this->addCharset($resultObj);
@@ -196,7 +198,7 @@ class Combiner implements ContainerAwareInterface, LoggerAwareInterface, Seriali
 
         try {
             return $this->getResponseFromHttpRequest($uri, $fileInfo);
-        } catch (GuzzleException|FileNotFoundException $e) {
+        } catch (GuzzleException | FileNotFoundException $e) {
             throw new FileNotFoundException(
                 $this->wrapInComments($fileInfo->display()) . $e->getMessage()
             );
@@ -379,7 +381,7 @@ JS;
     {
         if (
             (function_exists('mb_detect_encoding')
-             && mb_detect_encoding($resultObj->getContents(), 'UTF-8', true) === 'UTF-8')
+                && mb_detect_encoding($resultObj->getContents(), 'UTF-8', true) === 'UTF-8')
             || (!function_exists('mb_detect_encoding')
                 && StringUtils::hasPcreUnicodeSupport()
                 && StringUtils::isValidUtf8($resultObj->getContents()))
@@ -432,7 +434,7 @@ JS;
     private function handleIdForCombining(mixed $id, string $type): CacheObject
     {
         $content = Output::getCombinedFile([
-            'f'    => $id,
+            'f' => $id,
             'type' => $type
         ], false);
 

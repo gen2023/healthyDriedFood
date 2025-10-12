@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen Installer Plugin
- * @version    2.1.1
+ * @version    2.2.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -21,9 +21,9 @@ use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Response\JsonResponse;
-use Joomla\Component\Installer\Administrator\Model\UpdateModel;
 use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\ParameterType;
+use Joomla\Filesystem\File;
 use Joomla\Plugin\Installer\Nevigen\Helper\ExtensionHelper;
 use Joomla\Registry\Registry;
 
@@ -94,7 +94,7 @@ class Nevigen extends CMSPlugin
 			$this->error = ob_get_clean();
 		}
 
-		if (!$action = $app->input->get('action'))
+		if (!$action = $app->getInput()->get('action'))
 		{
 			throw new \Exception($this->error, 404);
 		}
@@ -162,7 +162,7 @@ class Nevigen extends CMSPlugin
 			$url = '/administrator/index.php?option=com_plugins&task=plugin.edit&extension_id=' . $id;
 			$app->enqueueMessage(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_KEY', $url), 'warning');
 		}
-		$session = $app->getSession();
+		$session  = $app->getSession();
 		$messages = $session->get('nevigen_install_message');
 		if (!empty($messages))
 		{
@@ -231,7 +231,7 @@ class Nevigen extends CMSPlugin
 
 
 		$apiData = ['install' => $install];
-		$filter  = $this->getApplication()->input->get('filter', [], 'array');
+		$filter  = $this->getApplication()->getInput()->get('filter', [], 'array');
 
 		if (!empty($filter))
 		{
@@ -269,8 +269,8 @@ class Nevigen extends CMSPlugin
 	public function installExtension()
 	{
 		$app          = $this->getApplication();
-		$extension    = $app->input->getString('extension');
-		$free         = $app->input->getInt('free', 0);
+		$extension    = $app->getInput()->getString('extension');
+		$free         = $app->getInput()->getInt('free', 0);
 		$urlExtension = '';
 		if ($free > 0)
 		{
@@ -278,17 +278,30 @@ class Nevigen extends CMSPlugin
 		}
 		else
 		{
-			$data = $this->sendApi('link/paid', ['extension' => $extension]);
+			$nevigenLicense = $this->sendApi('nevigen_license', ['extension' => $extension]);
+			if (!empty($nevigenLicense['jsonapi']['code']))
+			{
+				$license = $this->createNevigenLicense($nevigenLicense['jsonapi']['code'], $extension);
+				if ($license)
+				{
+					$data = $this->sendApi('link/paid', ['extension' => $extension]);
+				}
+			}
+
 		}
 
 
 		if (empty($data))
 		{
+			$this->deleteNevigenLicense($extension);
+
 			throw new \Exception(Text::_('PLG_INSTALLER_NEVIGEN_ERROR_EXTENSION'), 404);
 		}
 
 		if (!empty($data['errors']))
 		{
+			$this->deleteNevigenLicense($extension);
+
 			throw new \Exception($data['errors'][0]['title'], 404);
 		}
 
@@ -299,7 +312,7 @@ class Nevigen extends CMSPlugin
 
 		try
 		{
-			return $this->install($urlExtension);
+			return $this->install($urlExtension, $extension);
 		}
 		catch (\Exception $e)
 		{
@@ -309,9 +322,9 @@ class Nevigen extends CMSPlugin
 
 	public function updateExtension(): void
 	{
-		$app          = $this->getApplication();
-		$db           = $this->getDatabase();
-		$element      = $app->input->getString('extension');
+		$app     = $this->getApplication();
+		$db      = $this->getDatabase();
+		$element = $app->getInput()->getString('extension');
 
 
 		if (!$element)
@@ -331,6 +344,8 @@ class Nevigen extends CMSPlugin
 
 		if (!$extensionId)
 		{
+			$this->deleteNevigenLicense($element);
+
 			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_NOT_FOUND', $element));
 		}
 
@@ -347,6 +362,8 @@ class Nevigen extends CMSPlugin
 
 		if (!$updateSite)
 		{
+			$this->deleteNevigenLicense($element);
+
 			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_SITE_NOT_FOUND', $element));
 		}
 
@@ -361,6 +378,8 @@ class Nevigen extends CMSPlugin
 
 		if ($response->code !== 200 || empty($xmlBody))
 		{
+			$this->deleteNevigenLicense($element);
+
 			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_XML_LOAD_FAIL', $updateSite));
 		}
 
@@ -368,6 +387,8 @@ class Nevigen extends CMSPlugin
 
 		if (!$xml || empty($xml->update))
 		{
+			$this->deleteNevigenLicense($element);
+
 			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_NO_ENTRIES', $element));
 		}
 
@@ -384,12 +405,18 @@ class Nevigen extends CMSPlugin
 
 		if (empty($urlExtension))
 		{
+			$this->deleteNevigenLicense($element);
+
 			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_NOT_IN_XML', $element));
 		}
 
 		try
 		{
-			$this->install($urlExtension);
+			$nevigenLicense = $this->sendApi('nevigen_license', ['extension' => $element]);
+			if (!empty($nevigenLicense['jsonapi']['code']))
+			{
+				$this->install($urlExtension, $element);
+			}
 		}
 		catch (\Exception $e)
 		{
@@ -413,15 +440,69 @@ class Nevigen extends CMSPlugin
 			$key = trim($this->params->get('key'));
 			if (!empty($key))
 			{
-				$headers['Nevigen-Token'] = $key;
-				$domain                   = $this->getApplication()->input->server->get('HTTP_HOST', '');
-				$url                      .= '/' . base64_encode($domain);
+				$element = basename($url);
+				if (!empty($element))
+				{
+					$nevigenLicense = $this->sendApi('nevigen_license', ['extension' => $element]);
+					if (!empty($nevigenLicense['jsonapi']['code']))
+					{
+						$license = $this->createNevigenLicense($nevigenLicense['jsonapi']['code'], $element);
+						if ($license)
+						{
+							$headers['Nevigen-Token'] = $key;
+							$domain                   = $this->getApplication()->getInput()->server->get('HTTP_HOST', '');
+							$url                      .= '/' . base64_encode($domain);
+						}
+					}
+				}
 			}
 		}
 
 	}
 
-	protected function install($urlExtension)
+	protected function createNevigenLicense($code, $extension)
+	{
+		if (empty($code) || empty($extension))
+		{
+			return false;
+		}
+
+		$file = JPATH_ROOT . '/nevigen_license_' . $extension . '.txt';
+		if (is_file($file))
+		{
+			File::delete($file);
+		}
+
+		try
+		{
+			file_put_contents($file, $code);
+
+			return true;
+
+		}
+		catch (\Exception $e)
+		{
+			return false;
+		}
+
+	}
+
+	protected function deleteNevigenLicense($extension): void
+	{
+		if (empty($extension))
+		{
+			return;
+		}
+
+		$file = JPATH_ROOT . '/nevigen_license_' . $extension . '.txt';
+		if (is_file($file))
+		{
+			File::delete($file);
+		}
+
+	}
+
+	protected function install($urlExtension, $extension)
 	{
 		if (!empty($urlExtension))
 		{
@@ -429,12 +510,15 @@ class Nevigen extends CMSPlugin
 			// Download the package at the URL given
 			if (!$p_file = InstallerHelper::downloadPackage($urlExtension))
 			{
+				$this->deleteNevigenLicense($extension);
 				throw new \Exception(Text::_('PLG_INSTALLER_NEVIGEN_ERROR_EXTENSION'), 404);
 			}
 
 			// Unpack the downloaded package file
 			if (!$package = InstallerHelper::unpack($app->get('tmp_path') . '/' . $p_file, true))
 			{
+				$this->deleteNevigenLicense($extension);
+
 				throw new \Exception(Text::sprintf('COM_INSTALLER_UNPACK_ERROR', $p_file), 404);
 
 			}
@@ -442,6 +526,8 @@ class Nevigen extends CMSPlugin
 			// Check type
 			if (!$package['type'])
 			{
+				$this->deleteNevigenLicense($extension);
+
 				InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
 				return false;
@@ -452,6 +538,8 @@ class Nevigen extends CMSPlugin
 			$installer->setPath('source', $package['dir']);
 			if (!$installer->findManifest())
 			{
+				$this->deleteNevigenLicense($extension);
+
 				InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
 				return false;
@@ -460,6 +548,8 @@ class Nevigen extends CMSPlugin
 			// Install the package
 			if (!$installer->install($package['dir']))
 			{
+				$this->deleteNevigenLicense($extension);
+
 				InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
 				return false;
@@ -468,27 +558,30 @@ class Nevigen extends CMSPlugin
 			// CleanUp install
 			InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
-			$session = $app->getSession();
+			$session  = $app->getSession();
 			$messages = $app->getMessageQueue();
+
 			if (!empty($messages))
 			{
 				$messages[] = [
 					'message' => Text::sprintf('COM_INSTALLER_INSTALL_SUCCESS', $installer->message),
-					'type'     => 'success',
+					'type'    => 'success',
 				];
 
-				$session->set('nevigen_install_message',$messages);
+				$session->set('nevigen_install_message', $messages);
 			}
 			else
 			{
 				$session->set('nevigen_install_message', [
 					[
 						'message' => Text::sprintf('COM_INSTALLER_INSTALL_SUCCESS', $installer->message),
-						'type'     => 'success',
+						'type'    => 'success',
 					]
 				]);
 			}
 
+
+			$this->deleteNevigenLicense($extension);
 
 			return true;
 		}
@@ -520,7 +613,7 @@ class Nevigen extends CMSPlugin
 
 			if (!isset($data['domain']))
 			{
-				$data['domain'] = $this->getApplication()->input->server->get('HTTP_HOST', '');
+				$data['domain'] = $this->getApplication()->getInput()->server->get('HTTP_HOST', '');
 			}
 			if (!isset($data['lang']))
 			{
@@ -534,9 +627,11 @@ class Nevigen extends CMSPlugin
 				$data['nevigen_audit'] = $nevigen_audit;
 			}
 
-			$data['php']    = PHP_VERSION;
-			$data['joomla'] = JVERSION;
-			$url            = $this->api . '/' . $methodName;
+			$data['php']       = PHP_VERSION;
+			$data['joomla']    = JVERSION;
+			$data['installer'] = ExtensionHelper::getJSVersion('installer');
+
+			$url = $this->api . '/' . $methodName;
 
 
 			$response = (new Http())->post($url, $data, $headers);

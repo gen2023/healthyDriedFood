@@ -58,7 +58,7 @@ class ImageAttributes
         return $imageAttributes;
     }
 
-    private function validateImage(mixed $image): UriInterface|bool
+    private function validateImage(mixed $image): bool
     {
         try {
             $imgObj = HtmlElementBuilder::load($image);

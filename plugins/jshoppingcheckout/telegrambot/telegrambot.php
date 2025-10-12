@@ -60,9 +60,10 @@ class PlgJshoppingCheckoutTelegrambot extends CMSPlugin
 
         if ($response === false || !$response) {
             $this->showLog("Telegram error to {$chat_id}: " . $curlError);
-        } else {
-            $this->showLog("Telegram message sent to {$chat_id}, order ID: {$order_id}");
         }
+        //else {
+        // $this->showLog("Telegram message sent to {$chat_id}, order ID: {$order_id}");
+        //}
 
         return null;
     }
@@ -107,8 +108,13 @@ class PlgJshoppingCheckoutTelegrambot extends CMSPlugin
 
             $lang->load('plg_jshoppingcheckout_telegrambot', JPATH_ADMINISTRATOR, (string) $lang_message, true);
 
-            $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_SOURCE')] = $siteDomain;
-            $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_ACTION')] = Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_CUSTOM_TEXT');
+            if ($this->params->get('show_source', '')) {
+                $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_SOURCE')] = $siteDomain;
+            }
+
+            if ($this->params->get('show_action', '')) {
+                $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_ACTION')] = Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_CUSTOM_TEXT');
+            }
 
             if ($this->params->get('show_lang_site', '')) {
                 $langTag = Factory::getApplication()->getLanguage()->getTag();
@@ -126,7 +132,6 @@ class PlgJshoppingCheckoutTelegrambot extends CMSPlugin
 
             if ($this->params->get('show_order_total', '')) {
                 $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_ORDER_TOTAL')] = $order->order_total . ' ' . $order->currency_code;
-                ;
             }
 
             if ($this->params->get('show_user_name', '')) {
@@ -145,9 +150,26 @@ class PlgJshoppingCheckoutTelegrambot extends CMSPlugin
                 $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_SHIPPING')] = $model->getShipping_method($order->shipping_method_id);
             }
 
+            if ($this->params->get('show_shipping_params', '') && isset($order->shipping_params) && $order->shipping_params != '') {
+                $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_SHIPPING_PARAMS')] = $order->shipping_params;
+            }
+
+            if ($this->params->get('show_street', '') && isset($order->street) && $order->street != '') {
+                $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_STREET')] = $order->street;
+            }
+            
+            if ($this->params->get('show_city', '') && isset($order->show_city) && $order->show_city != '') {
+                $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_CITY')] = $order->show_city;
+            }
+            
+            if ($this->params->get('show_zip', '') && isset($order->show_zip) && $order->show_zip != '') {
+                $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_ZIP')] = $order->show_zip;
+            }
+
             if ($this->params->get('show_payment', '')) {
                 $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_PAYMENT')] = $model->getPayment_method($order->payment_method_id);
             }
+
 
             if (!empty($productInfoRaw)) {
                 foreach ($productInfoRaw as $index => $parts) {
@@ -179,6 +201,10 @@ class PlgJshoppingCheckoutTelegrambot extends CMSPlugin
 
                     $arr[$arr_key] = $productInfo;
                 }
+            }
+
+            if ($this->params->get('show_comment', '') && isset($order->order_add_info) && $order->order_add_info != '') {
+                $arr[Text::_('PLG_JSCHECKOUT_TELEGRAMBOT_COMMENT')] = $order->order_add_info;
             }
 
             $txt = '';
@@ -266,6 +292,10 @@ class PlgJshoppingCheckoutTelegrambot extends CMSPlugin
 
     private function showLog($text)
     {
-        Log::add($text, Log::INFO, 'yourlogcategory');
+        $log_file = JPATH_ROOT . '/administrator/logs/tgbot.log';
+
+        file_put_contents($log_file, '[' . date('Y-m-d H:i:s') . '] ' . $text . PHP_EOL, FILE_APPEND);
+
+        Log::add($text, Log::INFO, 'tgbot');
     }
 }

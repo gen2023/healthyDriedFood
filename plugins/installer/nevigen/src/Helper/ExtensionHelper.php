@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen Installer Plugin
- * @version    2.1.1
+ * @version    2.2.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -40,6 +40,14 @@ class ExtensionHelper
 			elseif ($type == 'nevigen_audit' && ComponentHelper::isInstalled('com_nevigen_audit') === 1)
 			{
 				$data = Installer::parseXMLInstallFile(JPATH_ROOT . '/administrator/components/com_nevigen_audit/nevigen_audit.xml');
+				if (!empty($data) && !empty($data['version']))
+				{
+					self::$versionJS[$type] = $data['version'];
+				}
+			}
+			elseif ($type == 'installer')
+			{
+				$data = Installer::parseXMLInstallFile(JPATH_ROOT . '/plugins/installer/nevigen/nevigen.xml');
 				if (!empty($data) && !empty($data['version']))
 				{
 					self::$versionJS[$type] = $data['version'];

@@ -258,7 +258,7 @@ APACHECONFIG;
             $container->get(Registry::class)->get('pro_cache_storage_adapter', 'filesystem')
         );
 
-        if (!$cache instanceof TaggableInterface && !$cache instanceof IterableInterface) {
+        if (!$cache instanceof TaggableInterface || !$cache instanceof IterableInterface) {
             $cache = $this->getCacheAdapter($container, 'filesystem');
         }
 

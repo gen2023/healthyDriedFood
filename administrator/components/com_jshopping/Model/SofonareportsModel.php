@@ -214,97 +214,86 @@ class SofonareportsModel extends BaseDatabaseModel
     return (int) $db->loadResult();
   }
 
-public function getProductsReport($filter = [], $limitstart = 0, $limit = 20, $orderBy = 'total_sum', $orderDir = 'DESC', $mergeLang = true)
-{
+  public function getProductsReport($filter = [], $limitstart = 0, $limit = 20, $orderBy = 'total_sum', $orderDir = 'DESC', $mergeLang = true)
+  {
     $db = Factory::getContainer()->get(DatabaseInterface::class);
     $langCode = Factory::getApplication()->getLanguage()->getTag();
 
     $productName = $mergeLang
-        ? "COALESCE(p.`name_{$langCode}`, og.product_name) AS product_name"
-        : "p.`name_{$langCode}` AS product_name";
+      ? "COALESCE(p.`name_{$langCode}`, oi.product_name) AS product_name"
+      : "oi.product_name";
 
-    // Подзапрос с агрегированными данными заказов
-    $subQuery = $db->getQuery(true)
-        ->select([
-            'oi.product_id',
-            'MAX(oi.product_name) AS product_name',
-            'COUNT(DISTINCT oi.order_id) AS orders_count',
-            'SUM(oi.product_quantity) AS total_quantity',
-            'ROUND(SUM(oi.product_quantity * oi.product_item_price / IF(o.currency_exchange = 0, 1, o.currency_exchange)), 2) AS raw_sum',
-            'MAX(o.currency_code) AS order_currency'
-        ])
+    if (!empty($filter['currency_id']) && (int) $filter['currency_id'] > 0) {
+      $query = $db->getQuery(true)
+        ->select("
+                oi.product_id,
+                $productName,
+                p.product_ean,
+                p.hits,
+                p.manufacturer_code,
+                COUNT(DISTINCT oi.order_id) AS orders_count,
+                SUM(oi.product_quantity) AS total_quantity,
+                ROUND(SUM(oi.product_quantity * oi.product_item_price / 
+                    IF(o.currency_exchange = 0, 1, o.currency_exchange) * c.currency_value
+                ), 2) AS total_sum,
+                c.currency_code AS currency_name
+            ")
         ->from('#__jshopping_order_item AS oi')
         ->innerJoin('#__jshopping_orders AS o ON oi.order_id = o.order_id')
-        ->where('o.order_status NOT IN (0, -1)')
-        ->group('oi.product_id');
-
-    $aggSql = '(' . $subQuery . ') AS og';
-
-    // Основной запрос: начинаем с товаров
-    $query = $db->getQuery(true)
-        ->select([
-            'p.product_id',
-            $productName,
-            'p.product_ean',
-            'p.hits',
-            'p.manufacturer_code',
-            'COALESCE(og.orders_count, 0) AS orders_count',
-            'COALESCE(og.total_quantity, 0) AS total_quantity',
-            'COALESCE(og.raw_sum, 0) AS total_sum',
-            'COALESCE(og.order_currency, \'\') AS currency_name'
-        ])
-        ->from('#__jshopping_products AS p')
-        ->leftJoin('(SELECT product_id, MIN(category_id) as category_id FROM #__jshopping_products_to_categories GROUP BY product_id) AS pc ON pc.product_id = p.product_id')
-        ->leftJoin($aggSql . ' ON og.product_id = p.product_id');
-
-    // Если выбран конкретный currency_id
-    if (!empty($filter['currency_id']) && (int) $filter['currency_id'] > 0) {
-        $query->leftJoin('#__jshopping_currencies AS c ON c.currency_id = ' . (int) $filter['currency_id']);
-        // пересчёт суммы
-        $query->clear('select')->select([
-            'p.product_id',
-            $productName,
-            'p.product_ean',
-            'p.hits',
-            'p.manufacturer_code',
-            'COALESCE(og.orders_count, 0) AS orders_count',
-            'COALESCE(og.total_quantity, 0) AS total_quantity',
-            'ROUND(COALESCE(og.raw_sum,0) * c.currency_value, 2) AS total_sum',
-            'c.currency_code AS currency_name'
-        ]);
+        ->leftJoin('(SELECT product_id, MIN(category_id) as category_id FROM #__jshopping_products_to_categories GROUP BY product_id) AS pc ON pc.product_id = oi.product_id')
+        ->leftJoin('#__jshopping_products AS p ON p.product_id = oi.product_id')
+        ->leftJoin('#__jshopping_currencies AS c ON c.currency_id = ' . (int) $filter['currency_id'])
+        ->where('o.order_status NOT IN (0, -1)');
+    } else {
+      $query = $db->getQuery(true)
+        ->select("
+                oi.product_id,
+                $productName,
+                p.product_ean,
+                p.hits,
+                p.manufacturer_code,
+                COUNT(DISTINCT oi.order_id) AS orders_count,
+                SUM(oi.product_quantity) AS total_quantity,
+                ROUND(SUM(oi.product_quantity * oi.product_item_price / 
+                    IF(o.currency_exchange = 0, 1, o.currency_exchange)
+                ), 2) AS total_sum,
+                o.currency_code AS currency_name
+            ")
+        ->from('#__jshopping_order_item AS oi')
+        ->innerJoin('#__jshopping_orders AS o ON oi.order_id = o.order_id')
+        ->leftJoin('(SELECT product_id, MIN(category_id) as category_id FROM #__jshopping_products_to_categories GROUP BY product_id) AS pc ON pc.product_id = oi.product_id')
+        ->leftJoin('#__jshopping_products AS p ON p.product_id = oi.product_id')
+        ->where('o.order_status NOT IN (0, -1)');
     }
 
-    // Фильтры
     $query = $this->applyFilter($query, $filter);
 
     if ($mergeLang) {
-        $query->group('p.product_id, p.product_ean, p.manufacturer_code');
+      $query->group('oi.product_id, p.product_ean, p.manufacturer_code');
     } else {
-        $query->group('p.product_id, p.name_' . $langCode . ', p.product_ean, p.manufacturer_code, p.hits, currency_name');
+      $query->group('oi.product_id, oi.product_name, p.product_ean, p.manufacturer_code, p.hits, currency_name');
     }
 
     $allowedSort = [
-        'total_quantity',
-        'total_sum',
-        'product_name',
-        'orders_count',
-        'product_id',
-        'product_ean',
-        'hits',
-        'manufacturer_code'
+      'total_quantity',
+      'total_sum',
+      'product_name',
+      'orders_count',
+      'product_id',
+      'product_ean',
+      'hits',
+      'manufacturer_code'
     ];
 
     if (!in_array($orderBy, $allowedSort)) {
-        $orderBy = 'total_sum';
+      $orderBy = 'total_sum';
     }
 
     $query->order($db->escape($orderBy) . ' ' . $db->escape($orderDir));
 
     $db->setQuery($query, $limitstart, $limit);
     return $db->loadObjectList();
-}
-
-
+  }
 
   public function getCountAllOrders($filters)
   {

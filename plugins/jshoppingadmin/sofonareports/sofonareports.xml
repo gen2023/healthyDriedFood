@@ -2,8 +2,8 @@
 <extension type="plugin" group="jshoppingadmin" method="upgrade">
     <name>PLG_JSHOPPINGADMIN_SOFONAREPORTS</name>
     <author>Sofona</author>
-    <version>1.0.4</version>
-    <creationDate>29.07.2025</creationDate>
+    <version>1.0.4.1</version>
+    <creationDate>01.09.2025</creationDate>
     <description>PLG_JSHOPPINGADMIN_SOFONAREPORTS_DESCRIPTION</description>
 
     <scriptfile>script.php</scriptfile>

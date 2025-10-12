@@ -34,6 +34,55 @@ class SofonaimportpromController extends BaseController
   //   $view->display();
   // }
 
+  protected function getOrdersByApi()
+  {
+    $apiToken = "18c07c4c55093132d3bf20a7c569c1527eb0e069";
+
+    $dateFrom = date('Y-m-d', strtotime('-31 days'));
+    $url = "https://my.prom.ua/api/v1/orders/list?date_from={$dateFrom}";
+
+    $headers = [
+      "Authorization: Bearer $apiToken",
+      "Accept: application/json"
+    ];
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if (curl_errno($ch)) {
+      $error = curl_error($ch);
+      curl_close($ch);
+      throw new \RuntimeException("Ошибка CURL: " . $error);
+    }
+
+    curl_close($ch);
+
+    if ($httpCode !== 200) {
+      throw new \RuntimeException("Ошибка запроса к API Prom.ua (HTTP {$httpCode})");
+    }
+
+    $data = json_decode($response, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      throw new \RuntimeException("Ошибка разбора JSON: " . json_last_error_msg());
+    }
+
+    $orders = $data['orders'] ?? [];
+
+    $ordersById = [];
+    foreach ($orders as $order) {
+      if (isset($order['id'])) {
+        $ordersById[$order['id']] = $order;
+      }
+    }
+
+    return $ordersById;
+  }
+
   protected function updateStatusProducts()
   {
     $apiToken = "18c07c4c55093132d3bf20a7c569c1527eb0e069";
@@ -135,7 +184,6 @@ class SofonaimportpromController extends BaseController
       'errors' => 0
     ];
   }
-
 
   public function importProduct()
   {
@@ -451,7 +499,6 @@ class SofonaimportpromController extends BaseController
     echo "Импорт завершён.<br>";
     echo "Статистика.<br>";
 
-
     echo "<br><b>Категории.</b><br>";
     echo "Категории добавлено: " . $countCategoriesAdded . "<br>";
     echo "Категории обновлено: " . $countCategoriesUpdated . "<br>";
@@ -549,11 +596,14 @@ class SofonaimportpromController extends BaseController
       throw new \RuntimeException('Ошибка парсинга XML');
     }
 
-    // Справочники (как в importOrderFile)
+    $apiOrders = $this->getOrdersByApi();
+
     $statusMap = [
       'closed' => 8,
-      'canceled' => 9,//отменен
-      'accepted' => 8,
+      'canceled' => 9,
+      'declined' => 9,//отменен
+      'accepted' => 11,
+      'unpaid' => 10,
     ];
 
     $shippingMethods = [
@@ -585,6 +635,10 @@ class SofonaimportpromController extends BaseController
       $dateObj = \DateTime::createFromFormat('d.m.y H:i', $dateRaw);
       $formattedDate = $dateObj ? $dateObj->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
 
+      if ($apiOrders[$orderPromId]['payment_data']['status'] == 'unpaid') {
+        $statusProm = 'unpaid';
+      }
+
       // Формируем заказ
       $order = [
         'id_order_prom' => $orderPromId,
@@ -592,8 +646,8 @@ class SofonaimportpromController extends BaseController
         'd_f_name' => $fio,
         'phone' => $phone,
         'd_phone' => $phone,
-        // 'email' => $email,
-        // 'd_email' => $email,
+        'email' => $email,
+        'd_email' => $email,
         'shipping_params' => $address,
         'street' => $address,
         'd_street' => $address,
@@ -622,7 +676,7 @@ class SofonaimportpromController extends BaseController
 
         // Ищем продукт по prom_id
         $product = $importModel->getProductByPromId($promId);
-        // $this->log("Данные товара по prom_id: {$promId}", $product);
+        $this->log("Данные товара по prom_id: {$promId}", $product);
 
         $productId = $product->product_id ?? 0;
         $categoryId = $product->category_id ?? 0;
@@ -674,30 +728,43 @@ class SofonaimportpromController extends BaseController
 
       unset($order['products']);
 
-      // Сохраняем заказ
-      // Проверяем, существует ли заказ с таким id_order_prom
-      $existsOrderId = $importModel->getOrderProm($orderPromId);
-      if ($existsOrderId) {
-        $this->log("Заказ Prom ID: {$orderPromId} уже существует в системе (order_id: {$existsOrderId}), пропускаем.");
-        continue;
+      $resultInfo = $importModel->getOrderInfoByPromId($orderPromId);
+
+      if ($resultInfo) {
+        $order['order_id'] = (int) $resultInfo->order_id;
+        $existsOrderStatus = (int) $resultInfo->order_status;
+        if ($existsOrderStatus == $statusMap[$statusProm]) {
+          $this->log("Заказ Prom ID: {$orderPromId} уже существует в системе (order_id: {$resultInfo->order_id}), и статусы равны({$existsOrderStatus}=={$statusMap[$statusProm]}) пропускаем.");
+          continue;
+        } else {
+          $importModel->updateOrderStatus($resultInfo->order_id, $statusMap[$statusProm]);
+          $ordersModel->saveOrderHistory(1, 'Изменен статус заказа - ' . $resultInfo->order_id . ' на id = ' . $statusMap[$statusProm]);
+
+          continue;
+
+        }
       }
 
-      // Сохраняем заказ
+      $jshopConfig = JSFactory::getConfig();
+      $oldSendEmail = $jshopConfig->send_order_email;
+      $jshopConfig->send_order_email = 0;
       $savedOrder = $ordersModel->save($order);
+      $jshopConfig->send_order_email = $oldSendEmail;
+
       if (!$savedOrder) {
         $this->log("Ошибка при сохранении заказа Prom ID: {$orderPromId}", $order);
         continue;
       }
 
-      if ($savedOrder) {
-        sleep(10);
-        $orderId = $savedOrder->order_id;
+      // if ($savedOrder) {
+      //   sleep(10);
+      //   $orderId = $savedOrder->order_id;
 
-        $importModel->setEmailInOrder($orderId, $email);
-        $ordersModel->saveOrderHistory(1, 'Добавлен Email - ' . $email);
+      //   $importModel->setEmailInOrder($orderId, $email);
+      //   $ordersModel->saveOrderHistory(1, 'Добавлен Email - ' . $email);
 
-        $this->log("Заказ Prom ID: {$orderPromId} сохранен с ID: {$orderId}, email обновлен без отправки писем");
-      }
+      //   $this->log("Заказ Prom ID: {$orderPromId} сохранен с ID: {$orderId}, email обновлен без отправки писем");
+      // }
       sleep(10);
 
     }
@@ -804,7 +871,7 @@ class SofonaimportpromController extends BaseController
 
       // Получаем товар из базы по артикулу
       $product = $importModel->getProductByProductEan($productSku);
-      // $this->log("данные товара по артикулу: {$productSku}", $product);
+      $this->log("данные товара по артикулу: {$productSku}", $product);
 
       $productId = $product->product_id ?? 0;
       $categoryId = $product->category_id ?? 0;

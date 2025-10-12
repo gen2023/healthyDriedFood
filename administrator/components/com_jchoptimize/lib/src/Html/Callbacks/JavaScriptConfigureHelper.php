@@ -62,7 +62,8 @@ class JavaScriptConfigureHelper extends CombineJsCss
                     return;
                 }
             }
-            if (Helper::findExcludes($this->excludes[$this->section]['critical_js'][$criticalJsIndex], (string)$uri)) {
+            $criticalJsValue = $this->excludes[$this->section]['critical_js'][$criticalJsIndex];
+            if (is_array($criticalJsValue) && Helper::findExcludes($criticalJsValue, (string)$uri)) {
                 return;
             }
 

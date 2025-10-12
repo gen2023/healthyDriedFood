@@ -439,6 +439,7 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
         bool $cssPreviouslyCached,
         bool $isLastKey
     ): void {
+        /** @var CssProcessor $cssProcessor */
         $cssProcessor = $this->getContainer()->get(CssProcessor::class);
         $cssProcessor->setCacheObj($cssCacheObj);
         $cssProcessor->setIsLastKey($isLastKey);
@@ -450,6 +451,7 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
         $cssCacheObj->setCriticalCssId($criticalCssId);
 
         if ($cssPreviouslyCached) {
+            /** @var CacheObject $criticalCssObj */
             $criticalCssObj = $this->loadCache($function, $args, $id, $criticalCssAlreadyExisted);
 
             if ($criticalCssAlreadyExisted) {
@@ -458,7 +460,7 @@ class CacheManager implements LoggerAwareInterface, ContainerAwareInterface, Ser
                     ->addToPotentialCriticalCssAtRules($criticalCssObj->getPotentialCriticalCssAtRules());
             }
 
-            $cssCacheObj->setCriticalCss($criticalCssObj->getCriticalCss());
+            $cssCacheObj->setCriticalCss($criticalCssObj->getImports() . $criticalCssObj->getCriticalCss());
         } else {
             $this->callbackCache->getStorage()->setItem($criticalCssId, [$cssCacheObj]);
             $this->tagStorage($criticalCssId);
