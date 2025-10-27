@@ -206,6 +206,7 @@ return [
 	'Joomla\\Plugin\\JLSitemap\\Virtuemart\\' => [JPATH_PLUGINS . '/jlsitemap/virtuemart/src'],
 	'Joomla\\Plugin\\JShopping\\NevigenNovaposhta\\' => [JPATH_PLUGINS . '/jshopping/nevigen_novaposhta/src'],
 	'Joomla\\Plugin\\JShopping\\NevigenRecentlyViewedProducts\\' => [JPATH_PLUGINS . '/jshopping/nevigen_rvp/src'],
+	'Joomla\\Plugin\\JShopping\\RozetkaPay\\' => [JPATH_PLUGINS . '/jshopping/rozetkapay/src'],
 	'Joomla\\Plugin\\MediaAction\\Crop\\' => [JPATH_PLUGINS . '/media-action/crop/src'],
 	'Joomla\\Plugin\\MediaAction\\Resize\\' => [JPATH_PLUGINS . '/media-action/resize/src'],
 	'Joomla\\Plugin\\MediaAction\\Rotate\\' => [JPATH_PLUGINS . '/media-action/rotate/src'],

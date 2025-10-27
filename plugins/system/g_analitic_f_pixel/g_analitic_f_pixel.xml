@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade" version="4.0">
+  <name>PLG_SYSTEM_G_ANALITICS_F_PIXEL</name>
+	<creationDate>2024-10-08</creationDate>
+  <version>1.1.2</version>
+  <author>Sofona</author>
+  <description>PLG_SYSTEM_G_ANALITICS_F_PIXEL_DESCRIPTION</description>
+  <files>
+    <filename plugin="g_analitic_f_pixel">g_analitic_f_pixel.php</filename>
+		<filename>models/GAnaliticsFPixelModel.php</filename>
+  </files>
+	<languages>
+		<language tag="ru-RU">language/ru-RU/plg_system_g_analitic_f_pixel.sys.ini</language>
+		<language tag="ru-RU">language/ru-RU/plg_system_g_analitic_f_pixel.ini</language>
+	</languages>
+  <config>
+    <fields name="params">
+      <fieldset name="basic">
+        <field name="debug_mode"
+          type="radio"
+					layout="joomla.form.field.radio.switcher"
+          default="0"
+          description="PLG_SYSTEM_G_ANALITICS_F_PIXEL_DEBUG"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_DEBUG">
+					  <option value="0">JNO</option>
+					  <option value="1">JYES</option>
+        </field>   
+      </fieldset>
+      <fieldset name="list_event_ga" label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_LIST_EVENTS_GA">
+        <field name="show_event_ga"
+          type="radio"
+					layout="joomla.form.field.radio.switcher"
+          default="0"
+          description="PLG_SYSTEM_G_ANALITICS_F_PIXEL_EVENT"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_EVENT">
+					  <option value="0">JNO</option>
+					  <option value="1">JYES</option>
+        </field>
+        <field 
+          name="tracking_id_ga" 
+          type="text" 
+          default="UA-000000000-0" 
+          label="Google Analytics ID" 
+          showon="show_event_ga:1"
+        />
+        <field
+          name="view_item_ga"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_VIEW_ITEM"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_ga:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="view_item_list_ga"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_VIEW_ITEM_LIST"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_ga:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="view_cart_ga"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_VIEW_CART"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_ga:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="remove_from_cart_ga"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_REMOVE_FROM_CART"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_ga:1">
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field>
+        <field
+          name="add_to_cart_ga"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_ADD_TO_CART"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_ga:1">
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field>
+        <field
+          name="add_to_cart_ga_deff"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_DELAYED_LOADING"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="add_to_cart_ga:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>          
+        <field
+          name="begin_checkout_ga"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_BEGIN_CHECKOUT"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_ga:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>   
+        <field
+          name="add_shipping_info_ga"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_ADD_SHIPPING_INFO"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_ga:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="add_shipping_info_ga_deff"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_DELAYED_LOADING"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="add_shipping_info_ga:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>        
+        <field
+          name="add_payment_info_ga"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_ADD_PAYMENT_INFO"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_ga:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="add_payment_info_ga_deff"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_DELAYED_LOADING"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="add_payment_info_ga:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>         
+        <field
+          name="purchase_ga"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_PURCHASE"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_ga:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>                                                                      
+      </fieldset>
+      <fieldset name="list_event_fbp" label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_LIST_EVENTS_FBP">
+        <field name="show_event_fbp"
+          type="radio"
+					layout="joomla.form.field.radio.switcher"
+          default="0"
+          description="PLG_SYSTEM_G_ANALITICS_F_PIXEL_EVENT"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_EVENT">
+					  <option value="0">JNO</option>
+					  <option value="1">JYES</option>
+        </field>
+        <field 
+          name="tracking_id_fbp" 
+          type="text" 
+          default="000000000000000" 
+          label="Facebook Pixel" 
+          showon="show_event_fbp:1"
+        />
+        <field
+          name="viewContent_fbp" 
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_VIEW_CONTENT"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_fbp:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="search_fbp"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_SEARCH"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_fbp:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="purchase_fbp"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_PURCHASE"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_fbp:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field> 
+        <field
+          name="addToCart_fbp"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_ADD_TO_CART"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_fbp:1">
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field> 
+        <field
+          name="addToCart_fbp_deff"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_DELAYED_LOADING"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="addToCart_fbp:1">
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field>
+        <field
+          name="addPaymentInfo_fbp"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_ADD_PAYMENT_INFO"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_fbp:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="addPaymentInfo_fbp_deff"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_DELAYED_LOADING"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="addPaymentInfo_fbp:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="addToWishlist_fbp"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_ADD_TO_WISHLIST"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_fbp:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="addToWishlist_fbp_deff"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_DELAYED_LOADING"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="addToWishlist_fbp:1">
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field>        
+        <field
+          name="initiateCheckout_fbp"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_INITIAL_CHECKOUT"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_fbp:1">
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field>
+      </fieldset>
+      <fieldset name="list_event_fbc" label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_LIST_EVENTS_FBC">
+        <field name="show_event_fbc"
+          type="radio"
+					layout="joomla.form.field.radio.switcher"
+          default="0"
+          description="PLG_SYSTEM_G_ANALITICS_F_PIXEL_EVENT"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_EVENT">
+					  <option value="0">JNO</option>
+					  <option value="1">JYES</option>
+        </field>
+        <field 
+          name="token_id_fbc" 
+          type="text" 
+          default="000000000000000" 
+          label="Facebook token" 
+          showon="show_event_fbc:1"
+        />
+        <field
+          name="addToCart_fbc"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_ADD_TO_CART"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_fbc:1">
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field> 
+        <field
+          name="viewContent_fbс" 
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_VIEW_CONTENT"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_fbc:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+          name="purchase_fbс"
+          type="radio"
+          label="PLG_SYSTEM_G_ANALITICS_F_PIXEL_PURCHASE"
+          layout="joomla.form.field.radio.switcher"
+          default="0"
+          filter="boolean"
+          showon="show_event_fbc:1">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field> 
+      </fieldset>
+    </fields>
+  </config>
+  <updateservers>
+    <server type="extension" name="Google analitics, Facebook pixel, Facebook Conversation">https://gitvault.sofona.info/g_analitic_f_pixel/updateGa_fb.xml</server>
+  </updateservers>
+</extension>
