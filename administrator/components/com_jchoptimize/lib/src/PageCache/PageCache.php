@@ -26,6 +26,7 @@ use _JchOptimizeVendor\V91\Psr\Log\LoggerAwareTrait;
 use Exception;
 use JchOptimize\Core\Helper;
 use JchOptimize\Core\Laminas\ClearExpiredByFactor;
+use JchOptimize\Core\Model\CloudflarePurger;
 use JchOptimize\Core\Platform\CacheInterface;
 use JchOptimize\Core\Platform\HooksInterface;
 use JchOptimize\Core\Platform\UtilityInterface;
@@ -51,6 +52,7 @@ use function usort;
 
 // phpcs:disable PSR1.Files.SideEffects
 defined('_JCH_EXEC') or die('Restricted Access');
+
 // phpcs:enable PSR1.Files.SideEffects
 
 class PageCache implements ContainerAwareInterface, LoggerAwareInterface
@@ -93,7 +95,8 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
         protected $taggableCache,
         protected CacheInterface $cacheUtils,
         protected HooksInterface $hooks,
-        protected UtilityInterface $utility
+        protected UtilityInterface $utility,
+        protected ?CloudflarePurger $cloudflarePurger = null
     ) {
         $reflection = new ReflectionClass($this->pageCacheStorage);
         $this->adapter = $reflection->getShortName();
@@ -360,10 +363,14 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
     public function deleteItemsByIds(array $ids): bool
     {
         $result = 1;
+        $urls = [];
 
         foreach ($ids as $id) {
+            $urls[] = $this->getUrlFromId($id);
             $result &= (int)$this->deleteItemById($id);
         }
+
+        $this->cloudflarePurger?->purge($urls);
 
         return (bool)$result;
     }
@@ -438,9 +445,8 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
             $data = $this->cacheUtils->prepareDataFromCache($data);
 
             if (
-                !is_null($data) && $this->input->cookie->get(
-                    'jch_optimize_no_cache_user_activity'
-                ) != 'user_posted_form'
+                !is_null($data)
+                && $this->input->cookie->get('jch_optimize_no_cache_user_activity') != 'user_posted_form'
             ) {
                 if (!empty($data['body'])) {
                     $this->setCaptureCache($data['body']);
@@ -454,6 +460,7 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
             }
         }
     }
+
     public function getPageCacheId(?UriInterface $currentUri = null): string
     {
         if ($currentUri === null) {
@@ -505,6 +512,8 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
             }
         }
 
+        $this->cloudflarePurger?->purge();
+
         return (bool)$return;
     }
 
@@ -533,5 +542,12 @@ class PageCache implements ContainerAwareInterface, LoggerAwareInterface
     public function hasCaptureCache(UriInterface $uri): bool
     {
         return false;
+    }
+
+    public function getUrlFromId(string $id): string
+    {
+        $tags = $this->taggableCache->getTags($id);
+
+        return $tags['1'];
     }
 }

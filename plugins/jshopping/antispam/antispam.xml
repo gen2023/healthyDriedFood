@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="jshopping" method="upgrade">
     <name>PLG_JSHOPPING_ANTISPAM</name>
-    <creationDate>01.04.2025</creationDate>
-    <version>1.0.1</version>
+    <creationDate>12.10.2025</creationDate>
+    <version>1.0.2</version>
     <author>Sofona</author>
     <authorUrl>https://sofona.com/</authorUrl>
     <copyright>Copyright © All rights reserved.</copyright>

@@ -46,6 +46,7 @@ class ApiParamsModel extends BaseDatabaseModel
                 ],
                 'resize_mode' => $this->params->get('pro_api_resize_mode', 'manual'),
                 'webp' => (bool)$this->params->get('pro_next_gen_images', '1'),
+                'avif' => (bool)$this->params->get('gen_avif_images', '1'),
                 'lossy' => (bool)$this->params->get('lossy', '1'),
                 'save_metadata' => (bool)$this->params->get('save_metadata', '0'),
                 'quality' => $this->params->get('quality', '85'),

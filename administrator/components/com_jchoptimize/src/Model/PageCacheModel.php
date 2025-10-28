@@ -18,7 +18,6 @@ use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
 use JchOptimize\Core\Laminas\ArrayPaginator;
 use JchOptimize\Core\PageCache\CaptureCache;
 use JchOptimize\Core\PageCache\PageCache;
-use JchOptimize\Core\PageCache\PageCache as CorePageCache;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\MVC\Model\ListModel;
 
@@ -26,13 +25,14 @@ use function defined;
 
 // phpcs:disable PSR1.Files.SideEffects
 defined('_JEXEC') or die('Restricted Access');
+
 // phpcs:enable PSR1.Files.SideEffects
 
 class PageCacheModel extends ListModel implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    private CorePageCache $pageCache;
+    private PageCache $pageCache;
 
     private ?ArrayPaginator $arrayPaginator = null;
 
@@ -53,7 +53,7 @@ class PageCacheModel extends ListModel implements ContainerAwareInterface
         parent::__construct($config, $factory);
     }
 
-    public function setPageCache(PageCache $pageCache)
+    public function setPageCache(PageCache $pageCache): void
     {
         $this->pageCache = $pageCache;
     }

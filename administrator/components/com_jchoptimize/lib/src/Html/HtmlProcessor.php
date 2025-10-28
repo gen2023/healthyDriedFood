@@ -308,7 +308,7 @@ class HtmlProcessor implements LoggerAwareInterface, ContainerAwareInterface
         if (
             $lazyLoadFlag
             || $this->params->get('http2_push_enable', '0')
-            || $this->params->get('pro_load_webp_images', '0')
+            || $this->params->get('load_avif_webp_images', '0')
             || $this->params->get('pro_load_responsive_images', '0')
             || $this->params->get('pro_lcp_images_enable', '0')
             || (JCH_DEBUG && $this->params->get('elements_above_fold_marker', '0'))

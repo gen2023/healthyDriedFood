@@ -668,7 +668,7 @@
                    label="COM_JCHOPTIMIZE_PRELOAD_CRITICAL_JS_LABEL"
                    description="COM_JCHOPTIMIZE_PRELOAD_CRITICAL_JS_DESC"
                    default="0"
-                   >
+            >
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -772,9 +772,40 @@
                 <option value="1">JYES</option>
             </field>
         </fieldset>
+        <fieldset name="cloudflare"
+                  label="COM_JCHOPTIMIZE_CLOUDFLARE_INTEGRATION_LABEL"
+                  description="COM_JCHOPTIMIZE_CLOUDFLARE_INTEGRATION_DESC"
+        >
+            <field name="cf_enable"
+                   type="proonlyradio"
+                   default="0"
+                   label="COM_JCHOPTIMIZE_CLOUDFLARE_PURGE_ENABLE"
+                   layout="joomla.form.field.radio.switcher">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="cf_api_token"
+                   type="JchVerifyCloudflareToken"
+                   label="COM_JCHOPTIMIZE_CLOUDFLARE_API_TOKEN"
+                   filter="raw"
+                   showon="cf_enable:1"/>
+            <field name="cf_zone_id"
+                   type="proonlytext"
+                   label="COM_JCHOPTIMIZE_CLOUDFLARE_ZONE_ID"
+                   filter="string"
+                   showon="cf_enable:1"/>
+         <!--   <field name="cf_purge_mode"
+                   type="list"
+                   default="everything"
+                   label="COM_JCHOPTIMIZE_CLOUDFLARE_PURGE_MODE"
+                   showon="cf_enable:1">
+                <option value="everything">COM_JCHOPTIMIZE_CLOUDFLARE_OPTION_PURGE_EVERYTHING</option>
+                <option value="urls">COM_JCHOPTIMIZE_CLOUDFLARE_OPTION_PURGE_BY_URLS</option>
+            </field> -->
+        </fieldset>
         <fieldset name="group_mode_switcher_integration"
-            label="COM_JCHOPTIMIZE_MODE_SWITCHER_INTEGRATION_LABEL"
-            description="COM_JCHOPTIMIZE_MODE_SWITCHER_INTEGRATION_DESC"
+                  label="COM_JCHOPTIMIZE_MODE_SWITCHER_INTEGRATION_LABEL"
+                  description="COM_JCHOPTIMIZE_MODE_SWITCHER_INTEGRATION_DESC"
         >
             <field name="pro_page_cache_integration"
                    type="jchpagecache"
@@ -1083,7 +1114,7 @@
                    proOnly="true"
                    label="COM_JCHOPTIMIZE_LCPIMAGES_MOBILE_LABEL"
                    description="COM_JCHOPTIMIZE_LCPIMAGES_MOBILE_DESC"
-                   >
+            >
             </field>
             <field name="lcp_images_desktop"
                    type="JchMultiSelect"
@@ -1093,7 +1124,7 @@
                    proOnly="true"
                    label="COM_JCHOPTIMIZE_LCPIMAGES_DESKTOP_LABEL"
                    description="COM_JCHOPTIMIZE_LCPIMAGES_DESKTOP_DESC"
-                   >
+            >
             </field>
         </fieldset>
         <!--
@@ -1316,12 +1347,40 @@
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
+            <field name="gen_avif_images"
+                   type="proonlyradio"
+                   layout="joomla.form.field.radio.switcher"
+                   label="COM_JCHOPTIMIZE_GEN_AVIF_IMAGES_LABEL"
+                   description="COM_JCHOPTIMIZE_GEN_AVIF_IMAGES_DESC"
+                   default="1">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="load_avif_webp_images"
+                   type="proonlyradio"
+                   layout="joomla.form.field.radio.switcher"
+                   label="COM_JCHOPTIMIZE_LOAD_AVIF_WEBP_IMAGES_LABEL"
+                   description="COM_JCHOPTIMIZE_LOAD_AVIF_WEBP_IMAGES_DESC"
+                   default="0">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
             <field name="pro_load_webp_images"
                    type="proonlyradio"
                    layout="joomla.form.field.radio.switcher"
                    label="COM_JCHOPTIMIZE_LOAD_WEBP_IMAGES_LABEL"
                    description="COM_JCHOPTIMIZE_LOAD_WEBP_IMAGES_DESC"
-                   default="0">
+                   default="1">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+
+            <field name="load_avif_images"
+                   type="proonlyradio"
+                   layout="joomla.form.field.radio.switcher"
+                   label="COM_JCHOPTIMIZE_LOAD_AVIF_IMAGES_LABEL"
+                   description="COM_JCHOPTIMIZE_LOAD_AVIF_IMAGES_DESC"
+                   default="1">
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
@@ -1420,7 +1479,7 @@
                    max="100"
                    min="0"
                    label="COM_JCHOPTIMIZE_API_QUALITY_LABEL"
-                   description="COM_JCHOPTIMIZE_API_QUALITY_DESC" />
+                   description="COM_JCHOPTIMIZE_API_QUALITY_DESC"/>
         </fieldset>
         <!--
         Upload Settings
@@ -1451,7 +1510,7 @@
                    type="pronlytext"
                    label="COM_JCHOPTIMIZE_API_CONNECTION_TIMEOUT_LABEL"
                    description="COM_JCHOPTIMIZE_API_CONNECTION_TIMEOUT_DESC"
-                   default="30" />
+                   default="30"/>
         </fieldset>
         <!--
         Optimize By URL

@@ -15,19 +15,23 @@ namespace JchOptimize\Core\Html\Callbacks;
 
 use _JchOptimizeVendor\V91\Joomla\DI\Container;
 use Exception;
+use JchOptimize\Core\CacheObject;
+use JchOptimize\Core\Combiner;
 use JchOptimize\Core\Css\Components\CssUrl;
 use JchOptimize\Core\Css\Parser as CssParser;
 use JchOptimize\Core\Exception\InvalidArgumentException;
+use JchOptimize\Core\FeatureHelpers\AvifWebp;
 use JchOptimize\Core\FeatureHelpers\LazyLoadExtended;
 use JchOptimize\Core\FeatureHelpers\LCPImages;
 use JchOptimize\Core\FeatureHelpers\ResponsiveImages;
-use JchOptimize\Core\FeatureHelpers\Webp;
 use JchOptimize\Core\FeatureHelpers\YouTubeFacade;
+use JchOptimize\Core\FileInfo;
 use JchOptimize\Core\Helper;
 use JchOptimize\Core\Html\Elements\Audio;
 use JchOptimize\Core\Html\Elements\Iframe;
 use JchOptimize\Core\Html\Elements\Img;
 use JchOptimize\Core\Html\Elements\Picture;
+use JchOptimize\Core\Html\Elements\Style;
 use JchOptimize\Core\Html\Elements\Video;
 use JchOptimize\Core\Html\HtmlElementInterface;
 use JchOptimize\Core\Preloads\Http2Preload;
@@ -36,6 +40,7 @@ use JchOptimize\Core\Registry;
 use function array_merge;
 use function defined;
 use function implode;
+use function in_array;
 use function preg_match;
 
 use const JCH_PRO;
@@ -49,6 +54,8 @@ class LazyLoad extends AbstractCallback
     protected array $includes = [];
 
     protected array $args = [];
+
+    protected array $classes = [];
     /**
      * @var int Width of <img> element inside <picture>
      */
@@ -57,6 +64,8 @@ class LazyLoad extends AbstractCallback
      * @var int Height of <img> element inside <picture>
      */
     public int $height = 1;
+
+    protected ?HtmlElementInterface $preElement = null;
 
     public function __construct(Container $container, Registry $params, public Http2Preload $http2Preload)
     {
@@ -90,8 +99,8 @@ class LazyLoad extends AbstractCallback
             $this->loadResponsiveImages($element);
         }
 
-        if (JCH_PRO && $this->params->get('pro_load_webp_images', '0')) {
-            $this->loadWebpImages($element);
+        if (JCH_PRO && $this->params->get('load_avif_webp_images', '0')) {
+            $this->loadAvifWebpImages($element);
         }
 
         if (JCH_PRO && $this->params->get('pro_lcp_images_enable', '0')) {
@@ -111,7 +120,7 @@ class LazyLoad extends AbstractCallback
             $element = $this->lazyLoadElement($element, $options);
         }
 
-        return $element->render();
+        return $this->preElement?->render() . $element->render();
     }
 
     private function lazyLoadElement(
@@ -155,11 +164,7 @@ class LazyLoad extends AbstractCallback
             }
 
             if ($element->hasAttribute('style')) {
-                preg_match(
-                    '#' . CssParser::cssUrlToken() . '#i',
-                    $element->getStyle(),
-                    $match
-                );
+                preg_match('#' . CssParser::cssUrlToken() . '#i', $element->getStyle(), $match);
 
                 if (!empty($match[0])) {
                     try {
@@ -298,17 +303,18 @@ class LazyLoad extends AbstractCallback
         return $this->filter($element, 'include');
     }
 
-    private function loadWebpImages(HtmlElementInterface $element): void
+    private function loadAvifWebpImages(HtmlElementInterface $element): void
     {
         if ($element->hasChildren()) {
             foreach ($element->getChildren() as $child) {
                 if ($child instanceof HtmlElementInterface) {
-                    $this->loadWebpImages($child);
+                    $this->loadAvifWebpImages($child);
                 }
             }
         }
 
-        $this->getContainer()->get(Webp::class)->convert($element);
+        /** @see AvifWebp::convert() */
+        $this->getContainer()->get(AvifWebp::class)->convert($element);
     }
 
     private function loadResponsiveImages(HtmlElementInterface $element): void
@@ -319,6 +325,38 @@ class LazyLoad extends AbstractCallback
                     $this->loadResponsiveImages($child);
                 }
             }
+        } elseif (
+            $element->hasAttribute('style')
+            && $this->args['section'] == 'above_fold'
+            && preg_match('#' . CssParser::cssUrlToken() . '#', $element->getStyle(), $matches)
+        ) {
+            $class = 'jch-' . md5($element);
+
+            if (!in_array($class, $this->classes)) {
+                $style = new Style($this->getContainer());
+                $style->addChild(".{$class}{{$element->getStyle()}}");
+                $fileInfo = new FileInfo($style);
+                $fileInfo->setAboveFold(true);
+                /**
+                 * @see Combiner::combineFiles()
+                 * @var CacheObject $cacheObject
+                 */
+                $cacheObject = $this->getContainer()->get(Combiner::class)->combineFiles([$fileInfo]);
+
+                foreach ($cacheObject->getLcpImages() as $lcpImage) {
+                    /** @see LCPImages::preloadConfiguredCssLcpImages() */
+                    $this->getContainer()->get(LCPImages::class)->preloadConfiguredCssLcpImages($lcpImage);
+                }
+
+                $style->replaceChild(0, $cacheObject->getCriticalCss());
+                $this->preElement = $style;
+                $this->classes[] = $class;
+            }
+
+            $element->class($class);
+            $element->remove('style');
+
+            return;
         }
 
         $this->getContainer()->get(ResponsiveImages::class)->convert($element);

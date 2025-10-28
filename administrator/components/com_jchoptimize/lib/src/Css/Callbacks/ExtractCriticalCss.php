@@ -59,6 +59,10 @@ class ExtractCriticalCss extends AbstractCallback
 
         $selectorList = $cssComponent->getSelectorList();
 
+        if ($this->getCssInfo()->isAboveFold() === true) {
+            $this->dependencies->selectorListCache[$selectorList] = true;
+        }
+
         if (
             ($this->dependencies->selectorListCache[$selectorList]
                 ??= $this->evaluateSelectorLists($cssComponent)) === true
@@ -181,7 +185,9 @@ class ExtractCriticalCss extends AbstractCallback
     {
         if (str_contains($cssComponent->getDeclarationList(), "url(")) {
             $correctUrlObj = $this->getContainer()->get(CorrectUrls::class)
+                /** @see CorrectUrls::setCssInfo() */
                 ->setCssInfo($this->getCssInfo())
+                /** @see CorrectUrls::setHandlingCriticalCss() */
                 ->setHandlingCriticalCss($isCriticalCss);
             $correctUrlObj->processCssRule($cssComponent);
             $this->cacheObject->merge($correctUrlObj->getCacheObject());

@@ -81,8 +81,8 @@ class JchMultiSelectWithOptionsField extends JchMultiSelectField
                 'option2SubFieldLayout' => 'subfield.checkbox',
                 'option1SubFieldClass' => 'jch-js-ieo',
                 'option2SubFieldClass' => 'jch-js-dontmove',
-                'option1Obj' => "{type: \"checkbox\", name: \"{$this->option1}\", class: \"$this->subFieldClass\"}",
-                'option2Obj' => "{type: \"checkbox\", name: \"{$this->option2}\", class: \"$this->subFieldClass\"}",
+                'option1Obj' => "{\"type\": \"checkbox\", \"name\": \"{$this->option1}\", \"class\": \"$this->subFieldClass\"",
+                'option2Obj' => "{\"type\": \"checkbox\", \"name\": \"{$this->option2}\", \"class\": \"$this->subFieldClass\"",
             ]
         );
     }

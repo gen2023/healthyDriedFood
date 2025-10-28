@@ -22,10 +22,10 @@ use JchOptimize\Core\Css\Components\CssUrl;
 use JchOptimize\Core\Css\CssComponents;
 use JchOptimize\Core\Css\ModifyCssUrlsProcessor;
 use JchOptimize\Core\Css\ModifyCssUrlsTrait;
+use JchOptimize\Core\FeatureHelpers\AvifWebp;
 use JchOptimize\Core\FeatureHelpers\LazyLoadExtended;
 use JchOptimize\Core\FeatureHelpers\LCPImages;
 use JchOptimize\Core\FeatureHelpers\ResponsiveImages;
-use JchOptimize\Core\FeatureHelpers\Webp;
 use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Platform\UtilityInterface;
 use JchOptimize\Core\Preloads\Http2Preload;
@@ -164,20 +164,20 @@ class CorrectUrls extends AbstractCallback implements ModifyCssUrlsProcessor
         if (JCH_PRO && $this->params->get('pro_load_responsive_images', '0')) {
             $responsiveImages = $this->getContainer()->get(ResponsiveImages::class)
                 /** @see ResponsiveImages::getResponsiveImages() */
-               ->getResponsiveImages($imageUri);
+                ->getResponsiveImages($imageUri);
         }
 
-        if (JCH_PRO && $this->params->get('pro_load_webp_images', '0')) {
-            /** @see Webp::getWebpImages() */
-            $webpImageUri = $this->getContainer()->get(Webp::class)->getWebpImages($imageUri);
+        if (JCH_PRO && $this->params->get('load_avif_webp_images', '0')) {
+            /** @see AvifWebp::getAvifWebpImages() */
+            $avifWebpImageUri = $this->getContainer()->get(AvifWebp::class)->getAvifWebpImages($imageUri);
 
             //If Webp were generated, add them to ResponsiveImages, so we can identify them later
-            if ($webpImageUri !== $imageUri && !empty($responsiveImages)) {
+            if ($avifWebpImageUri !== $imageUri && !empty($responsiveImages)) {
                 $this->getContainer()->get(ResponsiveImages::class)
-                   ->responsiveImages[(string)$webpImageUri] = $responsiveImages;
+                    ->responsiveImages[(string)$avifWebpImageUri] = $responsiveImages;
             }
 
-            $imageUri = $webpImageUri;
+            $imageUri = $avifWebpImageUri;
         }
 
         if (JCH_PRO && $this->handlingCriticalCss && $this->params->get('pro_lcp_images_enable', '0')) {
@@ -235,7 +235,7 @@ class CorrectUrls extends AbstractCallback implements ModifyCssUrlsProcessor
             if (JCH_PRO && $this->params->get('pro_load_responsive_images', '0') && $fileType == 'image') {
                 $cacheItems = $this->getContainer()->get(ResponsiveImages::class)
                     /** @see ResponsiveImages::mergeResponsiveImageCacheItems() */
-                        ->mergeResponsiveImageCacheItems($cacheItems);
+                    ->mergeResponsiveImageCacheItems($cacheItems);
             }
             foreach ($cacheItems as $cacheItem) {
                 $this->cacheObject->addHttp2Preloads($cacheItem);

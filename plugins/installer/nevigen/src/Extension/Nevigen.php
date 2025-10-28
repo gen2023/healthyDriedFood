@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen Installer Plugin
- * @version    2.2.0
+ * @version    2.3.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -191,7 +191,6 @@ class Nevigen extends CMSPlugin
 
 	public function getListExtensions()
 	{
-
 		$html = '';
 		if (empty(ExtensionHelper::getJSVersion()))
 		{
@@ -323,30 +322,44 @@ class Nevigen extends CMSPlugin
 	public function updateExtension(): void
 	{
 		$app     = $this->getApplication();
+		$input   = $app->getInput();
 		$db      = $this->getDatabase();
-		$element = $app->getInput()->getString('extension');
+		$element = $input->getString('extension');
+		$type    = $input->getString('type');
+
+		$data = ExtensionHelper::prepareElementUpdate($element, $type);
 
 
-		if (!$element)
+		if (empty($data) || empty($data['element']))
 		{
 			throw new \RuntimeException(Text::_('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_ELEMENT'));
 		}
+
 
 		// Step 1: Get extension ID
 		$query = $db->getQuery(true)
 			->select('extension_id')
 			->from('#__extensions')
-			->where('element = ' . $db->quote($element))
-			->order('extension_id DESC')
-			->setLimit(1);
+			->where('element = :element')
+			->bind(':element', $data['element'])
+			->order('extension_id DESC');
 
-		$extensionId = (int) $db->setQuery($query)->loadResult();
+		if (!empty($data['type'])){
+			$query->where('type = :type')
+				->bind(':type', $data['type']);
+		}
+		if (!empty($data['folder'])){
+			$query->where('folder = :folder')
+				->bind(':folder', $data['folder']);
+		}
+
+		$extensionId = (int) $db->setQuery($query, 0, 1)->loadResult();
 
 		if (!$extensionId)
 		{
-			$this->deleteNevigenLicense($element);
+			$this->deleteNevigenLicense($data['source']);
 
-			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_NOT_FOUND', $element));
+			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_NOT_FOUND', $data['source']));
 		}
 
 		// Step 2: Get update site location
@@ -362,7 +375,7 @@ class Nevigen extends CMSPlugin
 
 		if (!$updateSite)
 		{
-			$this->deleteNevigenLicense($element);
+			$this->deleteNevigenLicense($data['source']);
 
 			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_SITE_NOT_FOUND', $element));
 		}
@@ -378,7 +391,7 @@ class Nevigen extends CMSPlugin
 
 		if ($response->code !== 200 || empty($xmlBody))
 		{
-			$this->deleteNevigenLicense($element);
+			$this->deleteNevigenLicense($data['source']);
 
 			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_XML_LOAD_FAIL', $updateSite));
 		}
@@ -387,7 +400,7 @@ class Nevigen extends CMSPlugin
 
 		if (!$xml || empty($xml->update))
 		{
-			$this->deleteNevigenLicense($element);
+			$this->deleteNevigenLicense($data['source']);
 
 			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_NO_ENTRIES', $element));
 		}
@@ -396,7 +409,7 @@ class Nevigen extends CMSPlugin
 
 		foreach ($xml->update as $update)
 		{
-			if ((string) $update->element === $element && !empty($update->downloads->downloadurl))
+			if ((string) $update->element === $data['element'] && !empty($update->downloads->downloadurl))
 			{
 				$urlExtension = (string) $update->downloads->downloadurl;
 				break;
@@ -405,17 +418,17 @@ class Nevigen extends CMSPlugin
 
 		if (empty($urlExtension))
 		{
-			$this->deleteNevigenLicense($element);
+			$this->deleteNevigenLicense($data['source']);
 
 			throw new \RuntimeException(Text::sprintf('PLG_INSTALLER_NEVIGEN_ERROR_UPDATE_NOT_IN_XML', $element));
 		}
 
 		try
 		{
-			$nevigenLicense = $this->sendApi('nevigen_license', ['extension' => $element]);
+			$nevigenLicense = $this->sendApi('nevigen_license', ['extension' => $data['source']]);
 			if (!empty($nevigenLicense['jsonapi']['code']))
 			{
-				$this->install($urlExtension, $element);
+				$this->install($urlExtension, $data['source']);
 			}
 		}
 		catch (\Exception $e)

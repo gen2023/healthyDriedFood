@@ -22,11 +22,8 @@ use JchOptimize\Core\Html\Elements\Script;
 use JchOptimize\Core\Html\Elements\Style;
 use JchOptimize\Core\Html\HtmlElementInterface;
 use JchOptimize\Core\Uri\Utils;
-use Serializable;
 
-use function json_encode;
-
-class FileInfo implements Serializable
+class FileInfo
 {
     protected ?UriInterface $uri = null;
 
@@ -39,6 +36,8 @@ class FileInfo implements Serializable
     private string $supports = '';
 
     private bool $alreadyProcessed = false;
+
+    private ?bool $aboveFold = null;
 
     public function __construct(protected HtmlElementInterface|CssComponents $element)
     {
@@ -146,30 +145,33 @@ class FileInfo implements Serializable
         $this->alreadyProcessed = $alreadyProcessed;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function serialize(): string
+    public function __serialize(): array
     {
-        return json_encode([
-            (string) $this->uri,
-            $this->content,
-            $this->media,
-            $this->layer,
-            $this->supports,
-        ]);
+        return [
+            'uri' => (string)$this->uri,
+            'content' => $this->content,
+            'media' => $this->media,
+            'layer' => $this->layer,
+            'supports' => $this->supports,
+        ];
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function unserialize(string $data): void
+    public function __unserialize(array $data): void
     {
-        $properties = json_decode($data, true);
-        $this->uri = Utils::uriFor($properties['uri']);
-        $this->content = $properties['content'];
-        $this->media = $properties['media'];
-        $this->layer = $properties['layer'];
-        $this->supports = $properties['supports'];
+        $this->uri = !empty($data['uri']) ? Utils::uriFor($data['uri']) : null;
+        $this->content = $data['content'] ?? '';
+        $this->media = $data['media'] ?? '';
+        $this->layer = $data['layer'] ?? '';
+        $this->supports = $data['supports'] ?? '';
+    }
+
+    public function isAboveFold(): ?bool
+    {
+        return $this->aboveFold;
+    }
+
+    public function setAboveFold(bool $aboveFold): void
+    {
+        $this->aboveFold = $aboveFold;
     }
 }

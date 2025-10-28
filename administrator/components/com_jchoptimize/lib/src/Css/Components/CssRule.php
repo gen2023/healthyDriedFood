@@ -3,10 +3,10 @@
 /**
  * JCH Optimize - Performs several front-end optimizations for fast downloads
  *
- *  @package   jchoptimize/core
- *  @author    Samuel Marshall <samuel@jch-optimize.net>
- *  @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
- *  @license   GNU/GPLv3, or later. See LICENSE file
+ * @package   jchoptimize/core
+ * @author    Samuel Marshall <samuel@jch-optimize.net>
+ * @copyright Copyright (c) 2024 Samuel Marshall / JCH Optimize
+ * @license   GNU/GPLv3, or later. See LICENSE file
  *
  *  If LICENSE file missing, see <http://www.gnu.org/licenses/>.
  */
@@ -34,6 +34,8 @@ class CssRule implements CssComponents
     protected string $selectorList;
 
     protected string $declarationList;
+
+    protected ?bool $criticalCss = null;
 
     final public function __construct($selectorList = '', $declarationList = '')
     {
@@ -204,5 +206,15 @@ class CssRule implements CssComponents
         return $atRule->setCssRuleList(
             $this->parseDeclarationList($cssUrlsProcessor, $atRule->getCssRuleList())
         )->render();
+    }
+
+    public function isCriticalCss(): ?bool
+    {
+        return $this->criticalCss;
+    }
+
+    public function inCriticalCss(): void
+    {
+        $this->criticalCss = true;
     }
 }

@@ -40,7 +40,7 @@ class SplPriorityQueue extends \SplPriorityQueue implements Serializable
      * @param  TPriority $priority
      * @return void
      */
-    public function insert($datum, $priority)
+    #[\ReturnTypeWillChange] public function insert($datum, $priority)
     {
         if (!is_array($priority)) {
             $priority = [$priority, $this->serial--];

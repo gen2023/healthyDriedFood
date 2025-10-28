@@ -51,6 +51,7 @@ use JchOptimize\Core\Html\HtmlManager;
 use JchOptimize\Core\Html\HtmlProcessor;
 use JchOptimize\Core\ImageAttributes;
 use JchOptimize\Core\Model\CacheMaintainer;
+use JchOptimize\Core\Model\CloudflarePurger;
 use JchOptimize\Core\Optimize;
 use JchOptimize\Core\PageCache\CaptureCache as CoreCaptureCache;
 use JchOptimize\Core\PageCache\PageCache;
@@ -66,6 +67,8 @@ use JchOptimize\Core\Registry;
 use JchOptimize\Core\SystemUri;
 
 use function defined;
+
+use const JCH_PRO;
 
 defined('_JCH_EXEC') or die('Restricted access');
 
@@ -107,6 +110,7 @@ class Core implements ServiceProviderInterface
         $container->share(ConfigureHelper::class, [$this, 'getConfigureHelperService']);
         //Utility
         $container->share(CacheMaintainer::class, [$this, 'getCacheMaintainerService']);
+        $container->share(CloudflarePurger::class, [$this, 'getCloudflarePurgerService']);
         //Feature Helpers
         $container->share(DynamicSelectors::class, function (Container $container): DynamicSelectors {
             return new DynamicSelectors(
@@ -379,7 +383,8 @@ class Core implements ServiceProviderInterface
             $container->get(TaggableInterface::class),
             $container->get(CacheInterface::class),
             $container->get(HooksInterface::class),
-            $container->get(UtilityInterface::class)
+            $container->get(UtilityInterface::class),
+            $container->get(CloudflarePurger::class)
         ))->setContainer($container);
         $pageCache->setLogger($container->get(LoggerInterface::class));
 
@@ -401,6 +406,7 @@ class Core implements ServiceProviderInterface
             $container->get(HooksInterface::class),
             $container->get(UtilityInterface::class),
             $container->get(PathsInterface::class),
+            $container->get(CloudflarePurger::class)
         ))->setContainer($container);
         $captureCache->setLogger($container->get(LoggerInterface::class));
 
@@ -497,8 +503,24 @@ class Core implements ServiceProviderInterface
             $container->get(TaggableInterface::class),
             $container->get(PageCache::class),
             $container->get(PathsInterface::class),
-            $container->get(CacheInterface::class)
+            $container->get(CacheInterface::class),
+            $container->get(CloudflarePurger::class)
         );
+    }
+
+    public function getCloudflarePurgerService(Container $container): ?CloudflarePurger
+    {
+        if (!JCH_PRO) {
+            return null;
+        }
+
+        $purger = new CloudflarePurger(
+            $container->get(Registry::class),
+            $container->get(ClientInterface::class)
+        );
+        $purger->setLogger($container->get(LoggerInterface::class));
+
+        return $purger;
     }
 
     public function getHtmlCrawlerService(Container $container): HtmlCrawler

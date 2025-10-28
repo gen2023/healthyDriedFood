@@ -79,6 +79,7 @@ class Com_JchoptimizeInstallerScript extends InstallerScript
         '/media/com_jchoptimize/core/css',
         '/media/com_jchoptimize/core/js',
         '/media/com_jchoptimize/icons',
+        '/media/com_jchoptimize/jquery-ui'
     ];
 
     protected $deleteFiles = [
@@ -173,10 +174,6 @@ class Com_JchoptimizeInstallerScript extends InstallerScript
         '/media/com_jchoptimize/js/core/resize-sensor.js',
         '/media/com_jchoptimize/js/core/smart-combine.js',
         '/media/com_jchoptimize/js/core/user-interact-callback.js',
-        '/media/com_jchoptimize/jquery-ui.css',
-        '/media/com_jchoptimize/jquery-ui.js',
-        '/media/com_jchoptimize/jquery-ui.structure.css',
-        '/media/com_jchoptimize/jquery-ui.theme.css',
     ];
 
     /**

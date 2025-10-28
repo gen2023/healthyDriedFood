@@ -80,7 +80,7 @@ endif;
                     <?php
                     if ($showProOnly) :
                         ?>
-                        <span class="fs-6"><span class="fa fa-ban mx-1"></span>Pro</span>
+                        <small><span class="fs-6"><span class="fa fa-ban mx-1"></span>Pro</span></small>
                         <?php
                     endif;
                     ?>

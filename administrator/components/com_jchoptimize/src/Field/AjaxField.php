@@ -44,15 +44,8 @@ class AjaxField extends FormField
             ->useScript('com_jchoptimize.platform-joomla')
             ->useScript('com_jchoptimize.core.multiselect')
             ->useStyle('com_jchoptimize.js-excludes')
-            ->useScript('bootstrap.modal')
-            ->useStyle("chosen")
-            ->addInlineScript(
-                'jQuery(document).ready(function() { 
-	jQuery(\'.jch-multiselect\').chosen({
-		width: "80%"	
-	});
-});'
-            );
+            ->useStyle('com_jchoptimize.core.multiselect-css')
+            ->useScript('bootstrap.modal');
 
         $ajax_url = Route::_('index.php?option=com_jchoptimize&view=Ajax', false, Route::TLS_IGNORE, true);
 

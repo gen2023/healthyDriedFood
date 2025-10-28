@@ -23,6 +23,7 @@ use CodeAlfa\Minify\Js;
 use JchOptimize\Container\ContainerFactory;
 use JchOptimize\Core\Combiner;
 use JchOptimize\Core\Css\Sprite\Generator;
+use JchOptimize\Core\Debugger;
 use JchOptimize\Core\Exception;
 use JchOptimize\Core\FeatureHelpers\LazyLoadExtended;
 use JchOptimize\Core\FileInfo;
@@ -263,6 +264,7 @@ class MultiSelectItems implements Serializable, ContainerAwareInterface
                 }
             }
         } catch (Exception\ExceptionInterface $e) {
+            Debugger::printr((string)$e, 'error');
             $aLinks = [];
         }
 

@@ -46,18 +46,22 @@ class CropgravityField extends JchMultiSelectWithOptionsField
             [
                 'option1SubFieldLayout' => 'subfield.select',
                 'option2SubFieldLayout' => 'subfield.text',
-                'option1SubFieldClass' => 'jch-js-ieo has-select',
-                'option2SubFieldClass' => 'jch-js-dontmove has-text-input',
+                'option1SubFieldClass' => 'jch-js-gravity has-select',
+                'option2SubFieldClass' => 'jch-js-cropwidth has-text-input',
                 'option1Obj' => "{
-                    type: \"select\", 
-                    name: \"{$this->option1}\", 
-                    htmlOptions: [
-                        {value: \"West\", selected: \"\", text: \"Left\"},
-                        {value: \"Center\", selected: \"selected\", text: \"Center\"},
-                        {value: \"East\", selected: \"\", text: \"Right\"}
+                    \"type\": \"select\", 
+                    \"name\": \"{$this->option1}\", 
+                    \"options\": [
+                        {\"value\": \"West\", \"text\": \"Left\"},
+                        {\"value\": \"Center\", \"selected\": true, \"text\": \"Center\"},
+                        {\"value\": \"East\", \"text\": \"Right\"}
                     ]
                 }",
-                'option2Obj' => "{type: \"text\", name: \"{$this->option2}\", defaultValue: \"$breakpoint\"}",
+                'option2Obj' => "{
+                    \"type\": \"text\",
+                    \"name\": \"{$this->option2}\",
+                    \"defaultValue\": \"$breakpoint\"
+                }",
             ]
         );
     }

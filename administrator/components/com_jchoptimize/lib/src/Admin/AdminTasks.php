@@ -24,7 +24,7 @@ use _JchOptimizeVendor\V91\Psr\Log\NullLogger;
 use JchOptimize\Core\Admin\AdminHelper as AdminHelper;
 use JchOptimize\Core\Admin\Ajax\OptimizeImage;
 use JchOptimize\Core\Exception;
-use JchOptimize\Core\FeatureHelpers\Webp;
+use JchOptimize\Core\FeatureHelpers\AvifWebp;
 use JchOptimize\Core\Htaccess;
 use JchOptimize\Core\Platform\PathsInterface;
 use JchOptimize\Core\Platform\PluginInterface;
@@ -210,7 +210,7 @@ APACHECONFIG;
 
         $aFiles = Folder::files($backupPath, '.', false, true, []);
         $failure = false;
-        $webp = $this->getContainer()->get(Webp::class);
+        $avifWebp = $this->getContainer()->get(AvifWebp::class);
 
         foreach ($aFiles as $backupContractedFile) {
             $success = false;
@@ -226,12 +226,12 @@ APACHECONFIG;
                     //Attempt to restore backup images
                     if ($this->adminHelper->copyImage($backupContractedFile, $originalFilePath)) {
                         try {
-                            if (file_exists($webp->getWebpPath($originalFilePath))) {
-                                File::delete($webp->getWebpPath($originalFilePath));
+                            if (file_exists($avifWebp->getWebpPath($originalFilePath))) {
+                                File::delete($avifWebp->getWebpPath($originalFilePath));
                             }
 
-                            if (file_exists($webp->getWebpPathLegacy($originalFilePath))) {
-                                File::delete($webp->getWebpPathLegacy($originalFilePath));
+                            if (file_exists($avifWebp->getAvifPath($originalFilePath))) {
+                                File::delete($avifWebp->getAvifPath($originalFilePath));
                             }
 
                             if (file_exists($backupContractedFile)) {
@@ -243,7 +243,7 @@ APACHECONFIG;
                             break;
                         } catch (FilesystemException $e) {
                             $this->logger->debug(
-                                'Error deleting ' . $webp->getWebpPath(
+                                'Error deleting ' . $avifWebp->getWebpPath(
                                     $originalFilePath
                                 ) . ' with message: ' . $e->getMessage()
                             );

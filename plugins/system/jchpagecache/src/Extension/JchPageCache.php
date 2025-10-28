@@ -19,7 +19,7 @@ use _JchOptimizeVendor\V91\Joomla\DI\ContainerAwareTrait;
 use _JchOptimizeVendor\V91\Laminas\Cache\Exception\ExceptionInterface;
 use CodeAlfa\Minify\Js;
 use Exception;
-use JchOptimize\Core\FeatureHelpers\Webp;
+use JchOptimize\Core\FeatureHelpers\AvifWebp;
 use JchOptimize\Core\Helper;
 use JchOptimize\Core\Html\HtmlElementBuilder;
 use JchOptimize\Core\PageCache\PageCache;
@@ -117,6 +117,7 @@ class JchPageCache extends CMSPlugin implements SubscriberInterface, ContainerAw
 
         //Disable if we couldn't get cache object
         try {
+            /** @var PageCache $pageCache */
             $pageCache = $container->get(PageCache::class);
         } catch (Exception) {
             $this->enabled = false;
@@ -130,7 +131,7 @@ class JchPageCache extends CMSPlugin implements SubscriberInterface, ContainerAw
 
         try {
             $pageCache->initialize();
-        } catch (Exception) {
+        } catch (Exception $e) {
             $this->enabled = false;
 
             return;
@@ -242,7 +243,7 @@ class JchPageCache extends CMSPlugin implements SubscriberInterface, ContainerAw
         $result = [$this->getApplication()->getLanguage()->getTag()];
         if (JCH_PRO) {
             /** @see Webp::getCanIUse() */
-            $result[] = $this->getContainer()->get(Webp::class)->getCanIUse();
+            $result[] = $this->getContainer()->get(AvifWebp::class)->getCanIUse();
         }
         $event->addArgument('result', $result);
     }

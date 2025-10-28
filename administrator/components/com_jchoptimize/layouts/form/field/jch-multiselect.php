@@ -30,11 +30,8 @@ $field->layout = 'joomla.form.field.list';
 
 <div id="div-<?= $field->fieldname ?>">
     <?= $field->input; ?>
-    <img id="img-<?= $field->fieldname; ?>" class="jch-multiselect-loading-image"
-         src="<?= Uri::root(); ?>media/com_jchoptimize/core/images/exclude-loader.gif" />
         <button type="button"
-                class="btn btn-sm btn-secondary jch-multiselect-add-button"
-                onmousedown="jchMultiselect.addJchOption('jform_<?= $field->fieldname ?>')" style="display: none;">
+                class="btn btn-sm btn-secondary jch-multiselect-add-button">
             Add item
         </button>
 </div>

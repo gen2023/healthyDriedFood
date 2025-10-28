@@ -109,6 +109,12 @@ class PlgJshoppingAntispam extends CMSPlugin
                         if (isset($antispamFields['count_letter_' . $field])) {
                             $config['count_letter'] = $antispamFields['count_letter_' . $field];
                         }
+                        if (isset($antispamFields['count_min_letter_' . $field])) {
+                            $config['count_min_letter'] = $antispamFields['count_min_letter_' . $field];
+                        }
+                        if (isset($antispamFields['exact_letter_' . $field])) {
+                            $config['exact_letter'] = $antispamFields['exact_letter_' . $field];
+                        }
                         if (isset($antispamFields['only_text_' . $field])) {
                             $config['only_text'] = $antispamFields['only_text_' . $field];
                         }
@@ -182,6 +188,12 @@ class PlgJshoppingAntispam extends CMSPlugin
                             }
                             if (isset($antispamFields['count_letter_' . $field])) {
                                 $config['count_letter'] = $antispamFields['count_letter_' . $field];
+                            }
+                            if (isset($antispamFields['count_min_letter_' . $field])) {
+                                $config['count_min_letter'] = $antispamFields['count_min_letter_' . $field];
+                            }
+                            if (isset($antispamFields['exact_letter_' . $field])) {
+                                $config['exact_letter'] = $antispamFields['exact_letter_' . $field];
                             }
                             if (isset($antispamFields['only_text_' . $field])) {
                                 $config['only_text'] = $antispamFields['only_text_' . $field];
@@ -261,7 +273,7 @@ class PlgJshoppingAntispam extends CMSPlugin
         $checkoutStep = \JSFactory::getModel('checkoutStep', 'Site');
         $back_url = $checkoutStep->getCheckoutUrl('5');
 
-        if (!preg_match('/^[a-zA-Zа-яА-ЯёЁ]+$/u', $fieldValue)) {
+        if (!preg_match('/^[a-zA-Zа-яА-ЯёЁіїєґІЇЄҐ]+$/u', $fieldValue)) {
 
             $errorMsg = $fieldName . Text::_('PLG_JSHOPPING_ANTISPAM_VALIDATION_ERROR_ONLY_TEXT');
             Factory::getApplication()->enqueueMessage($errorMsg, 'error');
@@ -270,6 +282,7 @@ class PlgJshoppingAntispam extends CMSPlugin
 
             return false;
         }
+
         return true;
     }
 
@@ -285,6 +298,48 @@ class PlgJshoppingAntispam extends CMSPlugin
             $errorMsg = $fieldName . Text::_('PLG_JSHOPPING_ANTISPAM_VALIDATION_ERROR_MAX_LENGTH');
 
             Factory::getApplication()->enqueueMessage($errorMsg, 'error');
+            $this->sendToTelegram($errorMsg);
+            $app->redirect($back_url);
+
+            return false;
+        }
+
+        return true;
+    }
+    
+    function checkMinLength($fieldName, $fieldValue, $minLength)
+    {
+        $app = Factory::getApplication();
+        $checkoutStep = \JSFactory::getModel('checkoutStep', 'Site');
+        $back_url = $checkoutStep->getCheckoutUrl('5');
+
+        $fieldLength = mb_strlen(trim($fieldValue), 'UTF-8');
+
+        if ($fieldLength < $minLength) {
+            $errorMsg = $fieldName . Text::_('PLG_JSHOPPING_ANTISPAM_VALIDATION_ERROR_MIN_LENGTH');
+
+            Factory::getApplication()->enqueueMessage($errorMsg, 'error');
+            $this->sendToTelegram($errorMsg);
+            $app->redirect($back_url);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    function checkExactLength($fieldName, $fieldValue, $exactLength)
+    {
+        $app = Factory::getApplication();
+        $checkoutStep = \JSFactory::getModel('checkoutStep', 'Site');
+        $back_url = $checkoutStep->getCheckoutUrl('5');
+
+        $fieldLength = mb_strlen(trim($fieldValue), 'UTF-8');
+
+        if ($fieldLength != $exactLength) {
+            $errorMsg = $fieldName . Text::_('PLG_JSHOPPING_ANTISPAM_VALIDATION_ERROR_EXACT_LENGTH');
+
+            $app->enqueueMessage($errorMsg, 'error');
             $this->sendToTelegram($errorMsg);
             $app->redirect($back_url);
 
@@ -343,6 +398,18 @@ class PlgJshoppingAntispam extends CMSPlugin
 
         if (isset($config['count_letter']) && $config['count_letter'] != 0 && $config['count_letter'] !== '') {
             if (!$this->checkMaxLength($label, $value, (int) $config['count_letter'])) {
+                return false;
+            }
+        }
+
+        if (isset($config['count_min_letter']) && $config['count_min_letter'] != 0 && $config['count_min_letter'] !== '') {
+            if (!$this->checkMinLength($label, $value, (int) $config['count_min_letter'])) {
+                return false;
+            }
+        }
+
+        if (isset($config['exact_letter']) && $config['exact_letter'] != 0 && $config['exact_letter'] !== '') {
+            if (!$this->checkExactLength($label, $value, (int) $config['exact_letter'])) {
                 return false;
             }
         }

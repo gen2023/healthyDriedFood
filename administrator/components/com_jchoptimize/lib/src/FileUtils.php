@@ -50,33 +50,33 @@ class FileUtils
         }
     }
 
-    public static function prepareFileForDisplay(UriInterface $uri, bool $truncate = true, int $length = 80): string
+    public static function prepareFileForDisplay(UriInterface $uri, bool $truncate = true, int $length = 65): string
     {
         if (!$truncate) {
             return (string) $uri;
         }
 
+        $newUri = clone $uri;
         $eps = '';
         $preEps = '';
-        $url = $uri->getPath();
+        $path = $newUri->getPath();
 
-        if (UriComparator::isCrossOrigin($uri)) {
-            $host  = $uri->getHost();
-            $length -= strlen($host) - 10;
-            $preEps = $host;
+        if (UriComparator::isCrossOrigin($newUri)) {
+            $domain  = $newUri->withPort(null)->withPath('')->withQuery('')->withFragment('');
+            $length -= strlen($domain);
+            $preEps = $domain;
         }
 
-        if (strlen($url) > $length) {
-            $url = substr($url, -$length);
-            $url = preg_replace('#^[^/]*+/#', '/', $url);
+        if (strlen($path) > $length) {
+            $path = substr($path, -$length);
             $preEps = $preEps !== '' ? $preEps . '/' : '';
             $eps = '...';
         }
 
-        return $preEps . $eps . $url;
+        return $preEps . $eps . $path;
     }
 
-    public static function prepareContentForDisplay(string $content, bool $truncate = true, int $length = 80): string
+    public static function prepareContentForDisplay(string $content, bool $truncate = true, int $length = 60): string
     {
         if (!$truncate) {
             return $content;

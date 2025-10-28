@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen Installer Plugin
- * @version    2.2.0
+ * @version    2.3.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -85,5 +85,52 @@ class ExtensionHelper
 		}
 
 		return false;
+	}
+
+	public static function prepareElementUpdate($element, $type): array
+	{
+		if (empty($element) || empty($type))
+		{
+			return [
+				'source'  => $element,
+				'element' => $element,
+				'type'    => $type,
+				'folder'  => ''
+			];
+		}
+
+		$source = $element;
+		$folder = '';
+		if ($type === 'plugin' && strpos($element, 'plg_') !== false)
+		{
+			if (strpos($element, 'plg_nevigen_audit_') !== false)
+			{
+				$folder  = 'nevigen_audit';
+				$element = substr($element, strlen('plg_nevigen_audit_'));
+			}
+			elseif (preg_match('/^plg_([^_]+)_/', $element, $folder))
+			{
+				if (!empty($folder[1]))
+				{
+					$folder  = $folder[1];
+					$element = str_replace('plg_' . $folder . '_', '', $element);
+				}
+			}
+		}
+		elseif ($type === 'template')
+		{
+			$element = str_replace(['tmpl_', 'tpl_', 'tmp_'], '', $element);
+		}
+		elseif ($type === 'file')
+		{
+			$element = str_replace(['file_', 'files_'], '', $element);
+		}
+
+		return [
+			'source'  => $source,
+			'element' => $element,
+			'type'    => $type,
+			'folder'  => $folder,
+		];
 	}
 }

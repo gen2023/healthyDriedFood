@@ -50,11 +50,14 @@ $i = 0;
 $field->layout = 'joomla.form.field.list';
 $fieldName = $field->fieldname;
 ?>
-<script>
-    let optionObj<?= $inc1 ?> = <?= $option1Obj ?>;
-    let optionObj<?= $inc2; ?> = <?= $option2Obj ?>;
+<script type="application/json" id="subfields-<?= $fieldName; ?>">
+    [
+        <?= $option1Obj; ?>,
+        <?= $option2Obj; ?>
+
+    ]
 </script>
-<fieldset id="fieldset-<?= $fieldName; ?>" data-index="<?= $nextIndex; ?>">
+<fieldset id="fieldset-<?= $fieldName; ?>" data-index="<?= $nextIndex; ?>" data-value-type="<?= $valueType; ?>">
    <div class="jch-js-fieldset-children jch-js-excludes-header">
         <span class="jch-js-ieo-header">&nbsp;&nbsp;<?= $option1Header ?>&nbsp;&nbsp;&nbsp;</span>
         <span class="jch-js-dontmove-header">&nbsp;&nbsp;&nbsp;<?= $option2Header ?>&nbsp;&nbsp;</span>
@@ -69,9 +72,7 @@ $fieldName = $field->fieldname;
                 <?= $multiSelect->{'prepare' . ucfirst((string)$dataAttributes['data-jch_group']) . 'Values'}(
                     $v[$valueType]
                 ) ?>
-        <button type="button" class="jch-multiselect-remove-button"
-                onmouseup="jchMultiselect.removeJchJsOption('div-<?= $fieldName; ?>-<?= $i ?>',
-                    'jform_<?= $fieldName; ?>')">
+        <button type="button" class="jch-multiselect-remove-button" aria-label="Remove">Remove item
         </button>
             </span>
         </span>
@@ -97,21 +98,5 @@ $fieldName = $field->fieldname;
 </fieldset>
 <div id="div-<?= $fieldName ?>">
     <?= $field->input ?>
-    <img id="img-<?= $fieldName ?>" class="jch-multiselect-loading-image"
-         src="<?= Uri::root(); ?>media/com_jchoptimize/core/images/exclude-loader.gif" />
-    <button type="button" class="btn btn-sm btn-secondary jch-multiselect-add-button"
-       onmousedown="jchMultiselect.addJchJsOption('jform_<?= $fieldName ?>', '<?= $fieldName ?>',
-           '<?= $valueType ?>', optionObj<?= $inc1 ?>, optionObj<?= $inc2 ?>)" style="display: none;">Add item</button>
+    <button type="button" class="btn btn-sm btn-secondary jch-multiselect-add-button">Add item</button>
 </div>
-<script>
-jQuery('#jform_<?= $fieldName ?>').on('change', function(evt, params){
-    jchMultiselect.appendJchJsOption(
-        'jform_<?= $fieldName ?>',
-        '<?= $fieldName ?>',
-       params,
-        '<?= $valueType ?>',
-        optionObj<?= $inc1 ?>,
-        optionObj<?= $inc2 ?>
-    );
-});
-</script>

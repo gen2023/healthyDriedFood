@@ -246,7 +246,7 @@ class CssProcessor implements LoggerAwareInterface, ContainerAwareInterface, Ser
 
     public function optimizeCssDelivery(): void
     {
-        if (!$this->optimizeCssDeliveryEnabled()) {
+        if (!$this->optimizeCssDeliveryEnabled() && $this->getCssInfos()->isAboveFold() !== true) {
             return;
         }
 
