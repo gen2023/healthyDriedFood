@@ -204,7 +204,8 @@ class SofonaimportpromController extends BaseController
 
     if (!$xml || !isset($xml->shop->offers)) {
       echo 'Ошибка загрузки XML';
-      file_put_contents($logFile, "[$now] Ошибка загрузки XML или отсутствуют offers\n", FILE_APPEND);
+      $this->log(`{$now} Ошибка загрузки XML или отсутствуют offers`);
+      // file_put_contents($logFile, "[$now] Ошибка загрузки XML или отсутствуют offers\n", FILE_APPEND);
       return false;
     }
 
@@ -248,6 +249,7 @@ class SofonaimportpromController extends BaseController
 
       $ean = (string) $offer->vendorCode;
       if (!$ean) {
+        $this->log(`{$offer['id']} пропущен из-за ошибки отстутсвия ean`);
         // file_put_contents(JPATH_ROOT . '/logs/vendorcodes.log', (string) $offer->vendorCode . ' пропущен' . "\n", FILE_APPEND);
         continue;
       }
@@ -394,13 +396,16 @@ class SofonaimportpromController extends BaseController
         $productUpdate1 = (object) $productUpdate;
         $db->updateObject('#__jshopping_products', $productUpdate1, 'product_id');
         $countUpdated++;
-        file_put_contents(JPATH_ROOT . '/logs/vendorcodes.log', print_r($productUpdate1, true), FILE_APPEND);
+        $this->log(`{$productId} - обновлен`);
+        // file_put_contents(JPATH_ROOT . '/logs/vendorcodes.log', print_r($productUpdate1, true), FILE_APPEND);
 
       } else {
         $productObj = (object) $product;
         $db->insertObject('#__jshopping_products', $productObj, 'product_id');
         $productId = $productObj->product_id;
         $countAdded++;
+        $this->log(`{$productObj->product_id} - добавлен`);
+
         // file_put_contents(JPATH_ROOT . '/logs/vendorcodes.log', (string) $offer['id'] . ' =inserted ' . "\n", FILE_APPEND);
 
       }
@@ -566,7 +571,8 @@ class SofonaimportpromController extends BaseController
     $logText .= "- Уже были в БД: {$imageStats['exists_in_db']}\n";
     $logText .= "--------------------------------------------\n";
 
-    file_put_contents($logFile, $logText, FILE_APPEND);
+    // file_put_contents($logFile, $logText, FILE_APPEND);
+    $this->log(`Oтчет<br> {$logText}`);
 
 
     return true;
@@ -577,6 +583,7 @@ class SofonaimportpromController extends BaseController
     $plugin = PluginHelper::getPlugin('jshopping', 'import_prom');
     $ordersModel = JSFactory::getModel('orders');
     $importModel = JSFactory::getModel('sofonaimportprom');
+    $orderTable = JSFactory::getTable('order', 'jshop');
 
     if (!$plugin) {
       throw new \RuntimeException('Плагин Jshopping Import Prom не найден');
@@ -738,7 +745,8 @@ class SofonaimportpromController extends BaseController
           continue;
         } else {
           $importModel->updateOrderStatus($resultInfo->order_id, $statusMap[$statusProm]);
-          $ordersModel->saveOrderHistory(1, 'Изменен статус заказа - ' . $resultInfo->order_id . ' на id = ' . $statusMap[$statusProm]);
+          $orderTable->saveOrderHistory(1, 'Изменен статус заказа - ' . $resultInfo->order_id . ' на id = ' . $statusMap[$statusProm]);
+          $this->log("Заказ Prom ID: {$orderPromId} изменен статус заказа - ' . $resultInfo->order_id . ' на id = ' . $statusMap[$statusProm]");
 
           continue;
 

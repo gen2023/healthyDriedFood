@@ -385,6 +385,12 @@
     align-items: center;
     gap: 10px;
   }
+  .com-content-article {
+    flex-direction: column-reverse;
+  }
+  .com-content-article .prod-wrap1 {
+    width: calc(33.33% - 12px);
+  }
 }
 @media (max-width: 768px) {
   .page-flex .right-side .prod-wrap {
@@ -540,6 +546,7 @@
   .nevigen-novaposhta-courier-address-apartment {
     width: calc(50% - 4px);
   }
+  .com-content-article .prod-wrap1,
   .prod-wrap {
     width: calc(49.3% - 12px);
     margin-left: 6px;
@@ -931,6 +938,7 @@
     max-width: 100%;
     margin-bottom: 8px;
   }
+  .com-content-article .prod-wrap1,
   .prod-wrap {
     width: calc(100% - 12px);
     margin-left: 6px;
@@ -975,5 +983,16 @@
   }
   .footer-contacts .tel {
     font-size: 18px;
+  }
+}
+@media (min-width: 992px) {
+  .blog-items.columns-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .blog-items.columns-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .blog-items.columns-4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 }

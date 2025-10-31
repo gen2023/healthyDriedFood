@@ -66,6 +66,7 @@ if ($user->guest) {
 
 <head>
     <jdoc:include type="metas" />
+    <meta name="google-site-verification" content="qLaZ67vg09cLVRniiOCVBnNyc_ZiZdRGQhiES2MO5tw" />
     <jdoc:include type="styles" />
     <jdoc:include type="scripts" />
     <!-- Google Tag Manager -->

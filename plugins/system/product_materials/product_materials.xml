@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" version="5.0">
+    <name>PLG_SYSTEM_PRODUCT_MATERIALS</name>
+    <author>Gen2023</author>
+    <version>1.0.0</version>
+    <description>Добавляет связь между товарами JoomShopping и материалами Joomla</description>
+    <files>
+        <filename plugin="product_materials">product_materials.php</filename>
+        <folder>tmpl</folder>
+    </files>
+</extension>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade">
+    <name>PLG_SYSTEM_TRACKREF</name>
+    <author>Gen2023</author>
+    <version>1.0.0</version>
+    <creationDate>2025-10-30</creationDate>
+    <description>Отслеживание переходов по меткам URL</description>
+    <files>
+        <filename plugin="trackref">trackref.php</filename>
+		<folder>sql</folder>
+    </files>
+    <install>
+        <sql>
+            <file driver="mysqli" charset="utf8">sql/install.sql</file>
+        </sql>
+    </install>
+</extension>

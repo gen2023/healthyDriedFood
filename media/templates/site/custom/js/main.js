@@ -277,6 +277,29 @@ $(document).ready(function () {
       },
     },
   });
+    const articlesSlider = new Swiper('.articles-product', {
+    autoplay: {
+      delay: 5000,
+    },
+    //loop: true,
+    spaceBetween: 16,
+
+    breakpoints: {
+      0: {
+        slidesPerView: 2,
+        spaceBetween: 10,
+      },
+      768: {
+        slidesPerView: 3,
+      },
+      1200: {
+        slidesPerView: 4,
+      },
+      1700: {
+        slidesPerView: 5,
+      },
+    },
+  });
   var productTumbsSlider = new Swiper('.product-thumbs-slider', {
     slidesPerView: 'auto',
     spaceBetween: 16,

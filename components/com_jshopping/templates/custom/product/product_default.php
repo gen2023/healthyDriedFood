@@ -4,6 +4,9 @@ use Joomla\Component\Jshopping\Site\Helper\Helper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Helper\ModuleHelper;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Uri\Uri;
+
 $user = Factory::getUser();
 
 
@@ -18,6 +21,9 @@ defined('_JEXEC') or die();
 
 $product = $this->product;
 include(dirname(__FILE__) . "/load.js.php");
+
+$productId = $this->product->product_id;
+$materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
 
 ?>
 
@@ -187,15 +193,55 @@ include(dirname(__FILE__) . "/load.js.php");
                 <div><?php print $this->product->description; ?></div>
             </div>
         </div>
-<div class="reviews">
+        <?php
+        if ($materials) { ?>
+            <div class="slider-materials mb15">
+                <div class="swiper articles-product">
+                    <div class="swiper-wrapper">
+                        <?php foreach ($materials as $m) {
+                            $images = [];
+                            if (!empty($m->images)) {
+                                $images = json_decode($m->images, true) ?: [];
+                            }
+
+                            // Ссылка на материал
+                            $link = 'index.php?option=com_content&view=article&id=' . $m->id;
+                            $link = \JSHelper::SEFLink($link, 1);
+
+                            // Изображение
+                            if (!empty($images['image_intro'])) {
+                                $imageHtml = LayoutHelper::render('joomla.content.intro_image', $m);
+                            } else {
+                                $defaultImage = Uri::root(true) . '/images/default_image.png';
+                                $imageHtml = '<figure class="left item-image"><img src="' . $defaultImage . '" alt="' . htmlspecialchars($m->title, ENT_QUOTES) . '"></figure>';
+                            }
+                            ?>
+                            <div class="swiper-slide">
+                                <div class="swper-slide-content">
+                                    <a href="<?= $link ?>">
+                                        <?= $imageHtml ?>
+                                    </a>
+                                    <div class="name">
+                                        <a href="<?= $link ?>">
+                                            <?= htmlspecialchars($m->title) ?>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
+        <div class="reviews">
             <?php
-        print $this->_tmp_product_html_before_review;
-        include(__DIR__."/review.php");
-        
-        // print $this->_tmp_product_html_before_related;
-        // include(__DIR__."/related.php");
-    ?>
-</div>
+            print $this->_tmp_product_html_before_review;
+            include(__DIR__ . "/review.php");
+
+            // print $this->_tmp_product_html_before_related;
+            // include(__DIR__."/related.php");
+            ?>
+        </div>
         <div class="mb50">
             <?php
             $module = ModuleHelper::getModules('recently-viewed');
