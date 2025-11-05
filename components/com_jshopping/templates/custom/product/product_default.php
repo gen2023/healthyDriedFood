@@ -199,23 +199,25 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
                 <div class="swiper articles-product">
                     <div class="swiper-wrapper">
                         <?php foreach ($materials as $m) {
-                            $images = [];
-                            if (!empty($m->images)) {
-                                $images = json_decode($m->images, true) ?: [];
-                            }
-
-                            // Ссылка на материал
-                            $link = 'index.php?option=com_content&view=article&id=' . $m->id;
+                            $images = json_decode($m->images ?? '', true) ?: [];
+                            $link = 'index.php?option=com_content&view=article&id=' . (int) $m->id;
                             $link = \JSHelper::SEFLink($link, 1);
 
-                            // Изображение
-                            if (!empty($images['image_intro'])) {
-                                $imageHtml = LayoutHelper::render('joomla.content.intro_image', $m);
-                            } else {
-                                $defaultImage = Uri::root(true) . '/images/default_image.png';
-                                $imageHtml = '<figure class="left item-image"><img src="' . $defaultImage . '" alt="' . htmlspecialchars($m->title, ENT_QUOTES) . '"></figure>';
+                            if(!empty($images['image_intro'])){
+                                $src=  preg_replace('#^joomlaImage://local-images/#', '', explode('#', $images['image_intro'])[0]);
+                                $classImage="item-image";
+                            }else{
+                                $src=Uri::root(true) . '/images/default_image.png';
+                                $classImage="item-image-default";
                             }
+
+                            $imageHtml= '<figure class="left '.$classImage.'">
+                                <a href="' . $link . '">
+                                    <img src="' . $src . '" alt="' . htmlspecialchars($m->title, ENT_QUOTES) . '">
+                                </a>
+                            </figure>';
                             ?>
+
                             <div class="swiper-slide">
                                 <div class="swper-slide-content">
                                     <a href="<?= $link ?>">

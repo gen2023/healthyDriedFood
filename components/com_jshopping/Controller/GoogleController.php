@@ -7,6 +7,7 @@ use Joomla\Component\Jshopping\Site\Lib\JSFactory;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
+use Joomla\Component\Jshopping\Site\Helper\Helper;
 
 
 class GoogleController extends BaseController
@@ -35,10 +36,12 @@ class GoogleController extends BaseController
         $filters = [
             'base' => [
                 'p.product_publish = 1',
-                'p.product_quantity > 0'
+                'p.product_quantity > 0',
+                'p.main_category_id != 1'
             ],
             'include' => [],
-            'exclude' => []
+            'exclude' => [
+            ]
         ];
 
         $products = $model->getProducts($filters);
@@ -78,6 +81,7 @@ class GoogleController extends BaseController
 
         // Вставляем каждый товар как <item>
         foreach ($products as $product) {
+
             // иногда у тебя unlimited -> подставляем минимальное количество, оставил логику
             if ($product->unlimited == 1) {
                 $product->product_quantity = max(1, (int) $product->product_quantity);
@@ -120,7 +124,20 @@ class GoogleController extends BaseController
             if ($productcategory === 0) {
                 $productcategory = $model->getMainCategory($product->product_id);
             }
-            $productLink = $shopUrl . Route::_('index.php?option=com_jshopping&controller=product&task=view&category_id=' . $productcategory . '&product_id=' . $product->product_id);
+
+            $sefPath = Helper::SEFLink(
+                'index.php?option=com_jshopping&controller=product&task=view&category_id=' . $productcategory . '&product_id=' . $product->product_id,
+                1
+            );
+
+            $base = Uri::root();
+
+            if (strpos($sefPath, 'http') !== 0) {
+
+                $productLink = rtrim($base, '/') . '/' . ltrim($sefPath, '/');
+            } else {
+                $productLink = $sefPath;
+            }
             $item->addChild('g:link', htmlspecialchars($productLink), 'http://base.google.com/ns/1.0');
 
             // image_link — первая картинка или дефолт

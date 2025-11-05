@@ -3162,7 +3162,6 @@ body .autoscroll-preloader .spinner {
   }
 }
 
-// =========================
 .productfull {
   &.not-avail .img-box {
     opacity: .5;
@@ -3372,11 +3371,17 @@ body .autoscroll-preloader .spinner {
         }
       }
 
-      .item-image {
+      .item-image-default {
         display: flex;
         justify-content: center;
         align-items: center;
         height: 200px;
+      }
+
+      .item-image img {
+        height: 200px;
+        border-radius: 30px 30px 0 0;
+        object-fit: cover;
       }
 
       .name {
@@ -3521,11 +3526,13 @@ body .autoscroll-preloader .spinner {
   font-weight: 400;
 }
 
-.recently-viewed{
+.recently-viewed {
   margin-top: 50px;
-   .swiper-slide {
-  height: auto;
-}}
+
+  .swiper-slide {
+    height: auto;
+  }
+}
 
 // ================
 .myorders_block_info {
@@ -5012,12 +5019,19 @@ ol.default-list {
       box-shadow: 40px 40px 60px 0px rgba(96, 96, 112, 0.1);
     }
 
-    .item-image {
+    .item-image-default {
       width: 100%;
       height: 200px;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .item-image img {
+      height: 200px;
+      object-fit: cover;
+      width: 100%;
+      border-radius: 30px 30px 0 0;
     }
 
     .page-header h2 {

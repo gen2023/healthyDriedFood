@@ -40,7 +40,7 @@ if (!empty($images['image_intro'])) {
 } else {
     // Подставляем дефолтное изображение
     $defaultImage = 'images/default_image.png'; // путь относительно JPATH_ROOT
-    echo '<figure class="left item-image"><img src="' . $defaultImage . '" alt="' . htmlspecialchars($this->item->title, ENT_QUOTES) . '"></figure>';
+    echo '<figure class="left item-image-default"><img src="' . $defaultImage . '" alt="' . htmlspecialchars($this->item->title, ENT_QUOTES) . '"></figure>';
 }
 echo '</a>';
 ?>

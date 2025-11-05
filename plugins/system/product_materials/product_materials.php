@@ -182,19 +182,31 @@ class PlgSystemProduct_Materials extends CMSPlugin
 
     }
 
-    public static function getRelatedMaterials($productId)
-    {
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
-        $query = $db->getQuery(true)
-            ->select('m.id, m.title')
-            ->from('#__content AS m')
-            ->join('INNER', '#__product_materials AS pm ON pm.material_id = m.id')
-            ->where('pm.product_id = ' . (int) $productId)
-            ->order('m.title ASC');
-        $db->setQuery($query);
+public static function getRelatedMaterials($productId)
+{
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
+    $lang = Factory::getApplication()->getLanguage()->getTag();
 
-        return $db->loadObjectList();
+    $query = $db->getQuery(true)
+        ->select('m.id, m.title, m.images')
+        ->from('#__content AS m')
+        ->join('INNER', '#__product_materials AS pm ON pm.material_id = m.id')
+        ->where('pm.product_id = ' . (int) $productId)
+        ->where('(m.language = ' . $db->quote($lang) . ' OR m.language = "*")') 
+        ->order('m.title ASC');
+
+    $db->setQuery($query);
+    $materials = $db->loadObjectList();
+
+    foreach ($materials as &$material) {
+        $images = json_decode($material->images ?? '');
+        $material->intro_image = is_object($images) ? ($images->image_intro ?? '') : '';
+        $material->full_image = is_object($images) ? ($images->image_fulltext ?? '') : '';
     }
+
+    return $materials;
+}
+
 
     public static function getRelatedProducts($materialId)
     {
