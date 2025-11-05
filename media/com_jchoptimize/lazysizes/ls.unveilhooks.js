@@ -34,7 +34,7 @@ For background images, use data-bg attribute:
 
 (function(window, factory) {
 	var globalInstall = function(){
-		factory(window.lazySizes);
+		factory(window.jchLazySizes);
 		window.removeEventListener('lazyunveilread', globalInstall, true);
 	};
 
@@ -44,7 +44,7 @@ For background images, use data-bg attribute:
 		factory(require('lazysizes'));
 	} else if (typeof define == 'function' && define.amd) {
 		define(['lazysizes'], factory);
-	} else if(window.lazySizes) {
+	} else if(window.jchLazySizes) {
 		globalInstall();
 	} else {
 		window.addEventListener('lazyunveilread', globalInstall, true);

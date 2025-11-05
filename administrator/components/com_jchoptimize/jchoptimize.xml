@@ -12,7 +12,7 @@
     <version>9.2.0</version>
     <!-- The description is optional and defaults to the name -->
     <description>Performs several front end optimizations for fast site downloads</description>
-    <variant>FREE</variant>
+    <variant>PRO</variant>
 
     <namespace path="src">CodeAlfa\Component\JchOptimize</namespace>
 
@@ -26,7 +26,11 @@
         <folder>configure-helpers</folder>
         <folder>core</folder>
         <folder>css</folder>
+        <folder>dynamic-js</folder>
         <folder>js</folder>
+        <folder>lazysizes</folder>
+        <folder>lazysizes-config</folder>
+        <folder>lite-youtube-embed</folder>
         <file>joomla.asset.json</file>
     </media>
 
@@ -35,7 +39,7 @@
             <params>
                 <dashboard>com_jchoptimize.cpanel</dashboard>
             </params>
-            COM_JCHOPTIMIZE
+            COM_JCHOPTIMIZE_PRO
         </menu>
         <submenu>
             <menu view="ControlPanel">
@@ -70,7 +74,6 @@
             <language tag="en-GB">en-GB/en-GB.com_jchoptimize.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_jchoptimize.sys.ini</language>
         </languages>
-
     </administration>
 
     <dashboards>
