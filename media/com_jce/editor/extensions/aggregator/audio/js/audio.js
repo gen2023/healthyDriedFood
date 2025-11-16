@@ -1,4 +1,4 @@
-/* jce - 2.9.95 | 2025-10-14 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.96 | 2025-11-13 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 WFAggregator.add("audio", {
     params: {},
     props: {
@@ -42,7 +42,7 @@ WFAggregator.add("audio", {
         var x = 0;
         return $.each(data, function(key, val) {
             if (-1 === key.indexOf("audio_")) return !0;
-            delete data[key], key = key.substr(key.indexOf("_") + 1);
+            key = key.substr(key.indexOf("_") + 1);
             var $repeatable = $(".uk-repeatable", "#audio_attributes"), $repeatable = (0 < x && ($repeatable.eq(0).clone(!0).appendTo($repeatable.parent()), 
             $repeatable = $(".uk-repeatable", "#audio_attributes")), $repeatable.eq(x).find("input, select"));
             $repeatable.eq(0).val(key), $repeatable.eq(1).val(val), x++;

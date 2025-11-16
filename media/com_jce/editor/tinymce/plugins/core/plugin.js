@@ -1,4 +1,4 @@
-/* jce - 2.9.95 | 2025-10-14 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.96 | 2025-11-13 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function() {
     var Entities = tinymce.html.Entities, each = tinymce.each, extend = tinymce.extend, DomParser = tinymce.html.DomParser, HtmlSerializer = tinymce.html.Serializer, Dispatcher = tinymce.util.Dispatcher, DOM = tinymce.DOM;
     tinymce.PluginManager.add("core", function(ed, url) {

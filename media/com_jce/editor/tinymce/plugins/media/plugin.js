@@ -1,4 +1,4 @@
-/* jce - 2.9.95 | 2025-10-14 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.96 | 2025-11-13 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function() {
     var each = tinymce.each, extend = tinymce.extend, Node = tinymce.html.Node, VK = tinymce.VK, Serializer = tinymce.html.Serializer, DomParser = tinymce.html.DomParser, SaxParser = tinymce.html.SaxParser, DOM = tinymce.DOM;
     function indexOf(array, item) {
@@ -214,22 +214,35 @@
             }, isSupportedMedia(editor, src));
             if (!1 === defaultAttributes.sandbox ? node.attr("sandbox", null) : node.attr("sandbox", defaultAttributes.sandbox || ""), 
             isLocalUrl(editor, src)) node.attr("sandbox", null); else if (!1 === editor.getParam("media_iframes_sandbox", !0)) node.attr("sandbox", null); else try {
-                var url = new URL(src), host = url.host.toLowerCase(), path = url.pathname.toLowerCase(), site = (host.startsWith("www.") ? host.slice(4) : host) + path;
+                var url = new URL(src), host = url.host.toLowerCase(), path = url.pathname.toLowerCase(), cleanHost = 0 === host.indexOf("www.") ? host.substring(4) : host, site = cleanHost + path;
                 sandbox_iframes_exclusions.some(function(value) {
-                    value = value.toLowerCase();
-                    return 0 === site.indexOf(value) || 0 === host.indexOf(value);
+                    return !!value && (value = (value = 0 === (value = (value = String(value).toLowerCase()).replace(/^[a-z0-9.+-]+:\/\//, "")).indexOf("www.") ? value.substring(4) : value).replace(/\/+$/, ""), 
+                    0 === site.indexOf(value) || 0 === cleanHost.indexOf(value));
                 }) && node.attr("sandbox", null);
             } catch (e) {}
         }
     }
+    function normalizeUrl(u) {
+        (u = (u || "").trim()).startsWith("//") ? u = "placeholder:" + u : /:\/\//i.test(u) || (u = "placeholder://" + u);
+        try {
+            var p = new URL(u);
+            return (p.hostname.replace(/^www\./i, "") + p.pathname.replace(/\/+$/, "")).toLowerCase();
+        } catch (e) {
+            return u.replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/\/+$/, "").toLowerCase();
+        }
+    }
     function isSupportedProvider(editor, url) {
-        var providers = editor.settings.media_iframes_supported_media || Object.keys(mediaProviders), supported = !1;
-        "string" == typeof providers && (providers = providers.split(","));
-        for (var i = 0; i < providers.length; i++) if (value = providers[i]) {
-            var value = value.replace(/\/$/, "");
-            if ((mediaProviders[value] || new RegExp(value + "/(.+)/")).test(url)) {
-                supported = mediaProviders[value] ? value : "iframe";
-                break;
+        for (var providers = editor.settings.media_iframes_supported_media || Object.keys(mediaProviders), supported = !1, testUrl = ("string" == typeof providers && (providers = providers.split(",").map(function(s) {
+            return s.trim();
+        })), normalizeUrl(url)), i = 0; i < providers.length; i++) {
+            var key = providers[i];
+            if (key) {
+                var trimmed = key.replace(/\/+$/, "");
+                if ((mediaProviders[key] || (trimmed = normalizeUrl(trimmed), trimmed = String(trimmed).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), 
+                new RegExp("^" + trimmed))).test(testUrl)) {
+                    supported = mediaProviders[key] ? key : "iframe";
+                    break;
+                }
             }
         }
         return supported;
@@ -550,17 +563,26 @@
         }), data;
     }
     function updateMedia(ed, data, elm) {
-        var preview, attribs = {}, node = ed.dom.getParent(elm || ed.selection.getNode(), "[data-mce-object]"), boolAttrs = ed.schema.getBoolAttrs(), nodeName = node.nodeName.toLowerCase(), elm = (each([ "block", "center", "left", "right" ], function(val) {
+        var preview, attribs = {}, node = ed.dom.getParent(elm || ed.selection.getNode(), "[data-mce-object]"), boolAttrs = ed.schema.getBoolAttrs(), nodeName = (boolAttrs.preload = !0, 
+        node.nodeName.toLowerCase()), elm = (each([ "block", "center", "left", "right" ], function(val) {
             ed.dom.removeClass(node, "mce-object-preview-" + val);
         }), -1 !== node.className.indexOf("mce-object-preview") && (nodeName = (preview = node).getAttribute("data-mce-object"), 
         node = ed.dom.select(nodeName, node)[0]), preview && preview.removeAttribute("style"), 
         each(data, function(value, name) {
-            return "innerHTML" === name && value ? (attribs["data-mce-html"] = escape(value), 
-            !0) : "img" !== nodeName && !htmlSchema.isValid(nodeName, name) && -1 == name.indexOf("-") || (tinymce.is(boolAttrs[name]) && !value && (value = null, 
-            "autoplay" == name) && (attribs["data-mce-p-" + name] = null), "img" !== nodeName || htmlSchema.isValid(nodeName, name) && "src" !== name || null === value ? ("iframe" == nodeName && "src" == name && (value = (attribs["data-mce-p-" + name] = value).replace("autoplay=1", "autoplay=1")), 
-            "class" == name && value ? (ed.dom.addClass(node, value), !0) : "style" == name && value ? (tinymce.is(value, "object") && (value = ed.dom.serializeStyle(value)), 
-            ed.dom.setStyles(node, ed.dom.parseStyle(value)), !0) : void (attribs[name] = value = "sandbox" == name && !1 === value ? null : value)) : (attribs["data-mce-p-" + name] = value, 
-            !0));
+            if ("innerHTML" === name && value) return attribs["data-mce-html"] = escape(value), 
+            !0;
+            if ("img" !== nodeName && !htmlSchema.isValid(nodeName, name) && -1 == name.indexOf("-")) return !0;
+            if (name in boolAttrs && ("false" == value || !value) && (value = null, 
+            "autoplay" == name) && (attribs["data-mce-p-" + name] = null), "img" === nodeName && (!htmlSchema.isValid(nodeName, name) || "src" === name) && null !== value) return attribs["data-mce-p-" + name] = value, 
+            !0;
+            if ("iframe" == nodeName && "src" == name && (value = (attribs["data-mce-p-" + name] = value).replace("autoplay=1", "autoplay=1")), 
+            "class" == name && value) return ed.dom.addClass(node, value), !0;
+            if ("style" == name) {
+                if (value) return tinymce.is(value, "object") && (value = ed.dom.serializeStyle(value)), 
+                ed.dom.setStyles(node, ed.dom.parseStyle(value)), !0;
+                value = null;
+            }
+            attribs[name] = value = "sandbox" == name && !1 === value ? null : value;
         }), ed.dom.setAttribs(node, attribs), ed.dom.parseStyle(node.getAttribute("style")));
         preview && (isCenterAligned(elm) && ed.dom.addClass(preview, "mce-object-preview-center"), 
         elm.float) && ed.dom.addClass(preview, "mce-object-preview-" + elm.float), 

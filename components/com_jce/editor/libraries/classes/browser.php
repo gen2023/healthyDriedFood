@@ -161,6 +161,9 @@ class WFFileBrowser extends CMSObject
         // assign form action
         $view->action = $this->getFormAction();
 
+        $view->list_limit_options = $this->get('list_limit_options', array());
+        $view->list_limit = $this->get('list_limit', 25);
+
         // return view output
         $view->display();
     }
@@ -2106,11 +2109,6 @@ class WFFileBrowser extends CMSObject
         // check for extension in destination name
         if (WFUtility::validateFileName($destination) === false) {
             throw new InvalidArgumentException('Rename Failed: The file name is invalid.');
-        }
-
-        // check access
-        if (!$this->checkPathAccess($destination)) {
-            throw new InvalidArgumentException('Rename Failed: Access to the target directory is restricted');
         }
 
         // extract the path from the complex path, removing the prefix

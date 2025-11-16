@@ -177,6 +177,8 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
                                     <button type="submit" class="btn button btn-wishlist btn-secondary icon-wishlist"
                                         onclick="jQuery('#to').val('wishlist');"><?= Text::_('TPL_CUSTOM_PROD_ADD_WISHLIST') ?></button>
                                 <?php } ?>
+                            <?php }else{ ?>
+                                <div class="btn toOrder" data-toOrder_product_id="<?php print $this->product->product_id; ?>"><?= Text::_('TPL_CUSTOM_BTN_TO_ORDER'); ?></div>
                             <?php } ?>
                             <?php print $this->_tmp_product_html_buttons; ?>
                             <input type="hidden" name="to" id='to' value="cart" />
@@ -269,9 +271,6 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
         let current = parseFloat(qtyInput.value);
 
         current += step;
-
-        // if (current < 1) current = 1;
-
         qtyInput.value = current;
         qtyInput.dispatchEvent(new Event('change'));
         jshop.reloadPrices();
@@ -279,9 +278,6 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
     }
 
     function validateQuantityInput(input) {
-        // if (input.value < 1) {
-        //     input.value = 1;
-        // }
         jshop.reloadPrices();
     }
 </script>

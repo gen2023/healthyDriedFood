@@ -255,33 +255,40 @@ $(document).ready(function () {
       },
     },
   });
+
   const resSlider = new Swiper('.recently-slider', {
+    loop: false,
+    speed: 3000,
+    spaceBetween: 10,
+    slidesPerView: 5,
+    breakpoints: {
+      1499: {
+        slidesPerView: 4
+      },
+      1024: {
+        slidesPerView: 4
+      },
+      768: {
+        slidesPerView: 3
+      },
+      576: {
+        slidesPerView: 2
+      },
+      0: {
+        slidesPerView: 1
+      }
+    },
     navigation: {
       nextEl: '.recently-viewed-next',
       prevEl: '.recently-viewed-prev',
     },
-
-    breakpoints: {
-      0: {
-        slidesPerView: 2,
-        spaceBetween: 10,
-      },
-      768: {
-        slidesPerView: 3,
-      },
-      1200: {
-        slidesPerView: 4,
-      },
-      1700: {
-        slidesPerView: 5,
-      },
-    },
   });
-    const articlesSlider = new Swiper('.articles-product', {
+
+  const articlesSlider = new Swiper('.articles-product', {
     autoplay: {
       delay: 5000,
     },
-    //loop: true,
+    // loop: true,
     spaceBetween: 16,
 
     breakpoints: {

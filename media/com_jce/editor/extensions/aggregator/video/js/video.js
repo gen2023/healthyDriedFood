@@ -1,4 +1,4 @@
-/* jce - 2.9.95 | 2025-10-14 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.96 | 2025-11-13 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 WFAggregator.add("video", {
     params: {
         width: "",
@@ -43,7 +43,7 @@ WFAggregator.add("video", {
         var x = 0, self = this;
         return $.each(data, function(key, val) {
             if (-1 === key.indexOf("video_")) return !0;
-            if (delete data[key], (key = key.substr(key.indexOf("_") + 1)) in self.props) return !0;
+            if ((key = key.substr(key.indexOf("_") + 1)) in self.props) return !0;
             "" != val && 1 != val || (val = key);
             var $repeatable = $(".uk-repeatable", "#video_attributes"), $repeatable = (0 < x && ($repeatable.eq(0).clone(!0).appendTo($repeatable.parent()), 
             $repeatable = $(".uk-repeatable", "#video_attributes")), $repeatable.eq(x).find("input, select"));

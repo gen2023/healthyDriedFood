@@ -1,4 +1,4 @@
-/* jce - 2.9.95 | 2025-10-14 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.96 | 2025-11-13 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function(tinymce) {
     var DOM = tinymce.DOM, Event = tinymce.dom.Event, each = tinymce.each, extend = tinymce.extend, VK = tinymce.VK, TreeWalker = tinymce.dom.TreeWalker, Delay = tinymce.util.Delay;
     function getSpanVal(td, name) {
@@ -333,7 +333,13 @@
         }), ed.onPreInit.add(function() {
             var basic_dialog, isMobile;
             ed.onSetContent.add(function(ed, e) {
-                cleanup(!0), ed.dom.addClass(ed.dom.select("table"), "mce-item-table");
+                cleanup(!0), ed.onSetContent.add(function(ed, e) {
+                    cleanup(!0), each(ed.dom.select("table"), function(table) {
+                        ed.dom.addClass(table, "mce-item-table"), each(ed.dom.select("td,th", table), function(cell) {
+                            cell.hasChildNodes() || (cell.innerHTML = '<br data-mce-bogus="1" />');
+                        });
+                    });
+                });
             }), ed.onPastePostProcess.add(function(ed, args) {
                 var dom = ed.dom;
                 dom.addClass(dom.select("table", args.node), "mce-item-table"), 

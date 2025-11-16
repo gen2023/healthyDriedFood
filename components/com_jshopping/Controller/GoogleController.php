@@ -14,7 +14,14 @@ class GoogleController extends BaseController
 {
     public function display($cachable = false, $urlparams = false)
     {
-        $this->createXmlGoogle('google.xml');
+        $langTag = Factory::getApplication()->getLanguage()->getTag();
+            $filename='google.xml';
+
+        if ($langTag=='ru-RU'){
+            $filename='google_ru.xml';
+        }
+
+        $this->createXmlGoogle($filename);
 
         die('1111111111111111');
     }
@@ -27,7 +34,7 @@ class GoogleController extends BaseController
         $languages = ['ru-RU' => 'ru', 'uk-UA' => 'uk'];
 
         // id из __jshopping_category_custom_values — у тебя была логика, если нужно, используй
-        $categoryAggregator = $model->getCategoryCF(2);
+        $categoryAggregator = $model->getCategoryCF(3);
         // var_dump($categoryAggregator);die;//array(2) { [0]=> object(stdClass)#1233 (4) { ["id"]=> int(135) ["field_id"]=> int(2) ["category_id"]=> int(3) ["value"]=> string(8) "11111111" } [1]=> object(stdClass)#1237 (4) { ["id"]=> int(136) ["field_id"]=> int(2) ["category_id"]=> int(7) ["value"]=> string(7) "2222222" } }
 
         $currencies = $model->getCurrencies();
@@ -36,8 +43,8 @@ class GoogleController extends BaseController
         $filters = [
             'base' => [
                 'p.product_publish = 1',
-                'p.product_quantity > 0',
-                'p.main_category_id != 1'
+                'p.product_quantity > 0'
+                // 'p.main_category_id != 1'
             ],
             'include' => [],
             'exclude' => [
@@ -79,6 +86,8 @@ class GoogleController extends BaseController
             $categoryAggregatorMap[(int) $googleCatId->category_id] = $googleCatId->value;
         }
 
+        $langTag = Factory::getApplication()->getLanguage()->getTag();
+
         // Вставляем каждый товар как <item>
         foreach ($products as $product) {
 
@@ -90,12 +99,17 @@ class GoogleController extends BaseController
             $item = $channel->addChild('item');
 
             // g:id
-            $item->addChild('g:id', (string) $product->product_id, 'http://base.google.com/ns/1.0');
+            $product_id=$product->product_id;
+            if($langTag=='uk-UA'){
+                $product_id=$product->product_id+1000;
+            }
+
+            $item->addChild('g:id', (string) $product_id, 'http://base.google.com/ns/1.0');
 
             // title — используем языковое поле, fallback на любое доступное
-            $langTag = Factory::getApplication()->getLanguage()->getTag();
+            
             $fieldName = 'name_' . $langTag;
-            $title = $product->{$fieldName} ?? $product->{'name_uk-UA'} ?? $product->name ?? 'Product ' . $product->product_id;
+            $title = $product->{$fieldName} ?? $product->{'name_' . $langTag} ?? $product->name ?? 'Product ' . $product->product_id;
             $item->addChild('g:title', htmlspecialchars(mb_substr($title, 0, 150)), 'http://base.google.com/ns/1.0');
 
             // Собираем краткое + полное описание
@@ -103,7 +117,7 @@ class GoogleController extends BaseController
 
             // Если пусто, пробуем вторую локаль
             if (trim(strip_tags($descField)) === '') {
-                $descField = ($product->{'short_description_uk-UA'} ?? '') . '<br>' . ($product->{'description_uk-UA'} ?? '');
+                $descField = ($product->{'short_description_' . $langTag} ?? '') . '<br>' . ($product->{'description_' . $langTag} ?? '');
             }
 
             // Разрешаем только допустимые Google теги
@@ -213,6 +227,7 @@ class GoogleController extends BaseController
             if ($product->product_id == 54) {
                 $categoryId = 428;
             }
+            echo $categoryId;
             $item->addChild('g:google_product_category', $categoryId, 'http://base.google.com/ns/1.0');
 
             // brand / vendor
@@ -261,6 +276,7 @@ class GoogleController extends BaseController
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
         }
+        
         $filePath = $path . $filename;
 
         // Записываем

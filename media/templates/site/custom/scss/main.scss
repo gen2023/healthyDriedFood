@@ -409,6 +409,9 @@ textarea.input {
   }
 
 }
+.swiper-wrapper .prod-wrap{
+  margin: 0 0 20px;
+}
 
 .breadcrumb,
 .breadcrumb li {
@@ -3162,6 +3165,7 @@ body .autoscroll-preloader .spinner {
   }
 }
 
+// =========================
 .productfull {
   &.not-avail .img-box {
     opacity: .5;
@@ -3397,6 +3401,9 @@ body .autoscroll-preloader .spinner {
 
       }
     }
+  }
+  .recently-slider{
+    overflow: hidden;
   }
 }
 
@@ -4997,6 +5004,14 @@ ol.default-list {
 
 .com-content-category-blog {
   margin-bottom: 50px;
+  position: relative;
+  &__counter{
+    display: none;
+  }
+  .autoScrollBtn {
+        position: absolute;
+    bottom: -40px;
+  }
 }
 
 .blog-items {

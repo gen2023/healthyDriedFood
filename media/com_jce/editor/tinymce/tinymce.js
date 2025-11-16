@@ -8125,7 +8125,7 @@
                 filter && (input.value = "", input.focus(), this.clearFilteredItems());
             },
             showMenu: function(x, y, px, py) {
-                var co, w, h, mx, self = this, s = self.settings, vp = DOM.getViewPort(), cp = self.classPrefix;
+                var co, w, h, mx, el, self = this, s = self.settings, vp = DOM.getViewPort(), cp = self.classPrefix;
                 self.collapse(1), self.isMenuVisible || (self.selected = [], self.rendered ? co = DOM.get("menu_" + self.id) : (co = DOM.add(self.settings.container, self.renderNode()), 
                 each(self.items, function(o) {
                     o.postRender();
@@ -8154,8 +8154,8 @@
                 }), Event.add(co, "keydown", self._keyDownHandler, self), s.filter && Event.add(co, "keyup", self._keyUpHandler, self), 
                 self.onShowMenu.dispatch(self), each(self.items, function(o) {
                     o.selected && -1 === tinymce.inArray(self.selected, o) && self.selected.push(o);
-                }), self.selected.length ? (px = DOM.get(self.selected[0].id), self.scrollTo(px)) : DOM.get("menu_" + self.id + "_items").scrollTop = 0, 
-                s.keyboard_focus && self._setupKeyboardNav(), s.filter) && (mx = DOM.select("input", "menu_" + self.id + "_filter_input")) && mx[0].focus());
+                }), self.selected.length ? (el = DOM.get(self.selected[0].id)) && self.scrollTo(el) : (el = DOM.get("menu_" + self.id + "_items")) && (el.scrollTop = 0), 
+                s.keyboard_focus && self._setupKeyboardNav(), s.filter) && (px = DOM.select("input", "menu_" + self.id + "_filter_input")) && px[0].focus());
             },
             hideMenu: function(c) {
                 var co = DOM.get("menu_" + this.id);
