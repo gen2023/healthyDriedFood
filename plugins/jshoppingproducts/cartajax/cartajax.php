@@ -1,16 +1,25 @@
 <?php
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\Component\Jshopping\Site\Helper\Helper;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
+use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Jshopping\Site\Helper\Error as JSError;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Registry\Registry;
 use Joomla\CMS\HTML\HTMLHelper;
 
 defined('_JEXEC') or die;
 require_once JPATH_SITE . '/components/com_jshopping/helpers/cartajax.php';
 
 #[\AllowDynamicProperties]
-class plgJshoppingProductsCartAjax extends JPlugin {
+class plgJshoppingProductsCartAjax extends CMSPlugin {
 
     public $aQuantity = null;
 
     public function __construct(&$subject, $config = array()) {
-        \JFactory::getLanguage()->load('com_jshopping.addon_cartajax', JPATH_ROOT);
+        Factory::getLanguage()->load('com_jshopping.addon_cartajax', JPATH_ROOT);
         parent::__construct($subject, $config);  
     }
 	
@@ -23,9 +32,9 @@ class plgJshoppingProductsCartAjax extends JPlugin {
 				'cartajaxCartModal',
 				array(
 					'modal-dialog-scrollable' => true,
-					'title'  => \JText::_('JSHOP_ADDED_TO_CART'),
-					'footer' => '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">'.\JText::_('JSHOP_BACK_TO_SHOP').'</button>
-								<button type="button" class="btn btn-primary" onclick="document.location=\''.\JSHelper::SEFLink('index.php?option=com_jshopping&controller=cart&task=view',1,1).'\'">'.\JText::_('JSHOP_GO_TO_CART').'</button>',
+					'title'  => Text::_('JSHOP_ADDED_TO_CART'),
+					'footer' => '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">'.Text::_('JSHOP_BACK_TO_SHOP').'</button>
+								<button type="button" class="btn btn-primary" onclick="document.location=\''.Helper::SEFLink('index.php?option=com_jshopping&controller=cart&task=view',1,1).'\'">'.Text::_('JSHOP_GO_TO_CART').'</button>',
 				),
 					'<div id="product_added_to_cart"></div>'
 			);
@@ -34,9 +43,9 @@ class plgJshoppingProductsCartAjax extends JPlugin {
 				'cartajaxWishlistModal',
 				array(
 					'modal-dialog-scrollable' => true,
-					'title'  => \JText::_('JSHOP_ADDED_TO_WISHLIST'),
-					'footer' => '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">'.\JText::_('JSHOP_BACK_TO_SHOP').'</button>
-								<button type="button" class="btn btn-primary" onclick="document.location=\''.\JSHelper::SEFLink('index.php?option=com_jshopping&controller=wishlist&task=view',1,1).'\'">'.\JText::_('JSHOP_GO_TO_WISHLIST').'</button>',
+					'title'  => Text::_('JSHOP_ADDED_TO_WISHLIST'),
+					'footer' => '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">'.Text::_('JSHOP_BACK_TO_SHOP').'</button>
+								<button type="button" class="btn btn-primary" onclick="document.location=\''.Helper::SEFLink('index.php?option=com_jshopping&controller=wishlist&task=view',1,1).'\'">'.Text::_('JSHOP_GO_TO_WISHLIST').'</button>',
 				),
 					'<div id="product_added_to_cart"></div>'
 			);
@@ -46,9 +55,9 @@ class plgJshoppingProductsCartAjax extends JPlugin {
 	
     protected function _includeScripts() {
         if (!isset($this->scripts_included)) {
-            $document = \JFactory::getDocument();
+            $document = Factory::getDocument();
             $show_popup_message = $this->params->get('show_popup_message', 0);
-            $jshopConfig = \JSFactory::getConfig();
+            $jshopConfig = JSFactory::getConfig();
             if ($document->getType() == 'html') {
 				$ca_js_config = [
 					'decimal_count' => $jshopConfig->decimal_count,
@@ -57,26 +66,28 @@ class plgJshoppingProductsCartAjax extends JPlugin {
 					'noimage' => $jshopConfig->noimage,
 				];
                 CartAjaxHelper::includeCommonCode();
+                $addon = new AddonCore('cartajax');            
+                $addon->loadJs('_plugin');
                 $document->addCustomTag("<script type='text/javascript'>
                                             var cartajax = cartajax || {};
-                                            var cartajax_html = '" . \JSHelper::SEFLink('index.php?option=com_jshopping&controller=cartajax', 1, 1) . "';
+                                            var cartajax_html = '" . Helper::SEFLink('index.php?option=com_jshopping&controller=cartajax', 1, 1) . "';
                                             var cartajax_added_product_id = null;
-                                            cartajax.translate_not_available = " . json_encode(\JText::_('JSHOP_PRODUCT_NOT_AVAILABLE_THIS_OPTION')) . ";
-                                            cartajax.old_price_description = " . ($jshopConfig->product_list_show_price_description ? json_encode(\JText::_('JSHOP_OLD_PRICE')) : "''") . ";
+                                            cartajax.translate_available = " . json_encode(Text::_('JSHOP_PRODUCT_AVAILABLE')) . ";
+                                            cartajax.translate_not_available = " . json_encode(Text::_('JSHOP_PRODUCT_NOT_AVAILABLE_THIS_OPTION')) . ";
+                                            cartajax.old_price_description = " . ($jshopConfig->product_list_show_price_description ? json_encode(Text::_('JSHOP_OLD_PRICE')) : "''") . ";
                                             cartajax.show_product_in_cart_message = " . $this->params->get('show_product_in_cart_message', 0) . ";                                            
                                             cartajax.show_popup_message = " . $show_popup_message . ";
 											cartajax.show_popup_message_back_close = ".(int)$this->params->get('show_popup_message_back_close').";
                                             cartajax.config_add_to_wishlist = ".(int)$this->params->get('add_to_wishlist').";
                                             cartajax.jshopConfig = ".json_encode($ca_js_config).";
                                          </script>");
-                $document->addCustomTag('<script type="text/javascript" src="'.JURI::base().'plugins/jshoppingproducts/cartajax/cartajax_plugin.js"></script>');
             }
             $this->scripts_included = true;
         }
     }
 
     function _getProductsInCart() {
-        $cart = \JSFactory::getModel('cart', 'jshop');
+        $cart = JSFactory::getModel('cart', 'jshop');
         $cart->load();
         $products_in_cart = array();
         if (count($cart->products) > 0) {
@@ -89,7 +100,7 @@ class plgJshoppingProductsCartAjax extends JPlugin {
 
     function onBeforeDisplayProduct(&$product, &$view, &$product_images, &$product_videos, &$product_demofiles) {
 		if (!$this->checkLicKey()){
-			\JSError::raiseWarning('', 'Please enter license key (CartAjax)');
+			JSError::raiseWarning('', 'Please enter license key (CartAjax)');
 			return;
 		}
         $this->_includeScripts();
@@ -101,19 +112,19 @@ class plgJshoppingProductsCartAjax extends JPlugin {
             }
             if (!isset($view->_tmp_product_html_before_buttons))
                 $view->_tmp_product_html_before_buttons = '';
-            $view->_tmp_product_html_before_buttons .= '<span' . $style . ' class="product_in_cart red" id="product_in_cart_' . $product->product_id . '">' . \JText::_('JSHOP_ADDED_TO_CART') . '<br/></span>';
+            $view->_tmp_product_html_before_buttons .= '<span' . $style . ' class="product_in_cart red" id="product_in_cart_' . $product->product_id . '">' . Text::_('JSHOP_ADDED_TO_CART') . '<br/></span>';
         }
 		$view->_tmp_product_html_start .= $this->getHtmlModal();
     }
 
     function onBeforeDisplayProductList(&$products) {
-        $config = \JSFactory::getConfig();
+        $config = JSFactory::getConfig();
         $show_quant_in_list_prod = $this->params->get('show_quant_in_list_prod', 1);
 		if (!$this->checkLicKey()){
-			\JSError::raiseWarning('', 'Please enter license key (CartAjax)');
+			JSError::raiseWarning('', 'Please enter license key (CartAjax)');
 			return;
 		}
-        \JSFactory::loadJsFiles();
+        JSFactory::loadJsFiles();
         $this->_includeScripts();
 		
 		$cart_msg_position_prod_list = $this->params->get('cart_msg_position_prod_list', '_tmp_var_top_buttons');
@@ -127,11 +138,11 @@ class plgJshoppingProductsCartAjax extends JPlugin {
                     if (in_array($product->product_id, $products_in_cart)) {
                         $style = '';
                     }
-                    $products[$key]->$cart_msg_position_prod_list .= '<span' . $style . ' class="product_in_cart red" id="product_in_cart_' . $product->product_id . '">' . \JText::_('JSHOP_ADDED_TO_CART') . '<br/></span>';
+                    $products[$key]->$cart_msg_position_prod_list .= '<span' . $style . ' class="product_in_cart red" id="product_in_cart_' . $product->product_id . '">' . Text::_('JSHOP_ADDED_TO_CART') . '<br/></span>';
                 }
             }
 
-			$jinput = \JFactory::getApplication()->input;            
+			$jinput = Factory::getApplication()->input;            
             $controller = $jinput->get("controller");
             if (!$controller) $controller = $jinput->get("view");
 
@@ -152,7 +163,7 @@ class plgJshoppingProductsCartAjax extends JPlugin {
             $listminqty = array();
             //addon_min_max_quantity_product
             if (file_exists(JPATH_ROOT . "/plugins/jshoppingproducts/addon_min_max_quantity_product/addon_min_max_quantity_product.php")) {
-                $db = \JFactory::getDBO();
+                $db = Factory::getDBO();
                 $pids = array();
                 foreach ($products as $key => $product) {
                     $pids[] = $product->product_id;
@@ -168,7 +179,7 @@ class plgJshoppingProductsCartAjax extends JPlugin {
             }
             
             $instaddon_quantity_select_pview = 0;
-            if (file_exists(JPATH_ROOT.'/plugins/jshoppingproducts/quantity_select_pview') && \JPluginHelper::isEnabled('jshoppingproducts', 'quantity_select_pview')){
+            if (file_exists(JPATH_ROOT.'/plugins/jshoppingproducts/quantity_select_pview') && PluginHelper::isEnabled('jshoppingproducts', 'quantity_select_pview')){
                 $instaddon_quantity_select_pview = 1;
             }
 
@@ -176,7 +187,7 @@ class plgJshoppingProductsCartAjax extends JPlugin {
             
             foreach($products as $key => $product){                
                 if ($instaddon_quantity_select_pview){
-                    $productObject = \JSFactory::getTable('product', 'jshop');
+                    $productObject = JSFactory::getTable('product', 'jshop');
                     $productObject->load($product->product_id);
                     $attributesDatas = $productObject->getAttributesDatas();
                     $productObject->setAttributeActive($attributesDatas['attributeActive']);
@@ -197,7 +208,7 @@ class plgJshoppingProductsCartAjax extends JPlugin {
                     }
                     if ($show_quant_in_list_prod) {
                         if ($instaddon_quantity_select_pview && count($attrQ)){
-                            $products[$key]->$qty_position_prod_list .= '<span class="ca_qty_input">'.\JHTML::_('select.genericlist', $attrQ, 'quantity', 'class="inputbox"' . $show, 'attr_addon_quantity_select', 'name', $value,'addon_quantity_select').'</span>';
+                            $products[$key]->$qty_position_prod_list .= '<span class="ca_qty_input">'.HTMLHelper::_('select.genericlist', $attrQ, 'quantity', 'class="inputbox"' . $show, 'attr_addon_quantity_select', 'name', $value,'addon_quantity_select').'</span>';
                         } elseif($addon_quantity_controls) {
                             $products[$key]->$qty_position_prod_list .= 
                             '<span class="quantityControlsListProduct">
@@ -208,12 +219,8 @@ class plgJshoppingProductsCartAjax extends JPlugin {
                                 <input class="quantity-plus" type="button" onclick="quantityNumber(1, this);" value="+" />
                             </span>';
                         } else {
-                            $products[$key]->$qty_position_prod_list .= ' 
-                            <span class="block_quantity">
-                            <input class="quantity-minus" type="button" value="-" />
-                                <span class="ca_qty_input">
-                            <input type="text" size="2" value="' . $value . '" name="quantity" class="input-mini" /></span>
-                                <input class="quantity-plus" type="button" value="+" /></span>';
+                            $products[$key]->$qty_position_prod_list .= '<span class="ca_qty_input"><span>'.Text::_('JSHOP_QUANTITY') . 
+                            ': </span><input type="text" size="2" value="' . $value . '" name="quantity" class="input-mini" /></span>';
                         }
                     } else {
                         $products[$key]->$qty_position_prod_list .= '<input type="hidden" value="' . $value . '" name="quantity" />';
@@ -226,10 +233,10 @@ class plgJshoppingProductsCartAjax extends JPlugin {
     }
 
     private function getQuantityControlInList() {
-        $addon_quantity_controls = JPluginHelper::isEnabled('jshoppingproducts', 'quantity_controls');
+        $addon_quantity_controls = PluginHelper::isEnabled('jshoppingproducts', 'quantity_controls');
         if ($addon_quantity_controls) {
-            $plugin = JPluginHelper::getPlugin('jshoppingproducts', 'quantity_controls');
-            $addon_quantity_params = new JRegistry($plugin->params);
+            $plugin = PluginHelper::getPlugin('jshoppingproducts', 'quantity_controls');
+            $addon_quantity_params = new Registry($plugin->params);
             $addon_quantity_controls = $addon_quantity_params->get('show_on_product_list', 0);
         }
         return $addon_quantity_controls;
@@ -239,7 +246,7 @@ class plgJshoppingProductsCartAjax extends JPlugin {
 		$this->_setStrToQuantity($product);
 		if($this->aQuantity !== null and count($this->aQuantity) > 0){
 			$html = '';
-			$qty = \JFactory::getApplication()->input->getVar('qty',1);
+			$qty = Factory::getApplication()->input->getVar('qty',1);
 			foreach($this->aQuantity as $k=>$v){
 				$selected = $k == $qty ? ' selected="selected"' : '';
 				$html .= '<option value="'.$k.'"'.$selected.'>'.$v.'</option>';
@@ -250,11 +257,13 @@ class plgJshoppingProductsCartAjax extends JPlugin {
 	}
 	
 	function checkLicKey(){
-        if (file_exists(JPATH_SITE.'/plugins/system/tmpl_gray/tmpl_gray.php')) {
+        if (
+			file_exists(JPATH_SITE.'/plugins/system/tmpl_gray/tmpl_gray.php') ||
+			file_exists(JPATH_SITE.'/components/com_jshopping/templates/flex9')
+		) {
             return 1;
         } else {
-            //return \JSHelper::compareX64(\JSHelper::replaceWWW(\JSHelper::getJHost()."addon_cartajax"), \JSHelper::getLicenseKeyAddon('addon_cartajax'));
-            return 1;
+            return Helper::compareX64(Helper::replaceWWW(Helper::getJHost()."addon_cartajax"), Helper::getLicenseKeyAddon('addon_cartajax'));
         }
 	}
 
@@ -275,7 +284,7 @@ class plgJshoppingProductsCartAjax extends JPlugin {
         }
     }
 
-    public static function correctStrSep($str, $arr = true, $reg = '/[^0-9]/', $sep = ',') {
+    public static function correctStrSep($str, $arr = true, $reg = '/[^0-9.]/', $sep = ',') {
         $astr = explode($sep, $str);
         if (count($astr) > 0) {
             $a = array();

@@ -35,9 +35,9 @@ $minValue = isset($minOrderValues[$jshopConfig->cur_currency]) ? $minOrderValues
     <div class="container">
         <?php if ($countprod > 0): ?>
 
-            <a href="<?php print $this->href_shop ?>" class="back-link icon-prev mb20"><?= JText::_('TPL_CUSTOM_BACK_TO_SHOP') ?></a>
+            <a href="<?php print $this->href_shop ?>" class="back-link icon-prev mb20"><?= Text::_('TPL_CUSTOM_BACK_TO_SHOP') ?></a>
             <div class="flex between align-center mb30">
-                <h1 class="ttl md"><?= JText::_('TPL_CUSTOM_CART') ?></h1>
+                <h1 class="ttl md"><?= Text::_('TPL_CUSTOM_CART') ?></h1>
             </div>
 
             <?php print $this->checkout_navigator ?>

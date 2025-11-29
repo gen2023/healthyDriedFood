@@ -1,7 +1,10 @@
+<?php
+use Joomla\CMS\Language\Text;
+?>
 <?php if (isset($show_characteristics) && $show_characteristics && is_array($characteristics) && count($characteristics)){?> 
 
     <?php if ($show_characteristics_title) { ?>
-        <div class="head_group"><?php print JText::_('Product_Characteristics')?></div>
+        <div class="head_group"><?php print Text::_('Product_Characteristics')?></div>
     <?php } ?>
     
     <?php foreach($characteristics as $ch){ ?>
@@ -24,8 +27,10 @@
                     </div>
                 <?php }?>
             </div>
-                    
-            <?php if ( isset($ch->values) ) {?>
+            <?php
+            if (in_array($ch->id, $show_characteristics_id_slider) && isset($ch->values) ) {
+                include __DIR__.'/characteristic_slider.php';
+            } elseif ( isset($ch->values) ) {?>
                 <?php 
                 if ($ch->type != '1'){
                     $field_name = 'extra_fields['.$ch->id.'][]';
@@ -44,7 +49,10 @@
                         <?php print $inputCore->getCheckboxs($field_name, $ch->values, $_active, 'image', $jshopConfig->image_attributes_live_path,  'id');?>
                     </div>
                 <?php } else { ?>
-                    <?php print $inputCore->getSelect($field_name, $ch->values, $_active, '', '', 'id','item_ch_'.$ch->id);?>
+                    <input type="hidden" name="<?php print $field_name?>" value="<?php print $hidden_val?>">
+                    <?php 
+                    $first_name = ($addonParams['name_in_select'] ?? 0) ? $ch->name : '';
+                    print $inputCore->getSelect($field_name, $ch->values, $_active, '', '', 'id','item_ch_'.$ch->id, $first_name);?>
                 <?php } ?>
 
             <?php } else { ?>
@@ -56,7 +64,7 @@
                         <input type="text" size="15" name="extra_fields[<?php print $ch->id?>]" value="<?php print htmlspecialchars($value, ENT_QUOTES)?>" />
                         <?php if ($show_characteristics_button) { ?>
                             <button class="btn btn-primary btn-go" onclick="jshop_filters_submit(<?php print $filter_number?>, true);return false;">
-                                <?php print \JText::_('GO')?>
+                                <?php print Text::_('GO')?>
                             </button>
                         <?php }?>
                     </div>

@@ -1,6 +1,9 @@
+<?php
+use Joomla\CMS\Language\Text;
+?>
 <?php if ($show_review){?>
 <div class="fblock review_filter<?php echo $span;?>" group="review">
-	<div class="head"><?php print \JText::_('Review')?></div>
+	<div class="head"><?php print Text::_('Review')?></div>
 	<?php if ($show_review == 1) {?>
 		<div class='filters-lists'>
 			<?php print $inputCore->getRadio('review_filter', $listReview, $review_filter); ?>

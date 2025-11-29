@@ -1,13 +1,66 @@
 <?php
+use Joomla\Component\Jshopping\Site\Helper\Helper;
+use Joomla\CMS\Language\Text;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Helper\ModuleHelper;
+
 defined('_JEXEC') or die;
 include_once JPATH_SITE.'/components/com_jshopping/bootstrap.php';
 include_once JPATH_SITE."/modules/mod_jshopping_filters_extended/helper_url.php";
 
 class modJshopping_filters_extendedHelper {
 
+	public static function getFilterDisplayParams($params, $get_filter_only_url, $show_categorys_in_category) {
+		$res = [];
+		$disable_mod_for_controllers = $params->get('disable_mod_for_controllers', '');
+		$show_on_all_pages = $params->get('show_on_all_pages', 0);
+		$res['display_filters'] = 0;
+		$page_params = self::getPageParams();
+		$controller = $page_params['controller'];
+		$category_id = $page_params['category_id'];
+
+		if (self::disable_mod_for_controllers($page_params, $disable_mod_for_controllers)) {
+			return $res;
+		}
+        if ($controller == 'category' && $category_id) {
+            $cat_params = self::getModParamsByCategory($category_id);
+            if ($cat_params['hide_filer_ext']) {
+                return $res;
+            }
+        }
+
+		if (self::thisPageCanUsefilter($page_params)) {
+			$res['display_filters'] = 1;
+			$form_action = $_SERVER['REQUEST_URI'];
+			if ($get_filter_only_url) {
+				$form_action = self::getFormActionBase($controller);
+			}
+		}
+		if ($show_on_all_pages){
+			$res['display_filters'] = 1;
+		}
+
+		if ($res['display_filters'] && (!isset($form_action) || $show_categorys_in_category)){
+			$form_action = Helper::SEFLink('index.php?option=com_jshopping&controller=products', 1, 1);
+			$page_params = self::getPageParamsAllPage();
+			$controller = $page_params['controller'];
+			$category_id = $page_params['category_id'];
+		}
+		$res['form_action'] = $form_action ?? '';
+		$res['page_params'] = $page_params;
+		$res['controller'] = $controller;
+		$res['category_id'] = $category_id;
+		return $res;
+	}
+
 	public static function getPageParams() {
-		$session = JFactory::getSession();
-		$jinput = \JFactory::getApplication()->input;
+		$session = Factory::getSession();
+		$app = Factory::getApplication();
+		$jinput = $app->input;
 		$task = $jinput->get('task');
 		$controller = $jinput->get("controller");
 		if (!$controller) $controller = $jinput->get("view");
@@ -22,11 +75,6 @@ class modJshopping_filters_extendedHelper {
 		$data = [];
 		if ($category_id) {
 			$data['categorys'] = [$category_id];
-			//addon Product category and subcategory
-			if (class_exists('plgJshoppingAllproducts') && plgJshoppingAllproducts::$active_subcats && count(plgJshoppingAllproducts::$active_subcats)) {
-				$data['categorys'] = array_merge($data['categorys'], plgJshoppingAllproducts::$active_subcats);
-				$data['categorys'] = array_unique($data['categorys']);
-			}
 		}
 		if ($controller == "category" && $category_id && !$session->get('show_mod_in_category')) {
 			/* show filter data for empty category */
@@ -47,7 +95,8 @@ class modJshopping_filters_extendedHelper {
 		if ($price_to) {
 			$data['fprice_to'] = $price_to;
 		}
-		$params = \JFactory::getApplication()->getParams();		
+
+		$params = $app->getParams();
 		if ($params->get('categorys')) $data['categorys'] = $params->get('categorys');
 		if ($params->get('manufacturers')) $data['manufacturers'] = $params->get('manufacturers');
 		if ($params->get('labels')) $data['labels'] = $params->get('labels');
@@ -63,6 +112,9 @@ class modJshopping_filters_extendedHelper {
 		if ($params->get('fprice_to')) $data['fprice_to'] = $params->get('fprice_to');
 		if ($params->get('extra_fiels')) $data['extra_fiels'] = self::getDefaultFilterExtra_fiels();
 		if ($params->get('attributes')) $data['attributes'] = $params->get('attributes');
+
+		$app->triggerEvent('onFiltersExtendedGetPageParams', array(&$data));
+
 		$res = [
 			'controller' => $controller,
 			'task' => $task,
@@ -73,9 +125,30 @@ class modJshopping_filters_extendedHelper {
 		];
 		return $res;
 	}
+    
+    public static function getExtUserConfig() {
+		$file = __DIR__."/user_config.php";
+		if (file_exists($file)) {
+			return include $file;
+		} else {
+			return [];
+		}
+	}
+
+	public static function getPageParamsAllPage() {
+		$res = [
+			'controller' => 'products',
+			'task' => 'display',
+			'category_id'=> 0,
+			'manufacturer_id' => 0,
+			'vendor_id' => 0,
+			'data' => []
+		];
+		return $res;
+	}
 
 	public static function thisPageCanUsefilter($page_params) {
-		$session = JFactory::getSession();
+		$session = Factory::getSession();
 		$task = $page_params['task'];
 		$controller = $page_params['controller'];
 		$category_id = $page_params['category_id'];
@@ -112,7 +185,7 @@ class modJshopping_filters_extendedHelper {
 	}
 
 	protected static function getStaticTextByAlias($alias){
-		$db = \JFactory::getDBo();
+		$db = Factory::getDBo();
 		$JSlangCode = JSFactory::getLang()->lang;
 		$sqlGetStaticTextTitle = 'SELECT `text_' . $JSlangCode . '` FROM `#__jshopping_config_statictext` WHERE `alias` = '.$db->q($alias);
 		$db->setQuery($sqlGetStaticTextTitle);
@@ -137,25 +210,29 @@ class modJshopping_filters_extendedHelper {
 	        $scrollingLimit = $params->filter_scrolling_number;
 	    }
 	    if ( count($listItems) > $scrollingLimit && !empty($scrollingLimit) ) {
-	        return 'filters-scrolling';           
+	        return 'filters-scrolling';
 	    }
 	}
 
 	public static function getModuleParams(){
 		static $res;
 		if (!isset($res)){
-			$db = \JFactory::getDbo();
-			$sql = "SELECT `params` FROM `#__modules` WHERE `module` = 'mod_jshopping_filters_extended' and `published`=1";
-			$db->setQuery($sql);
-			$result = $db->loadResult();
-			if ($result) {
-				$res = json_decode($result);
+			$db = Factory::getDbo();
+			$module = ModuleHelper::getModule('mod_jshopping_filters_extended');
+			if (isset($module->params) && $module->params) {
+				$res = json_decode($module->params);
 			} else {
-				$res = new stdClass();
+				$sql = "SELECT `params` FROM `#__modules` WHERE `module`='mod_jshopping_filters_extended' and `published`=1";
+				$db->setQuery($sql);
+				$result = $db->loadResult();
+				if ($result) {
+					$res = json_decode($result);
+				} else {
+					$res = new stdClass();
+				}
 			}
 			$res->filter_reset = $res->filter_reset ?? 0;
 			$res->show_filter_active = $res->show_filter_active ?? 0;
-			
 		}
 		return $res;
 	}
@@ -179,9 +256,9 @@ class modJshopping_filters_extendedHelper {
 
     static function getFilterNameAvailability($val){
         if ($val==1){
-            return \JText::_('In_stock');
+            return Text::_('In_stock');
         }elseif ($val==2){
-            return \JText::_('UNAVAILABLE');
+            return Text::_('UNAVAILABLE');
         }else{
             return '';
         }
@@ -189,9 +266,9 @@ class modJshopping_filters_extendedHelper {
 
     static function getFilterNameFoto($val){
         if ($val==1){
-            return \JText::_('With_photo');
+            return Text::_('With_photo');
         }elseif ($val==2){
-            return \JText::_('Without_photo');
+            return Text::_('Without_photo');
         }else{
             return '';
         }
@@ -199,9 +276,9 @@ class modJshopping_filters_extendedHelper {
 
     static function getFilterNameReview($val){
         if ($val==1){
-            return \JText::_('With_review');
+            return Text::_('With_review');
         }elseif ($val==2){
-            return \JText::_('Without_review');
+            return Text::_('Without_review');
         }else{
             return '';
         }
@@ -219,7 +296,7 @@ class modJshopping_filters_extendedHelper {
     static function getAddonParams(){
         static $params;
         if (!isset($params)){
-            $addon = \JSFactory::getTable('addon');
+            $addon = JSFactory::getTable('addon');
             $addon->loadAlias('filters_extended');
             $params = $addon->getParams();
         }
@@ -227,7 +304,7 @@ class modJshopping_filters_extendedHelper {
     }
 
     static function getModHint($type, $id){
-        $lang = JFactory::getLanguage()->getTag();
+        $lang = Factory::getLanguage()->getTag();
         $params = self::getAddonParams();
         if (isset($params[$type][$id][$lang])){
             return $params[$type][$id][$lang];
@@ -237,7 +314,7 @@ class modJshopping_filters_extendedHelper {
     }
 
     static function getCategoryNames($cats_ids = array()){
-        $db = \JFactory::getDBO();
+        $db = Factory::getDBO();
         if (!count($cats_ids)){
             return array();
         }
@@ -252,7 +329,7 @@ class modJshopping_filters_extendedHelper {
 	static function getListCharactiristicImage(){
 		static $characteristic_images;
 		if (!isset($characteristic_images)){
-			$db = \JFactory::getDBO();
+			$db = Factory::getDBO();
 			$query = "SELECT id, image FROM `#__jshopping_products_extra_fields`";
 			$db->setQuery($query);
 			$rows = $db->loadObjectList();
@@ -267,7 +344,7 @@ class modJshopping_filters_extendedHelper {
 	static function getListCharactiristicValueImage(){
 		static $characteristic_images;
 		if (!isset($characteristic_images)){
-			$db = \JFactory::getDBO();
+			$db = Factory::getDBO();
 			$query = "SELECT id, image FROM `#__jshopping_products_extra_field_values`";
 			$db->setQuery($query);
 			$rows = $db->loadObjectList();
@@ -280,12 +357,12 @@ class modJshopping_filters_extendedHelper {
 	}
 	
 	static function getCharactiristicImage($id){
-		if (JPluginHelper::isEnabled('jshoppingproducts', 'addon_field_images')){
+		if (PluginHelper::isEnabled('jshoppingproducts', 'addon_field_images')){
 			$jshopConfig = JSFactory::getConfig();
 			$list = self::getListCharactiristicImage();
 			if ($list[$id]){
 				return "<span class='charactiristic_image'>".
-				\JHTML::_('image', $jshopConfig->image_attributes_live_path.'/'.$list[$id], '', 'height="20px" width="20px"').
+				HTMLHelper::_('image', $jshopConfig->image_attributes_live_path.'/'.$list[$id], '', 'height="20px" width="20px"').
 				"</span> ";
 			}else{
 				return '';
@@ -294,7 +371,7 @@ class modJshopping_filters_extendedHelper {
 	}
 	
 	static function getCharactiristicValueImage($id){
-		if (JPluginHelper::isEnabled('jshoppingproducts', 'addon_field_images')){
+		if (PluginHelper::isEnabled('jshoppingproducts', 'addon_field_images')){
 			$list = self::getListCharactiristicValueImage();
 			if ($list[$id]){
 				return $list[$id];
@@ -306,12 +383,13 @@ class modJshopping_filters_extendedHelper {
 	}
 
 	static function getContextFilter() {
-        $jinput = \JFactory::getApplication()->input;
+        $jinput = Factory::getApplication()->input;
 		$category_id = $jinput->getInt('category_id', 0);
 		$manufacturer_id = $jinput->getInt('manufacturer_id', 0);
 		$vendor_id = $jinput->getInt('vendor_id', 0);
 		$controller = $jinput->get("controller");
 		if (!$controller) $controller = $jinput->get("view");
+        $extUConf = self::getExtUserConfig();
 
 		$contextfilter = '';
 		if ($controller=='category'){
@@ -330,12 +408,24 @@ class modJshopping_filters_extendedHelper {
 			$mid = $jinput->getInt('Itemid');
 			$contextfilter = "jshoping.list.front.productsfilter.".$mid;
 		}
+        if (
+			isset($extUConf['contextfilter_hash_query']) && 
+			$extUConf['contextfilter_hash_query'] && 
+			in_array($controller, ['category', 'manufacturer', 'vendor', 'products'])
+		){
+			if ($_SERVER['QUERY_STRING']) {
+				$qshash = ".h.".substr(md5($_SERVER['QUERY_STRING']), 0, 10);
+			} else {
+				$qshash = '';
+			}
+			$contextfilter = $contextfilter.$qshash;
+		}
 		return $contextfilter;
 	}
 
 	static function getStateFromRequest($context, $key, $default = null) {
-		$session = JFactory::getSession();
-		$input = \JFactory::getApplication()->input;
+		$session = Factory::getSession();
+		$input = Factory::getApplication()->input;
 		$val = $input->get($key);
 		$val_session = $session->get($context);
 		if (isset($val)) {
@@ -350,13 +440,13 @@ class modJshopping_filters_extendedHelper {
 	}
 
 	static function clearPrevPageFilterActive($prev_context) {
-		$session = JFactory::getSession();
+		$session = Factory::getSession();
 		$registry = $session->get('registry');
 		if ($registry !== null) {
 			$registry->set($prev_context.'categorys', []);
 			$registry->set($prev_context.'manufacturers', []);
 			$registry->set($prev_context.'vendors', []);
-			$registry->set($prev_context.'extra_fiels', []);
+			$registry->set($prev_context.'extra_fields', []);
 			$registry->set($prev_context.'labels', []);
 			$registry->set($prev_context.'extra_fields_t', []);
 			$registry->set($prev_context.'delivery_times', []);
@@ -375,7 +465,7 @@ class modJshopping_filters_extendedHelper {
 	}
 
 	static function getDefaultFilterExtra_fiels() {
-		$params = \JFactory::getApplication()->getParams();
+		$params = Factory::getApplication()->getParams();
 		$def_extra_fiels = $params->get('extra_fiels', []);
 		$res = ['list' => [], 'text' => []];
 		foreach($def_extra_fiels as $k => $v) {
@@ -389,26 +479,27 @@ class modJshopping_filters_extendedHelper {
 	}
 	
 	static function getFilterActive($filter_only_url = 0, $contextfilter = '', $core_filter = 0) {
-		$app = \JFactory::getApplication();
+		$app = Factory::getApplication();
         $input = $app->input;
-        $jshopConfig = \JSFactory::getConfig();
-		$params = \JFactory::getApplication()->getParams();
+        $jshopConfig = JSFactory::getConfig();
+		$params = Factory::getApplication()->getParams();
 		$def_extra_fiels = self::getDefaultFilterExtra_fiels();
+        $extUConf = self::getExtUserConfig();
 
         $category_id = $input->getInt('category_id');
         $manufacturer_id = $input->getInt('manufacturer_id');
         $label_id = $input->getInt('label_id');
         $vendor_id = $input->getInt('vendor_id');
-        $price_from = \JSHelper::saveAsPrice($input->getVar('price_from'));
-        $price_to = \JSHelper::saveAsPrice($input->getVar('price_to'));		
+        $price_from = Helper::saveAsPrice($input->getVar('price_from'));
+        $price_to = Helper::saveAsPrice($input->getVar('price_to'));		
 		if ($filter_only_url) {
         	$categorys = $input->get('categorys', $params->get('categorys', []));
 		} else {
 			$categorys = $app->getUserStateFromRequest($contextfilter.'categorys', 'categorys', []);
 			$categorys = array_merge($categorys, $params->get('categorys', []));
 		}
-        $categorys = \JSHelper::filterAllowValue($categorys, "int+");
-        $tmpcd = \JSHelper::getListFromStr($input->getVar('category_id'));
+        $categorys = Helper::filterAllowValue($categorys, "int+");
+        $tmpcd = Helper::getListFromStr($input->getVar('category_id'));
         if (is_array($tmpcd) && !$categorys) $categorys = $tmpcd;
 
 		if ($filter_only_url) {
@@ -417,8 +508,14 @@ class modJshopping_filters_extendedHelper {
 			$manufacturers = $app->getUserStateFromRequest($contextfilter.'manufacturers', 'manufacturers', []);
 			$manufacturers = array_merge($manufacturers, $params->get('manufacturers', []));
 		}
-        $manufacturers = \JSHelper::filterAllowValue($manufacturers, "int+");
-        $tmp = \JSHelper::getListFromStr($input->getVar('manufacturer_id'));
+        if ($extUConf['static_filter'] ?? 0) {
+			$ex_mf = (array)$input->get('mf', []);
+			if ($ex_mf) {
+				$manufacturers = array_merge($manufacturers, $ex_mf);
+			}
+		}
+        $manufacturers = Helper::filterAllowValue($manufacturers, "int+");
+        $tmp = Helper::getListFromStr($input->getVar('manufacturer_id'));
         if (is_array($tmp) && !$manufacturers) $manufacturers = $tmp;
 
 		if ($filter_only_url) {
@@ -427,8 +524,8 @@ class modJshopping_filters_extendedHelper {
 			$labels = $app->getUserStateFromRequest($contextfilter.'labels', 'labels', []);
 			$labels = array_merge($labels, $params->get('labels', []));
 		}
-        $labels = \JSHelper::filterAllowValue($labels, "int+");
-        $tmplb = \JSHelper::getListFromStr($input->getVar('label_id'));
+        $labels = Helper::filterAllowValue($labels, "int+");
+        $tmplb = Helper::getListFromStr($input->getVar('label_id'));
         if (is_array($tmplb) && !$labels) $labels = $tmplb;
 
 		if ($filter_only_url) {
@@ -437,8 +534,8 @@ class modJshopping_filters_extendedHelper {
 			$vendors = $app->getUserStateFromRequest($contextfilter.'vendors', 'vendors', []);
 			$vendors = array_merge($vendors, $params->get('vendors', []));
 		}
-        $vendors = \JSHelper::filterAllowValue($vendors, "int+");
-        $tmp = \JSHelper::getListFromStr($input->getVar('vendor_id'));
+        $vendors = Helper::filterAllowValue($vendors, "int+");
+        $tmp = Helper::getListFromStr($input->getVar('vendor_id'));
         if (is_array($tmp) && !$vendors) $vendors = $tmp;
 
         if ($jshopConfig->admin_show_product_extra_field){
@@ -455,7 +552,20 @@ class modJshopping_filters_extendedHelper {
 					}
 				}
 			}
-            $extra_fields = \JSHelper::filterAllowValue($extra_fields, "array_int_k_v+");
+            if ($extUConf['static_filter'] ?? 0) {
+				$ex_ef = $input->get('ef', []);
+				if ($ex_ef) {
+					foreach($ex_ef as $_ch_id => $_vals) {
+						foreach($_vals as $_k => $_v) {
+							if (!isset($extra_fields[$_ch_id])) $extra_fields[$_ch_id] = [];
+							if (!in_array($_v, $extra_fields[$_ch_id])) {
+								$extra_fields[$_ch_id][] = $_v;
+							}
+						}
+					}
+				}
+			}
+            $extra_fields = Helper::filterAllowValue($extra_fields, "array_int_k_v+");
 			if ($filter_only_url) {
             	$extra_fields_t = $input->getString('extra_fields_t', $def_extra_fiels['text']);
 			} else {
@@ -469,28 +579,22 @@ class modJshopping_filters_extendedHelper {
 					}
 				}
 			}
-            $extra_fields_t = \JSHelper::filterAllowValue($extra_fields_t, "array_int_k_v_not_empty");
+            $extra_fields_t = Helper::filterAllowValue($extra_fields_t, "array_int_k_v_not_empty");
         }
 		if ($filter_only_url) {
         	$fprice_from = $input->get('fprice_from', $params->get('fprice_from'));
 		} else {
 			$fprice_from = self::getStateFromRequest($contextfilter.'fprice_from', 'fprice_from', $params->get('fprice_from'));
 		}
-        $fprice_from = \JSHelper::saveAsPrice($fprice_from);
+        $fprice_from = Helper::saveAsPrice($fprice_from);
         if (!$fprice_from) $fprice_from = $price_from;
 		if ($filter_only_url) {
         	$fprice_to = $input->get('fprice_to', $params->get('fprice_to', ''));
 		} else {
 			$fprice_to = self::getStateFromRequest($contextfilter.'fprice_to', 'fprice_to', $params->get('fprice_to'));
 		}
-        $fprice_to = \JSHelper::saveAsPrice($fprice_to);
+        $fprice_to = Helper::saveAsPrice($fprice_to);
         if (!$fprice_to) $fprice_to = $price_to;
-
-		//addon Product category and subcategory
-		if (class_exists('plgJshoppingAllproducts') && plgJshoppingAllproducts::$active_subcats && count(plgJshoppingAllproducts::$active_subcats)) {
-			$categorys = array_merge($categorys, plgJshoppingAllproducts::$active_subcats);
-			$categorys = array_unique($categorys);
-		}
 
         $filters = array();
         $filters['categorys'] = $categorys;
@@ -516,7 +620,7 @@ class modJshopping_filters_extendedHelper {
             $filters['vendors'][] = $vendor_id;
         }
         if (is_array($filters['vendors'])){
-            $main_vendor = \JSFactory::getMainVendor();
+            $main_vendor = JSFactory::getMainVendor();
             foreach($filters['vendors'] as $vid){
                 if ($vid == $main_vendor->id){
                     $filters['vendors'][] = 0;
@@ -537,7 +641,7 @@ class modJshopping_filters_extendedHelper {
 				$attribut_active_value[] = $_av_id;
 			}
 		}
-        $filters['attribut_active_value'] = \JSHelper::filterAllowValue($attribut_active_value, "int+");
+        $filters['attribut_active_value'] = Helper::filterAllowValue($attribut_active_value, "int+");
         
 		if ($filter_only_url) {
 			$quantity_filter = $input->get('quantity_filter', $params->get('quantity_filter'));
@@ -580,7 +684,7 @@ class modJshopping_filters_extendedHelper {
         	$delivery_time_active = $app->getUserStateFromRequest($contextfilter.'delivery_times', 'delivery_times', []);
 			$delivery_time_active = array_merge($delivery_time_active, $params->get('delivery_times', []));
 		}
-        $delivery_time_active = \JSHelper::filterAllowValue($delivery_time_active, "int+");
+        $delivery_time_active = Helper::filterAllowValue($delivery_time_active, "int+");
 		$filters['delivery_time_active'] = $delivery_time_active;
         
 		if ($filter_only_url) {
@@ -604,11 +708,13 @@ class modJshopping_filters_extendedHelper {
 		}
 		$filters['filter_search'] = $filter_search;
 
+		$app->triggerEvent('onFiltersExtendedGetFilterActive', array(&$filters));
+
 		return $filters;
 	}
 	
 	static function getFilterSearchActive() {		
-		$app = \JFactory::getApplication();
+		$app = Factory::getApplication();
         $input = $app->input;
 		if (self::getModuleParamsfilter_only_url()) {
 			$filter_search = $input->get('filter_search', '');
@@ -620,32 +726,32 @@ class modJshopping_filters_extendedHelper {
 	}
 
 	static function getFormActionBase($controller) {
-		$jinput = \JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 		$category_id = $jinput->getInt('category_id', 0);
 		$manufacturer_id = $jinput->getInt('manufacturer_id', 0);
 		$vendor_id = $jinput->getInt('vendor_id', 0);
 		if ($controller == 'category') {
-			$action = \JSHelper::SEFLink('index.php?option=com_jshopping&controller=category&task=view&category_id='.$category_id, 1, 1);
+			$action = Helper::SEFLink('index.php?option=com_jshopping&controller=category&task=view&category_id='.$category_id, 1, 1);
 		}
 		if ($controller == 'manufacturer') {
-			$action = \JSHelper::SEFLink('index.php?option=com_jshopping&controller=manufacturer&task=view&manufacturer_id='.$manufacturer_id, 1, 1);
+			$action = Helper::SEFLink('index.php?option=com_jshopping&controller=manufacturer&task=view&manufacturer_id='.$manufacturer_id, 1, 1);
 		}
 		if ($controller == 'vendor') {
-			$action = \JSHelper::SEFLink('index.php?option=com_jshopping&controller=vendor&task=products&vendor_id='.$vendor_id, 1, 1);
+			$action = Helper::SEFLink('index.php?option=com_jshopping&controller=vendor&task=products&vendor_id='.$vendor_id, 1, 1);
 		}
 		if ($controller == 'products') {
-			$action = \JSHelper::SEFLink('index.php?option=com_jshopping&controller=products', 1, 1);
+			$action = Helper::SEFLink('index.php?option=com_jshopping&controller=products', 1, 1);
 		}
 		if (!isset($action)) {
 			$link = "index.php?Itemid=".$jinput->get('Itemid');
-			$action = \JRoute::_($link);
+			$action = Route::_($link);
 		}
 		return $action;
 	}
 
 	static function getProductIdByAttributeVals($attribut_active_value) {
-		$db = \JFactory::getDBO(); 
-        $jshopConfig = \JSFactory::getConfig();
+		$db = Factory::getDBO(); 
+        $jshopConfig = JSFactory::getConfig();
 		$products = [];
 
 		if ($attribut_active_value && count($attribut_active_value)){
@@ -661,7 +767,7 @@ class modJshopping_filters_extendedHelper {
             LEFT JOIN  `#__jshopping_products_attr2` AS ap ON (av.value_id=ap.attr_value_id) 
             WHERE av.value_id in (".implode(",", $attribut_active_value).") AND a.independent=1 ORDER BY a.attr_id";  
             $db->setQuery($query);
-            $attr_array_independent = $db->loadObjectList();            
+            $attr_array_independent = $db->loadObjectList();
 
 			$attr_ind = [];
             if ($attr_array_independent) {
@@ -675,6 +781,9 @@ class modJshopping_filters_extendedHelper {
 			} elseif (count($attr_ind) > 1) {
             	$products = array_intersect(...$attr_ind);
 			}
+            if (count($attr_ind) && count($products) == 0) {
+                return [0];
+            }
 
             //dependent attribut 
             $query = " SELECT `attr_id` FROM `#__jshopping_attr` WHERE `attr_id` in (".implode(",", $attr_id).") AND `independent`=0";  
@@ -714,12 +823,71 @@ class modJshopping_filters_extendedHelper {
 		return array_unique($products);
 	}
 
+	static function getModParamsByCategory($category_id) {
+		$category = JSFactory::getTable('Category');
+		$category->load($category_id);
+		$res = [];
+		$category_char_id_checkbox = empty($category->char_id_checkbox) ? [] : json_decode($category->char_id_checkbox, true);
+		$category_char_id_select = empty($category->char_id_select) ? [] : json_decode($category->char_id_select, true);
+		if (count($category_char_id_checkbox)) {
+			$res['ch_id_checkbox'] = $category_char_id_checkbox;
+		}
+		if (count($category_char_id_select)) {
+			$res['ch_id_select'] = $category_char_id_select;
+		}
+		$res['show_sets'] = $category->sets_filter ?? 0;
+        $res['hide_filer_ext'] = $category->hide_filer_ext ?? 0;
+		return $res;
+	}
+    
+    static function getMinMaxCharactiristicSlider($items) {
+		$use_float = 0;
+		$vals = [];
+		foreach($items as $k => $val) {			
+			if ($use_float) {
+				$name = str_replace(',', '.', $val->name);
+				$name = floatval(str_replace(' ', '.', $name));
+				$vals[] = round($name, 2);
+			} else {
+				$vals[] = (int)$val->name;
+			}
+		}
+		if (count($vals)) {
+			$min = min($vals);
+			$max = max($vals);
+		} else {
+			$min = 0;
+			$max = 0;
+		}
+		return ['min' => $min, 'max' => $max, 'vals' => $vals];
+	}
+
+	static function getListExtraFieldValsByMinMax($ch_id, $min, $max) {
+        $db = Factory::getDBO();
+        $lang = JSFactory::getLang(); 
+        $query = "SELECT id, `".$lang->get("name")."` as name FROM `#__jshopping_products_extra_field_values` WHERE field_id=".$db->q($ch_id);
+        $db->setQuery($query);
+        $list = $db->loadObjectList();
+        $ids = [];
+        foreach($list as $v) {
+            $val = $v->name;
+            $val = str_replace(',','.',$val);
+            $val = str_replace(['>','<'],'',$val);
+            $val = str_replace(['>','<'],'',$val);
+            $val = floatval($val);
+            if ($val >= $min && $val <= $max) {
+                $ids[] = $v->id;
+            }
+        }
+        return $ids;
+    }
+
 }
 
 class modJshoppingFiltersExtendedHelper {
 
 	public static function getAjax() {
-		$app = \JFactory::getApplication();
+		$app = Factory::getApplication();
         $input = $app->input;
 		$all_data_url = $input->getArray();
 		$segments = modJshoppingFiltersExtendedHelperUrl::getBuildSegmentUrl($all_data_url);

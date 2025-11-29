@@ -1,8 +1,11 @@
+<?php
+use Joomla\CMS\Language\Text;
+?>
 <?php if ($show_attributes && isset($listAttribut) && is_array($listAttribut) && count($listAttribut)){ ?>
     <input type="hidden" name="attr_val[]" value="0" />
 
     <?php if ($show_attributes_title) {?>
-        <div class="head_group"><?php print JText::_('Product_attributes')?></div>
+        <div class="head_group"><?php print Text::_('Product_attributes')?></div>
     <?php }?>
     
     <?php foreach($listAttribut as $attr) {?>

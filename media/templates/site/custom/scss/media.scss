@@ -1266,6 +1266,15 @@
 	.page-flex .right-side .prod-wrap {
 		width: calc(100% - 12px);
 	}
+	.cart_popup .jshop_prod_cart_popup{
+		grid-template-columns: 1fr;
+		.info_product{
+			width: auto;
+		}
+		.right{
+			justify-content: center;
+		}
+	}
 }
 
 @media (max-width: 480px) {

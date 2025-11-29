@@ -26,26 +26,7 @@ if ($currentCategoryId) {
         $subcategories = $categoryTable->getSubCategories($categoryTable->category_parent_id);
     }
 }
-// $db = JFactory::getDbo();
 
-// // Получаем все ID товаров
-// $query = $db->getQuery(true)
-//     ->select('product_id')
-//     ->from('#__jshopping_products');
-// $db->setQuery($query);
-// $productIds = $db->loadColumn();
-
-// foreach ($productIds as $productId) {
-//     $randomManufacturerId = rand(1, 3);
-
-//     $query = $db->getQuery(true)
-//         ->update($db->qn('#__jshopping_products'))
-//         ->set($db->qn('product_manufacturer_id') . ' = ' . (int)$randomManufacturerId)
-//         ->where($db->qn('product_id') . ' = ' . (int)$productId);
-
-//     $db->setQuery($query);
-//     $db->execute();
-// }
 ?>
 
 <div class="jshop cat-page" id="comjshop">
@@ -64,32 +45,6 @@ if ($currentCategoryId) {
             </div>
         </div>
 
-        <?php /* if (!empty($subcategories)) { ?>
-       <div class="slider-wrapper subcategory-list">
-           <div class="swiper subcategory-slider">
-               <div class="swiper-wrapper">
-                   <?php foreach ($subcategories as $subcategory) { ?>
-                       <?php if (isset($subcategory->category_image) && $subcategory->category_image != '') {
-                           $image = '/components/com_jshopping/files/img_categories/' . $subcategory->category_image;
-                       } else {
-                           $image = '/components/com_jshopping/files/img_categories/noimage.gif';
-                       }
-                       ?>
-                       <div class="swiper-slide">
-                           <a href="<?= \JSHelper::SEFLink('index.php?option=com_jshopping&controller=category&task=view&category_id=' . $subcategory->category_id, 1) ?> ">
-                               <span class="icon"><img class="image_cat" src="<?= $image ?>" alt="<?= $subcategory->img_alt ?>" title="<?= $subcategory->img_title ?>"></span>
-                               <span class="namesubcat"><?= htmlspecialchars($subcategory->name) ?></span>
-                           </a>
-                       </div>
-                   <?php } ?>
-               </div>
-           </div>
-           <div class="control_swiper">
-               <div class="swiper-button-prev">&nbsp;</div>
-               <div class="swiper-button-next">&nbsp;</div>
-           </div>
-       </div>
-   <?php } */ ?>
         <?php /*include(dirname(__FILE__) . "/../" . $this->template_block_form_filter); */ ?>
         <div class="page-flex flex between">
             <div class="filter_block">
@@ -115,14 +70,12 @@ if ($currentCategoryId) {
             </div>
             <div class="right-side">
                 <?php include(dirname(__FILE__) . "/products.php"); ?>
-                <?php if ($this->pagination_obj->pagesCurrent == 1) { ?>
-                    <div class="articleBody category_description mt50">
-                        <?php print $this->category->description ?>
-                    </div>
-                <?php } ?>
             </div>
         </div>
+        <?php if ($this->pagination_obj->pagesCurrent == 1 && $this->category->description) { ?>
+            <div class="articleBody category_description mt50 mb50">
+                <?php print $this->category->description ?>
+            </div>
+        <?php } ?>
     </div>
-</div>
-
 </div>

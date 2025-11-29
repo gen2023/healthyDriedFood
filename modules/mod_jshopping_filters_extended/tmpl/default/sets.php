@@ -1,6 +1,9 @@
+<?php
+use Joomla\CMS\Language\Text;
+?>
 <?php if ($show_sets){?>  
 <div class="fblock sets_filter<?php echo $span;?>" group="sets">
-    <div class="head"><?php print \JText::_('Sets_filter')?></div>
+    <div class="head"><?php print Text::_('Sets_filter')?></div>
     <?php if ($show_sets == 1) {?>
 		<div class='filters-lists'>
             <?php print $inputCore->getRadio('sets_filter', $listSets, $sets_filter); ?>

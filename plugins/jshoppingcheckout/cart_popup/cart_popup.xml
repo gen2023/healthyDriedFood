@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="1.7" method="upgrade" group="jshoppingcheckout">
+	<name>JoomShopping - Cart Popup (jshoppingcheckout)</name>
+	<creationDate>22.08.2012</creationDate>
+	<version>2.0.6</version>
+	<author>MAXXmarketing GmbH</author>
+	<authorEmail>marketing@maxx-marketing.net</authorEmail>
+	<authorUrl>http://www.webdesigner-profi.de</authorUrl>
+	<copyright>Copyright (C) 2010 webdesigner-profi.de. All rights reserved</copyright>
+	<license>MAXXmarketing GmbH</license>
+	<description>JoomShopping Cart Popup Plugin</description> 
+	<files>
+		<filename plugin="cart_popup">cart_popup.php</filename>
+	</files>
+</extension>

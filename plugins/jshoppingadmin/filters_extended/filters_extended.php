@@ -1,11 +1,12 @@
 <?php
-
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Component\Jshopping\Site\Lib\JSFactory;
 
 defined('_JEXEC') or die();
 
-class plgjshoppingadminFilters_extended extends JPlugin{
+class plgjshoppingadminFilters_extended extends CMSPlugin{
     
     public function __construct(&$subject, $config){
         parent::__construct($subject, $config);
@@ -38,6 +39,11 @@ class plgjshoppingadminFilters_extended extends JPlugin{
     {
 		$addon = new AddonCore('filters_extended');
 		$params = $addon->getAddonParams();
+		Factory::getLanguage()->load('mod_jshopping_filters_extended', JPATH_SITE);
+        
+        $aView = $addon->getView('cat_settings');
+        $aView->hide_filer_ext = $view->category->hide_filer_ext ?? 0;
+        $view->etemplatevar .= $aView->loadTemplate();
 
 		if ($params['category_characteristics_settings'] ?? 0) {
 			$view->etemplatevar .= $this->displayCategoryCharacteristicsSettings($view->category);
@@ -60,8 +66,6 @@ class plgjshoppingadminFilters_extended extends JPlugin{
 		$addon = new AddonCore('filters_extended');
 		$model = JSFactory::getModel("ProductFields");
 		$characteristics = $model->getList(true, null, null, ['category_id' => $category->category_id]);
-
-		\JFactory::getLanguage()->load('mod_jshopping_filters_extended', JPATH_SITE);
 
 		$view = $addon->getView('characteristics_settings');
 		$view->char_id_checkbox = empty($category->char_id_checkbox) ? [] : json_decode($category->char_id_checkbox, true);
@@ -89,7 +93,7 @@ class plgjshoppingadminFilters_extended extends JPlugin{
 
     protected function insertNewStaticText($attrName)
     {
-    	$db = \JFactory::getDBo();
+    	$db = Factory::getDBo();
 
     	if ( !$this->checkIfExistStaticText($attrName) ) {
 			$sqlInsert = 'INSERT INTO `#__jshopping_config_statictext`(`alias`) VALUES("' . $db->escape($attrName) . '")';
@@ -100,7 +104,7 @@ class plgjshoppingadminFilters_extended extends JPlugin{
 
     protected function checkIfExistStaticText($attrName)
     {
-    	$db = \JFactory::getDBo();
+    	$db = Factory::getDBo();
     	$sqlCheckAttr = 'SELECT `id` FROM `#__jshopping_config_statictext` WHERE `alias` = "' . $db->escape($attrName) . '"';
 
     	$db->setQuery($sqlCheckAttr);

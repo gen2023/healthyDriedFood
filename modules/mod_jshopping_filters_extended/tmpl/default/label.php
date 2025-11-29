@@ -1,7 +1,10 @@
+<?php
+use Joomla\CMS\Language\Text;
+?>
 <?php if (isset($listLabels) && is_array($listLabels) && count($listLabels)){?>  
 <div class="fblock filter_labels<?php echo $span;?>" group="label">
     <input type="hidden" name="labels[]" value="0" /> 
-    <div class="head"><?php print \JText::_('LABEL')?></div>
+    <div class="head"><?php print Text::_('LABEL')?></div>
         
     <?php if ($show_labels=='1'){?>
         <div class="filters-lists <?php print modJshopping_filters_extendedHelper::addScrollingClass($listLabels, $params->get('filter_scrolling_number_labels', 0))?>">

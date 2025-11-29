@@ -119,6 +119,23 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
                             </div>
                         <?php } ?>
 
+                        <?php if (is_array($this->product->extra_field)) { ?>
+                            <div class="extra_fields mb15">
+                                <?php foreach ($this->product->extra_field as $extra_field) { ?>
+                                        <div class="flex between align-center extra_field_item">
+                                            <span class="extra_fields_name"><?php print $extra_field['name']; ?></span><?php if ($extra_field['description']) { ?>
+                                                <span class="extra_fields_description">
+                                                    <?php print $extra_field['description']; ?>
+                                                </span><?php } ?>
+                                            <span class="extra_fields_value">
+                                                <?php print $extra_field['value']; ?>
+                                            </span>
+                                        </div>
+                                        <?php print $extra_field['tmp_product_html_after_row'] ?? ''; ?>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
+
                         <?php if ($product->product_quantity > 0) { ?>
                             <div class="flex between align-center">
                                 <div class="extra_fields_name"><?= Text::_('TPL_CUSTOM_ENTER_QUAN'); ?>:</div>
@@ -177,7 +194,7 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
                                     <button type="submit" class="btn button btn-wishlist btn-secondary icon-wishlist"
                                         onclick="jQuery('#to').val('wishlist');"><?= Text::_('TPL_CUSTOM_PROD_ADD_WISHLIST') ?></button>
                                 <?php } ?>
-                            <?php }else{ ?>
+                            <?php } else { ?>
                                 <div class="btn toOrder" data-toOrder_product_id="<?php print $this->product->product_id; ?>"><?= Text::_('TPL_CUSTOM_BTN_TO_ORDER'); ?></div>
                             <?php } ?>
                             <?php print $this->_tmp_product_html_buttons; ?>
@@ -205,15 +222,15 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
                             $link = 'index.php?option=com_content&view=article&id=' . (int) $m->id;
                             $link = \JSHelper::SEFLink($link, 1);
 
-                            if(!empty($images['image_intro'])){
-                                $src=  preg_replace('#^joomlaImage://local-images/#', '', explode('#', $images['image_intro'])[0]);
-                                $classImage="item-image";
-                            }else{
-                                $src=Uri::root(true) . '/images/default_image.png';
-                                $classImage="item-image-default";
+                            if (!empty($images['image_intro'])) {
+                                $src = preg_replace('#^joomlaImage://local-images/#', '', explode('#', $images['image_intro'])[0]);
+                                $classImage = "item-image";
+                            } else {
+                                $src = Uri::root(true) . '/images/default_image.png';
+                                $classImage = "item-image-default";
                             }
 
-                            $imageHtml= '<figure class="left '.$classImage.'">
+                            $imageHtml = '<figure class="left ' . $classImage . '">
                                 <a href="' . $link . '">
                                     <img src="' . $src . '" alt="' . htmlspecialchars($m->title, ENT_QUOTES) . '">
                                 </a>

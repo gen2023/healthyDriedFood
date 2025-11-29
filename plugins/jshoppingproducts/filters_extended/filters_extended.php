@@ -1,10 +1,41 @@
 <?php
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Component\Jshopping\Site\Helper\Error as JSError;
+
+
+use Joomla\CMS\Factory;
+use Joomla\Component\Jshopping\Site\Helper\Helper;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
+
 defined('_JEXEC') or die('Restricted access');
 include_once JPATH_SITE."/modules/mod_jshopping_filters_extended/helper.php";
 
-class plgJshoppingProductsFilters_extended extends JPlugin{
+class plgJshoppingProductsFilters_extended extends CMSPlugin{
 
     private $clear_filter = 0;
+
+    function __construct(&$subject, $config){
+		parent::__construct($subject, $config);
+        $app = Factory::getApplication();
+        if ($app->input->get('filterres') == 'filter') {
+            include_once JPATH_SITE."/modules/mod_jshopping_filters_extended/helper_items.php";
+            include_once JPATH_SITE."/modules/mod_jshopping_filters_extended/helper_faf.php";
+            include_once JPATH_SITE."/modules/mod_jshopping_filters_extended/cache.php";
+            $params = modJshopping_filters_extendedHelper::getModuleParams();
+            $use_cache = $params->cache ?? 0;
+            $cache = filterExtCache::getInstance();
+            $cache->setEnabled($use_cache);
+            $cache->setLang(Factory::getLanguage()->getTag());
+            $page_params = modJshopping_filters_extendedHelper::getPageParams();
+            $contextfilter = modJshopping_filters_extendedHelper::getContextFilter();
+            $get_filter_only_url = $params->get_filter_only_url ?? 0;
+            $filter_active = modJshopping_filters_extendedHelper::getFilterActive($get_filter_only_url, $contextfilter, 0);
+            $res = modJshoppingFiltersExtendedHelperFaf::getFilter($page_params, $filter_active);
+            $res['efilter'] = $app->input->get('efilter');
+            print json_encode($res);
+            die();
+        }
+	}
 
     private function get_filter_only_url() {
         return modJshopping_filters_extendedHelper::getModuleParamsfilter_only_url();
@@ -12,7 +43,7 @@ class plgJshoppingProductsFilters_extended extends JPlugin{
 
     public function onBeforeLoadProductList(){
         $params = modJshopping_filters_extendedHelper::getModuleParams();
-        $input = JFactory::getApplication()->input;        
+        $input = Factory::getApplication()->input;        
         if ($params->filter_reset 
 			&& $this->clear_filter == 0 
 			&& is_null($input->get('efilter')) 
@@ -28,8 +59,8 @@ class plgJshoppingProductsFilters_extended extends JPlugin{
     
     private function _getExtQuery($type, $adv_result, $adv_from, $adv_query, $filter_active){        
         $ext_query = "";    
-        $db = \JFactory::getDBO();
-        $jshopConfig = \JSFactory::getConfig();
+        $db = Factory::getDBO();
+        $jshopConfig = JSFactory::getConfig();
 		
         $attribut_active_value = $filter_active['attribut_active_value'] ?? [];
         $quantity_filter = $filter_active['quantity_filter'] ?? 0;
@@ -91,8 +122,9 @@ class plgJshoppingProductsFilters_extended extends JPlugin{
             && !file_exists(JPATH_SITE.'/plugins/system/tmpl_gray/tmpl_gray.php') 
             && !file_exists(JPATH_SITE.'/components/com_jshopping/templates/joomshopping_defaut_flex')
             && !file_exists(JPATH_SITE.'/components/com_jshopping/templates/joomshopping_green_flex')
+			&& !file_exists(JPATH_SITE.'/components/com_jshopping/templates/flex9')
         ) {
-            \JSError::raiseError('', 'Please enter license key (JoomShopping Filter extended)');
+            JSError::raiseError('', 'Please enter license key (JoomShopping Filter extended)');
             return 1;
         }
         $ext_query = $this->_getExtQuery($type, $adv_result, $adv_from, $adv_query, $filters);
@@ -131,13 +163,14 @@ class plgJshoppingProductsFilters_extended extends JPlugin{
     }
     
     function checkLicKey(){
-        //return \JSHelper::compareX64(\JSHelper::replaceWWW(\JSHelper::getJHost()."filters_extended"), \JSHelper::getLicenseKeyAddon('filters_extended'));
-        return 1;
+        return Helper::compareX64(Helper::replaceWWW(Helper::getJHost()."filters_extended"), Helper::getLicenseKeyAddon('filters_extended'));
     }
     
     function onBeforeDisplayProductListView(&$view, &$productlist){
-        $session = JFactory::getSession();
+        $session = Factory::getSession();
+        $app  = Factory::getApplication();
 		$stdFilter = [];
+        $addon = new AddonCore('filters_extended');
 
         if (isset($view->display_list_products) && $view->display_list_products == false) {
 			if (isset($productlist)) {
@@ -160,9 +193,9 @@ class plgJshoppingProductsFilters_extended extends JPlugin{
             $rating_filter = $filter_active['rating_filter'];
             $delivery_time_active = $filter_active['delivery_time_active'];
             $show_products_with_old_prices = $filter_active['show_products_with_old_prices'];
-            $show_products_with_free_shipping = $filter_active['show_products_with_free_shipping'];            
-            if (count($attribut_active_value)) $res = 1;
-            if (count($delivery_time_active)) $res = 1;
+            $show_products_with_free_shipping = $filter_active['show_products_with_free_shipping'];
+            if (isset($attribut_active_value) && count($attribut_active_value)) $res = 1;
+            if (isset($delivery_time_active) && count($delivery_time_active)) $res = 1;
             if ($quantity_filter) $res = 1;
             if ($photo_filter) $res = 1;
 			if ($filter_active['filter_search']) $res = 1;
@@ -171,13 +204,34 @@ class plgJshoppingProductsFilters_extended extends JPlugin{
         } else {
             $session->set('show_mod_in_category', 1);
         }
-
+        $controller = $app->input->getCmd('controller', '');
+        if (!$controller) {
+            $controller = $app->input->getCmd('view', '');
+        }   
+        if ($controller != 'product') { 
+            $contextfilter = modJshopping_filters_extendedHelper::getContextFilter();
+            $session->set('contextfilter', $contextfilter); 
+        }  
         $params = modJshopping_filters_extendedHelper::getModuleParams();
         if ($params->show_filter_active == '2') {
-            $addon = new AddonCore('filters_extended');            
-            \JFactory::getLanguage()->load('mod_jshopping_filters_extended');
+            Factory::getLanguage()->load('mod_jshopping_filters_extended');
             $view->_tmp_after_form_filter_html = $view->_tmp_after_form_filter_html ?? '';
             $view->_tmp_after_form_filter_html .= $addon->getView('filter_active_vals')->loadTemplate();
+        }
+
+        $addonParams = $addon->getAddonParams();  
+        if (isset($addonParams['show_selected_attr_in_product']) && $addonParams['show_selected_attr_in_product'] == 1 && isset($view->filters['attribut_active_value'])) {
+            $active_filters_ids = $view->filters['attribut_active_value'];
+            $attr_get_params = '';
+            foreach ($active_filters_ids as $k => $value) {
+                $attr_id = $this->getAttrIdByAttrValue($value);
+                if ($attr_id) {
+                    $attr_get_params .= '&attr[' . $attr_id . ']=' . $value;  
+                }         
+            } 
+            foreach ($view->rows as $product) {
+                $product->product_link = Helper::SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id=' . $product->category_id . '&product_id=' . $product->product_id . $attr_get_params);
+            }
         }
     }
 
@@ -191,8 +245,62 @@ class plgJshoppingProductsFilters_extended extends JPlugin{
 		if ($filter_search) {
 			$filters['search'] = $filter_search;
 		}
+        $app = Factory::getApplication();
+        $extra_fields_sl = $app->getUserStateFromRequest($contextfilter.'extra_fields_sl', 'extra_fields_sl', []);
+        foreach($extra_fields_sl as $ch_id => $val) {
+            if ($val['min'] != '' && $val['max'] != '') {
+                $list_ch_vals = modJshopping_filters_extendedHelper::getListExtraFieldValsByMinMax($ch_id, $val['min'], $val['max']);
+                if ($list_ch_vals) {
+                    $filters['extra_fields'][$ch_id] = $list_ch_vals;
+                } else {
+                    $filters['extra_fields'][$ch_id] = [-99];
+                }
+            }
+        }
+        
         foreach($no_filter as $filterkey){
             unset($filters[$filterkey]);
         }
     }
+
+    public function onGetContextFilter(&$context, &$obj) {
+        $extUConf = modJshopping_filters_extendedHelper::getExtUserConfig();     
+        if (isset($extUConf['contextfilter_hash_query']) &&  $extUConf['contextfilter_hash_query']) {
+            if ($_SERVER['QUERY_STRING']) {
+                $qshash = ".h.".substr(md5($_SERVER['QUERY_STRING']), 0, 10);
+            } else {
+                $qshash = '';
+            }
+            $context = $context.$qshash;
+        }
+    }
+
+    public function onBeforeLoadProduct(&$product_id, &$category_id, &$back_value) {
+        $addon = new AddonCore('filters_extended');
+        $input = Factory::getApplication()->input;
+        if ($input->get('attr')) {
+            return;
+        }
+		$params = $addon->getAddonParams();      
+        if (isset($params['show_selected_attr_in_product']) && $params['show_selected_attr_in_product'] == 2) {
+            $session = Factory::getSession();
+            $contextfilter = $session->get('contextfilter');
+            $filter = modJshopping_filters_extendedHelper::getFilterActive(0, $contextfilter);     
+            if (isset($filter['attribut_active_value']) && is_array($filter['attribut_active_value']) && count($filter['attribut_active_value'])) {
+                foreach ($filter['attribut_active_value'] as $attr_val_id) {
+                    $attr_id = $this->getAttrIdByAttrValue($attr_val_id);
+                    if ($attr_id !== null) {
+                        $back_value['attr'][$attr_id] = $attr_val_id;
+                    }
+                }
+            }
+        }
+    }
+
+    private function getAttrIdByAttrValue($attr_val_id) {
+        $table = JSFactory::getTable('attributvalue');
+        $table->load($attr_val_id);
+        return $table->attr_id;
+    }
+   
 }

@@ -1,6 +1,10 @@
 <?php
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
+
 defined("JPATH_PLATFORM") or die;
-\JFactory::getLanguage()->load('mod_jshopping_filters_extended', JPATH_ROOT);
+Factory::getLanguage()->load('mod_jshopping_filters_extended', JPATH_ROOT);
 
 class JFormFieldAttributes extends JFormField{
 	
@@ -8,11 +12,11 @@ class JFormFieldAttributes extends JFormField{
 
     public function getInput() {
 		include_once JPATH_SITE."/components/com_jshopping/bootstrap.php";
-		$doc = \JFactory::getDocument();		
-		$doc->addStyleSheet(JURI::root().'components/com_jshopping/css/addons/menu_filter.css');
+		$doc = Factory::getDocument();		
+		$doc->addStyleSheet(Uri::root().'components/com_jshopping/css/addons/menu_filter.css');
 
-		$list = \JSFactory::getAllAttributes();
-		$attributvalue = \JSFactory::getTable('attributvalue');	
+		$list = JSFactory::getAllAttributes();
+		$attributvalue = JSFactory::getTable('attributvalue');	
 
 		$html = '<div class="form_attributs">';
 		foreach($list as $k => $v) {

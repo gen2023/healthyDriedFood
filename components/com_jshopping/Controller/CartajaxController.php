@@ -6,6 +6,9 @@
 * @copyright    Copyright (C) 2010 webdesigner-profi.de. All rights reserved.
 */
 namespace Joomla\Component\Jshopping\Site\Controller;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
+use Joomla\CMS\Factory;
+use Joomla\Component\Jshopping\Site\Helper\Helper;
 defined( '_JEXEC' ) or die();
 
 class CartajaxController extends BaseController {
@@ -13,34 +16,36 @@ class CartajaxController extends BaseController {
     private $_template = 'addons';
 
     function display($cachable = false, $urlparams = false){
-		$jshopConfig = \JSFactory::getConfig();
-		$session = \JFactory::getSession();
-        $app = \JFactory::getApplication();
-		\JSFactory::loadExtLanguageFile("addon_cart_ajax");
+		$jshopConfig = JSFactory::getConfig();
+		$session = Factory::getSession();
+        $app = Factory::getApplication();
+		JSFactory::loadExtLanguageFile("addon_cart_ajax");
 		$product_id = $app->input->get('product_id');
         $type_cart = $app->input->get('type_cart');
 		$attr_id = $app->input->getVar('jshop_attr_id', []);
+		$qty = $app->input->getInt('quantity', 1);
         
-		$product = \JSFactory::getTable('product', 'jshop');
+		$product = JSFactory::getTable('product', 'jshop');
 		$product->load($product_id);
 		$product->name = $product->getName();
 		
-		$model = \JSFactory::getModel('productShop', 'Site');
+		$model = JSFactory::getModel('productShop', 'Site');
 		$model->setProduct($product);
 		$back_value = $model->getBackValue($product_id, $attr_id);
+		$back_value['qty'] = $qty;
 		$model->prepareView($back_value);
 		$product_images = $product->getImages();
 		
 		$attr_act = [];
 		if (is_array($attr_id) && count($attr_id)){
-			$attr = \JSFactory::getTable('attribut');
-			$attr_v = \JSFactory::getTable('attributvalue');
+			$attr = JSFactory::getTable('attribut');
+			$attr_v = JSFactory::getTable('attributvalue');
 			foreach($attr_id as $key=>$value){
 				$attr_act[$attr->getName($key)] = $attr_v->getName($value);
 			}
 		}
 
-		$shopurl = \JSHelper::SEFLink('index.php?option=com_jshopping&controller=category',1);
+		$shopurl = Helper::SEFLink('index.php?option=com_jshopping&controller=category',1);
 		if ($jshopConfig->cart_back_to_shop=="product"){
 			$endpagebuyproduct = $session->get('jshop_end_page_buy_product');
 		}elseif ($jshopConfig->cart_back_to_shop=="list"){
@@ -51,14 +56,11 @@ class CartajaxController extends BaseController {
 		}
         $layout = 'cartmsg';
 
-		$view_name = "cartajax";
-		$view_config = array("template_path" => JPATH_COMPONENT."/templates/addons/".$view_name);
-        $view = new \Joomla\Component\Jshopping\Site\View\Addons\HtmlView($view_config);		
-		$view->setLayout($layout);
+		$addonCore = new \AddonCore('cartajax');
+		$view = $addonCore->getView($layout);
 		$view->set('href_shop', $shopurl);
-		$view->set('href_cart', \JSHelper::SEFLink('index.php?option=com_jshopping&controller=cart&task=view',1,1));
-		$view->set('href_wishlist', \JSHelper::SEFLink('index.php?option=com_jshopping&controller=wishlist&task=view',1,1));
-		$view->set('product', $product->name);
+		$view->set('href_cart', Helper::SEFLink('index.php?option=com_jshopping&controller=cart&task=view',1,1));
+		$view->set('href_wishlist', Helper::SEFLink('index.php?option=com_jshopping&controller=wishlist&task=view',1,1));		
 		$view->set('type_cart', $type_cart);
 		$view->set('config', $jshopConfig);
         $view->set('image_path', $jshopConfig->live_path.'/images');
@@ -69,6 +71,7 @@ class CartajaxController extends BaseController {
         $view->set('product', $product);
         $view->set('images', $product_images);
         $view->set('attr_act', $attr_act);
+		$app->triggerEvent('onBeforeDisplayProductCartAjax', array(&$view) );
 		echo $view->display();
 		die();
     }

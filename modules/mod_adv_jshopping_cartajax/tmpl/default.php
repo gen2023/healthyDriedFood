@@ -1,3 +1,7 @@
+<?php
+use Joomla\CMS\Language\Text;
+use Joomla\Component\Jshopping\Site\Helper\Helper;
+?>
 <div class="cartajax_adv_module" id="cartajax-advanced-module<?php echo $module->id; ?>" module-id="<?php echo $module->id; ?>">
     <div class="cartajax-module">
 
@@ -5,11 +9,11 @@
             <div class="module-count" ca-prodcount="<?php echo ((isset($cart->count_product)) ? $cart->count_product : 0) ?>">
                 <div>
                     <span><?php echo ((isset($cart->count_product)) ? $cart->count_product : 0) ?></span> 
-                    <?php echo \JText::_('JSHOP_PRODUCTS'); ?>
+                    <?php echo Text::_('JSHOP_PRODUCTS'); ?>
                 </div>
             </div>
             <div class="module-total">
-                <div><span><?php print \JSHelper::formatprice($cart->price_product)?></span></div>
+                <div><span><?php print Helper::formatprice($cart->price_product)?></span></div>
             </div>
             <div class="clear"></div>
             <div class="module-checkout">
@@ -20,8 +24,8 @@
             <div class="module-show-products">
                 <div>
                     <a class="cartajax-link" btn-product="show">
-                        <span class="text_show"><?php print \JText::_('_JSHOP_CART_AJAX_SHOW_PRODUCTS')?></span>
-                        <span class="text_hide"><?php print \JText::_('_JSHOP_CART_AJAX_HIDE_PRODUCTS')?></span>
+                        <span class="text_show"><?php print Text::_('_JSHOP_CART_AJAX_SHOW_PRODUCTS')?></span>
+                        <span class="text_hide"><?php print Text::_('_JSHOP_CART_AJAX_HIDE_PRODUCTS')?></span>
                     </a>
                 </div>
             </div>
@@ -39,13 +43,13 @@
                         <?php endif; ?>
                         <div class = "module-product-info">
                             <div class="module-item-label"><a href = "<?php echo $product['product_link'];?>"><n><?php print $product['product_name']?></n></a></div>
-                            <div class="module-item-count"><?php echo \JText::_('JSHOP_QUANTITY'); ?>: <?php print $product['quantity']?></div>
+                            <div class="module-item-count"><?php echo Text::_('JSHOP_QUANTITY'); ?>: <?php print $product['quantity']?></div>
                             
                             <?php if ($params->get("showEan", 1)) : ?>
-                                <div class="module-item-code"><?php echo \JText::_('JSHOP_EAN'); ?>: <n><?php print $product['ean']?></n></div>
+                                <div class="module-item-code"><?php echo Text::_('JSHOP_EAN'); ?>: <n><?php print $product['ean']?></n></div>
                             <?php endif; ?>
                                 
-                            <div class="module-item-price"><?php echo \JText::_('JSHOP_PRICE'); ?>: <n><?php print \JSHelper::formatprice($product['price'])?></n></div>
+                            <div class="module-item-price"><?php echo Text::_('JSHOP_PRICE'); ?>: <n><?php print Helper::formatprice($product['price'])?></n></div>
                             <a class="module-item-remove"> </a>                            
                             <?php for($i = 0; $i < count($product['attributes_value']); $i++){ ?>
                                 <p class="jshop_cart_attribute">
@@ -74,7 +78,7 @@
             </ul>
             <div class="module-close">
                 <a href="javascript:void(0)" class="cartajax-link">
-                    <?php print \JText::_('_JSHOP_CART_AJAX_CLOSE'); ?>
+                    <?php print Text::_('_JSHOP_CART_AJAX_CLOSE'); ?>
                 </a>
             </div>
             <div class = "clr"></div>
@@ -85,17 +89,17 @@
                 <?php if ($params->get("showImage", 1)) : ?>
                     <div class="module-item-image">
                         <a href="">
-                            <img src="" alt="">
+                            <img alt="">
                         </a>
                     </div>
                 <?php endif; ?>
                 <div class="module-product-info">
                     <div class="module-item-label"><a href=""><n></n></a></div>
-                    <div class="module-item-count"><?php echo \JText::_('JSHOP_QUANTITY'); ?>: <n></n></div>
+                    <div class="module-item-count"><?php echo Text::_('JSHOP_QUANTITY'); ?>: <n></n></div>
                     <?php if ($params->get("showEan", 1)) : ?>
-                        <div class="module-item-code"><?php echo \JText::_('JSHOP_EAN'); ?>: <n></n></div>
+                        <div class="module-item-code"><?php echo Text::_('JSHOP_EAN'); ?>: <n></n></div>
                     <?php endif; ?>
-                    <div class="module-item-price"><span><?php echo \JText::_('JSHOP_PRICE') ?>:</span> <n></n></div>
+                    <div class="module-item-price"><span><?php echo Text::_('JSHOP_PRICE') ?>:</span> <n></n></div>
                     <a class="module-item-remove"></a>
                     <div class="module-item-attributes">
                         <p class="jshop_cart_attribute">

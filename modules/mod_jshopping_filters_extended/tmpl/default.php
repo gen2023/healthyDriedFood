@@ -1,6 +1,10 @@
-<?php 
+<?php
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Uri\Uri;
+
 $filter_all = array();
-$filter_all[] = JHTML::_('select.option',  '', JText::_('JALL'), 'id', 'name' );
+$filter_all[] = HTMLHelper::_('select.option',  '', Text::_('JALL'), 'id', 'name' );
 if (!isset($GLOBALS['filter_number'])){
     $GLOBALS['filter_number'] = 1;
     $filter_number = $GLOBALS['filter_number'];
@@ -12,7 +16,7 @@ $filter_scrolling_number = $filter_number;
 ?>
 <script type="text/javascript">
 var mod_jfilter_ext_params = mod_jfilter_ext_params || {};
-mod_jfilter_ext_params['uri_base'] = '<?php print JUri::base()?>';
+mod_jfilter_ext_params['uri_base'] = '<?php print Uri::base()?>';
 mod_jfilter_ext_params['ajax_view'] = <?php print (int)$ajax_view;?>;
 mod_jfilter_ext_params['get_filter_only_url'] = <?php print (int)$get_filter_only_url;?>;
 mod_jfilter_ext_params['auto_submit'] = <?php print (int)$auto_submit;?>;
@@ -24,6 +28,10 @@ mod_jfilter_ext_params['slider_max_price_active'] = <?php echo $max_price ?? 0;?
 mod_jfilter_ext_params['dependent_characteristic'] = <?php echo (int)$dependent_characteristic;?>;
 mod_jfilter_ext_params['currency_code'] = '<?php echo $jshopConfig->currency_code;?>';
 mod_jfilter_ext_params['show_filter_active'] = '<?php echo $show_filter_active?>';
+mod_jfilter_ext_params['display_unavailable_value'] = <?php echo $display_unavailable_value?>;
+mod_jfilter_ext_params['display_active_filter_after_filter'] = <?php echo $display_active_filter_after_filter?>;
+mod_jfilter_ext_params['use_select_chosen'] = <?php echo $use_select_chosen?>;
+mod_jfilter_ext_params['filter_active_group_show_only_1'] = 0;
 
 </script>
 <?php
@@ -34,7 +42,7 @@ $inputCore->set('filter_number', $filter_number);
 
 <div class="jshop_filters" data-scrolling-number="<?php echo $filter_scrolling_number;?>">
     <?php if ($button_to_open == 1) : ?>   
-        <div class="btn-filter-out btn btn-filter btn-secondary dropdown-toggle"><?php print JText::_('Filters')?></div>
+        <div class="btn-filter-out btn btn-filter btn-secondary dropdown-toggle"><?php print Text::_('Filters')?></div>
     <?php endif; ?>
     <form action="<?php echo $form_action;?>" method="<?php print $form_method?>" name="jshop_filters_<?php print $filter_number?>" id="jshop_filters_<?php print $filter_number?>" class="<?php echo ($button_to_open == 1) ? 'none-mobile' : '' ?>">
 
@@ -43,19 +51,19 @@ $inputCore->set('filter_number', $filter_number);
                 <div class="inner"></div>
                 <div class="clear_all">
                     <a>
-                        <div><?php echo \JText::_('RESET_FILTER');?></div>
+                        <div><?php echo Text::_('RESET_FILTER');?></div>
                         <div class="x filter_active_vals__close">✖</div>
                     </a>
                 </div>
             </div>
         <?php } ?>
 
-        <div class="list_fblock <?php if ($show_dropdown_list) {?> dropdown_list <? } if ($show_horizontal) {?> row-fluid horizontal-list <?php }?>">
+        <div class="list_fblock <?php if ($show_dropdown_list) {?> dropdown_list <?php } if ($show_horizontal) {?> row-fluid horizontal-list <?php }?>">
 
             <?php if ($params->get('btn_control_top', 0)){?>
                 <div class="fblock controls controls_top <?php echo $span;?>">
-                    <button class="btn btn-success btn-go mb-2" onclick="jshop_filters_submit(<?php print $filter_number?>,true);return false;"><?php print \JText::_('GO')?></button>
-                    <button class="btn btn-primary clear_filter_mod mb-2" onclick="modFilterclearAll(<?php print $filter_number?>);return false;"><?php print \JText::_('RESET_FILTER')?></button>
+                    <button class="btn btn-success btn-go mb-2" onclick="jshop_filters_submit(<?php print $filter_number?>,true);return false;"><?php print Text::_('GO')?></button>
+                    <button class="btn btn-primary clear_filter_mod mb-2" onclick="modFilterclearAll(<?php print $filter_number?>);return false;"><?php print Text::_('RESET_FILTER')?></button>
                 </div>
             <?php }?>
 
@@ -65,8 +73,8 @@ $inputCore->set('filter_number', $filter_number);
             
             <?php if ($params->get('btn_control_bottom', 1)){?>
                 <div class="fblock controls controls_bottom <?php echo $span;?>">
-                    <button class="btn btn-success btn-go mb-2" onclick="jshop_filters_submit(<?php print $filter_number?>,true);return false;"><?php print JText::_('GO')?></button>
-                    <button class="btn btn-primary clear_filter_mod mb-2" onclick="modFilterclearAll(<?php print $filter_number?>);return false;"><?php print JText::_('RESET_FILTER')?></button>
+                    <button class="btn btn-success btn-go mb-2" onclick="jshop_filters_submit(<?php print $filter_number?>,true);return false;"><?php print Text::_('GO')?></button>
+                    <button class="btn btn-primary clear_filter_mod mb-2" onclick="modFilterclearAll(<?php print $filter_number?>);return false;"><?php print Text::_('RESET_FILTER')?></button>
                 </div>
             <?php }?>
         

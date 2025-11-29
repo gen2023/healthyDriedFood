@@ -132,6 +132,7 @@ class AggregatorModel extends BaseModel
 					$result[$pid][] = [
 						'field_id' => $fieldIndex,
 						'field_name' => $field->{'name_uk-UA'},
+						'field_name_ru' => $field->{'name_ru-RU'},
 						'value' => $value,
 					];
 				}
@@ -211,5 +212,32 @@ class AggregatorModel extends BaseModel
 
 		return (int) $db->loadResult();
 	}
+
+	public function getInfoDopField($product_id)
+{
+    
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
+    $result = [];
+
+    // Получаем поля + их значения
+    $query = $db->getQuery(true)
+        ->select(
+            'f.field_key, v.value'
+        )
+        ->from($db->quoteName('#__jshopping_feed_fields', 'f'))
+        ->leftJoin(
+            $db->quoteName('#__jshopping_feed_values', 'v') .
+            ' ON v.field_id = f.id AND v.product_id = ' . (int)$product_id
+        )
+        ->order('f.id ASC');
+
+    $db->setQuery($query);
+    $rows = $db->loadObjectList();
+    foreach ($rows as $row) {
+        $result[$row->field_key] = $row->value ?? '';
+    }
+
+    return $result;
+}
 
 }

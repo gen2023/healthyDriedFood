@@ -46,20 +46,20 @@ $(document).ready(function () {
       menuBtn.removeClass('active');
     };
   });
-  $(document).click(function (e) {
-    if (!$('#cartajaxCartModal').is(e.target)) {
-      const modal = document.querySelector('#cartajaxCartModal');
-      const bsModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
-      bsModal.hide();
-    };
-  });
-  $(document).click(function (e) {
-    if (!$('#cartajaxWishlistModal').is(e.target)) {
-      const modal = document.querySelector('#cartajaxWishlistModal');
-      const bsModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
-      bsModal.hide();
-    };
-  });
+  // $(document).click(function (e) {
+  //   if (!$('#cartajaxCartModal').is(e.target)) {
+  //     const modal = document.querySelector('#cartajaxCartModal');
+  //     const bsModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+  //     bsModal.hide();
+  //   };
+  // });
+  // $(document).click(function (e) {
+  //   if (!$('#cartajaxWishlistModal').is(e.target)) {
+  //     const modal = document.querySelector('#cartajaxWishlistModal');
+  //     const bsModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+  //     bsModal.hide();
+  //   };
+  // });
   $('.show-search').click(function (e) {
     e.preventDefault();
     $(this).toggleClass('open');
@@ -147,20 +147,20 @@ $(document).ready(function () {
   //     $("body").removeClass("header-sticky");
   //   }
   // });
-  $(document).on('click', '.quantity .quantity-plus, .quantity .quantity-minus', function () {
-    console.log('click');
-    var $btn = jQuery(this);
-    var $input = $btn.siblings('.ca_qty_input').find('.quan-input');
-    var currentVal = parseInt($input.val()) || 1;
-    if ($btn.hasClass('quantity-minus')) {
-      if (currentVal > 1) {
-        $input.val(currentVal - 1).trigger('change');
-      }
-    } else {
-      $input.val(currentVal + 1).trigger('change');
-    }
-    $('.cart_reload').trigger('click');
-  });
+  // $(document).on('click', '.quantity .quantity-plus, .quantity .quantity-minus', function () {
+  //   console.log('click');
+  //   var $btn = jQuery(this);
+  //   var $input = $btn.siblings('.ca_qty_input').find('.quan-input');
+  //   var currentVal = parseInt($input.val()) || 1;
+  //   if ($btn.hasClass('quantity-minus')) {
+  //     if (currentVal > 1) {
+  //       $input.val(currentVal - 1).trigger('change');
+  //     }
+  //   } else {
+  //     $input.val(currentVal + 1).trigger('change');
+  //   }
+  //   $('.cart_reload').trigger('click');
+  // });
 
   $("#tel, .login-page #phone").mask("+38(999) 999-99-99")
 
@@ -342,19 +342,20 @@ $(document).ready(function () {
     thumbnail: false
   });
 
-  const jshop_prod_cart = document.querySelector('.jshop_prod_cart');
-  if (jshop_prod_cart) {
-    const qtyInputs = document.querySelectorAll('.quan-input');
+  // const jshop_prod_cart = document.querySelector('.jshop_prod_cart');
+  // if (jshop_prod_cart) {
+  //   const qtyInputs = document.querySelectorAll('.quan-input');
 
-    qtyInputs.forEach(function (input) {
-      input.addEventListener('blur', function () {
-        const cartReload = document.querySelector('.cart_reload');
-        if (cartReload) {
-          cartReload.click();
-        }
-      });
-    });
-  }
+  //   qtyInputs.forEach(function (input) {
+  //     input.addEventListener('blur', function () {
+  //       const cartReload = document.querySelector('.cart_reload');
+  //       if (cartReload) {
+  //         cartReload.click();
+  //       }
+  //     });
+  //   });
+  // }
+
   const btn_filter_mob = document.querySelector('.btn_filter_mob');
   const filter = document.querySelector('.filter_block');
   if (btn_filter_mob) {
@@ -496,6 +497,28 @@ $(document).ready(function () {
       });
     }
   }
+
+  const prod_wrap = document.querySelectorAll('.prod-wrap');
+
+  prod_wrap.forEach(element => {
+    const qty = element.querySelector('.ca_qty_input input');
+    const box = element.querySelector('.ca_qty_input');
+
+    if (!box || !qty) return; // <-- проверка, что элементы реально есть
+
+    box.addEventListener('click', function (e) {
+      const boxRect = box.getBoundingClientRect();
+      const x = e.clientX - boxRect.left;
+
+      if (x < 25) {
+        let val = parseInt(qty.value) || 1;
+        if (val > 1) qty.value = val - 1;
+      } else if (x > boxRect.width - 25) {
+        let val = parseInt(qty.value) || 1;
+        qty.value = val + 1;
+      }
+    });
+  });
 
 
 });

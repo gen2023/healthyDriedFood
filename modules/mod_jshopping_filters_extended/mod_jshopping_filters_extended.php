@@ -1,14 +1,24 @@
 <?php
+use Joomla\Component\Jshopping\Site\Helper\Error as JSError;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Helper\ModuleHelper;
+
 /**
-* @version      5.22.0
+* @version      5.28.0
 * @author       MAXXmarketing GmbH
 * @copyright    Copyright (C) 2010 webdesigner-profi.de. All rights reserved.
 * @license      MAXXmarketing
 */
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Uri\Uri;
+
 defined('_JEXEC') or die('Restricted access');
 
 if (!file_exists(JPATH_SITE.'/components/com_jshopping/bootstrap.php')){
-    \JSError::raiseError(500, "Please install component \"joomshopping\"");
+    JSError::raiseError(500, "Please install component \"joomshopping\"");
 }
 
 require_once (JPATH_SITE.'/components/com_jshopping/bootstrap.php'); 
@@ -17,22 +27,29 @@ require_once dirname(__FILE__).'/helper_items.php';
 require_once dirname(__FILE__).'/inputs/core.php';
 require_once dirname(__FILE__).'/cache.php';
 
-\JSFactory::loadCssFiles();
-\JSFactory::loadLanguageFile();
-$jshopConfig = \JSFactory::getConfig();
-$db = \JFactory::getDBO();
-$mainframe = \JFactory::getApplication();
-$dispatcher = \JFactory::getApplication();
+JSFactory::loadCssFiles();
+JSFactory::loadLanguageFile();
+$jshopConfig = JSFactory::getConfig();
+$db = Factory::getDBO();
+$mainframe = Factory::getApplication();
+$dispatcher = Factory::getApplication();
+$session = Factory::getSession();
 $addon = new \AddonCore('filters_extended');
 $addonParams = $addon->getAddonParams();
+if (method_exists($addon, 'getPublish') && !$addon->getPublish()) {
+    return ;
+}
 
 $show_manufacturers = $params->get('show_manufacturers');
 $show_manufacturer_img = $params->get('show_manufacturer_img', 0);
 $show_categorys = $params->get('show_categorys');  
-$show_categorys_in_category = $params->get('show_categorys_in_category', 0);  
+$show_categorys_in_category = $params->get('show_categorys_in_category', 0);
+if (!$show_categorys) {
+    $show_categorys_in_category = 0;
+}
 $show_category_img = $params->get('show_category_img', 0);
 $show_dropdown_list = $params->get('show_dropdown_list');
-$show_vendors = $params->get('show_vendors');         
+$show_vendors = $params->get('show_vendors');
 $show_prices = $params->get('show_prices');
 $show_prices_slider = $params->get('show_prices_slider');
 $show_products_with_old_prices_enabled = $params->get('show_products_with_old_prices');
@@ -53,7 +70,7 @@ $show_rating = $params->get('show_rating');
 $show_search = $params->get('show_search');
 $show_sets = $params->get('show_sets', 0);
 if ($show_sets) {
-    $addon_sets = (int)JPluginHelper::isEnabled('jshopping', 'sets');
+    $addon_sets = (int)PluginHelper::isEnabled('jshopping', 'sets');
     if (!$addon_sets) $show_sets = 0;
 }
 $show_attributes_id_checkbox = $params->get('attr_id_checkbox', []);
@@ -61,7 +78,9 @@ $show_attributes_id_select = $params->get('attr_id_select', []);
 $show_attributes_id = array_unique(array_merge($show_attributes_id_checkbox, $show_attributes_id_select));
 $show_characteristics_id_checkbox = $params->get('char_id_checkbox', []);
 $show_characteristics_id_select = $params->get('char_id_select', []);
-$display_unavailable_value = $params->get('display_unavailable_value');
+$show_characteristics_id_slider = $params->get('char_id_slider', []);
+$display_unavailable_value = $params->get('display_unavailable_value', 0);
+$display_active_filter_after_filter = $params->get('display_active_filter_after_filter', 0);
 $_filter_order = $params->get('filter_order');
 $filter_order = explode(',',$_filter_order);
 $show_horizontal = $params->get('show_horizontal');
@@ -73,100 +92,85 @@ $use_select_chosen = $params->get('use_select_chosen');
 $use_select_chosen_multiple = $params->get('use_select_chosen_multiple');
 $auto_submit = $params->get('auto_submit');
 $ajax_view = $params->get('ajax_view', 0);
-$show_on_all_pages = $params->get('show_on_all_pages', 0);
 $show_text_ch_as_list = $params->get('show_text_ch_as_list', 0);
 $show_filter_active = $params->get('show_filter_active', 0);
 $build_url_filter = $params->get('build_url_filter', 0);
-$dependent_characteristic = (int)JPluginHelper::isEnabled('jshopping', 'dependent_characteristics');
+$dependent_characteristic = (int)PluginHelper::isEnabled('jshopping', 'dependent_characteristics');
 $get_filter_only_url = $params->get('get_filter_only_url', 0);
 $use_cache = $params->get('cache', 0);
 $button_to_open = $params->get('button_to_open', 0);
-$disable_mod_for_controllers = $params->get('disable_mod_for_controllers', '');
 if ($ajax_view) $get_filter_only_url = 0;
+$use_ui_slider = $show_prices_slider || count($show_characteristics_id_slider);
+$ext_user_config = modJshopping_filters_extendedHelper::getExtUserConfig();
 
 $cache = filterExtCache::getInstance();
 $cache->setEnabled($use_cache);
+$cache->setLang(Factory::getLanguage()->getTag());
 
 if ($build_url_filter) {
     $form_method = 'get';
 } else {
     $form_method = 'post';
 }
-
-$session = JFactory::getSession();
-$display_fileters = 0;
-$page_params = modJshopping_filters_extendedHelper::getPageParams();
-$controller = $page_params['controller'];
-$category_id = $page_params['category_id'];
-
-if (modJshopping_filters_extendedHelper::disable_mod_for_controllers($page_params, $disable_mod_for_controllers)) {
+$mod_filter_display_params = modJshopping_filters_extendedHelper::getFilterDisplayParams($params, $get_filter_only_url, $show_categorys_in_category);
+if (!$mod_filter_display_params['display_filters']) {
     return '';
 }
+$page_params = $mod_filter_display_params['page_params'];
+$controller = $mod_filter_display_params['controller'];
+$category_id = $mod_filter_display_params['category_id'];
+$form_action = $mod_filter_display_params['form_action'];
 
-if ($category_id && ($addonParams['category_characteristics_settings'] ?? 0)) {
-    $category = \JSFactory::getTable('Category');
-    $category->load($category_id);
+HTMLHelper::_('jquery.framework');
 
-    $category_char_id_checkbox = empty($category->char_id_checkbox) ? [] : json_decode($category->char_id_checkbox, true);
-	$category_char_id_select = empty($category->char_id_select) ? [] : json_decode($category->char_id_select, true);
-
-    if (count($category_char_id_checkbox)) {
-        $show_characteristics_id_checkbox = $category_char_id_checkbox;
-    }
-    
-    if (count($category_char_id_select)) {
-        $show_characteristics_id_select = $category_char_id_select;
-    }
-    $show_sets = $category->sets_filter ?? 0;
-}
-
-$show_characteristics_id = array_unique(array_merge($show_characteristics_id_checkbox, $show_characteristics_id_select));
-
-$listActiveFilter = [];
-
-if (modJshopping_filters_extendedHelper::thisPageCanUsefilter($page_params)) {
-    $display_fileters = 1;
-    $form_action = $_SERVER['REQUEST_URI'];
-    if ($get_filter_only_url) {
-        $form_action = modJshopping_filters_extendedHelper::getFormActionBase($controller);
-    }
-}
-
-if ($show_on_all_pages) $display_fileters = 1;
-
-if (!$display_fileters) return "";
-
-if (!isset($form_action) || $show_categorys_in_category){
-	$form_action = \JSHelper::SEFLink('index.php?option=com_jshopping&controller=products', 1, 1);
-}
-
-$document = \JFactory::getDocument(); 
-$document->addScript(\JURI::base()."modules/mod_jshopping_filters_extended/js/script.js");
+$document = Factory::getDocument();
+$document->addScript(Uri::base()."modules/mod_jshopping_filters_extended/js/script.js".'?'.$document->getMediaVersion());
 if (file_exists(__DIR__.'/css/mod_jshopping_filters_user.css')) {
-	$document->addStyleSheet(\JURI::base()."modules/mod_jshopping_filters_extended/css/mod_jshopping_filters_user.css");
+	$document->addStyleSheet(Uri::base()."modules/mod_jshopping_filters_extended/css/mod_jshopping_filters_user.css".'?'.$document->getMediaVersion());
 } else {
-	$document->addStyleSheet(\JURI::base()."modules/mod_jshopping_filters_extended/css/mod_jshopping_filters.css");
+	$document->addStyleSheet(Uri::base()."modules/mod_jshopping_filters_extended/css/mod_jshopping_filters.css".'?'.$document->getMediaVersion());
 }
-$document->addStyleSheet(\JURI::base()."modules/mod_jshopping_filters_extended/css/chosen.css");
-$document->addScript(\JURI::base()."modules/mod_jshopping_filters_extended/js/chosen.jquery.js");
-$document->addScript(\JURI::base()."modules/mod_jshopping_filters_extended/js/chosen.js");
+if ($use_select_chosen) {
+    $document->addStyleSheet(Uri::base()."modules/mod_jshopping_filters_extended/css/chosen.css".'?'.$document->getMediaVersion());
+    $document->addScript(Uri::base()."modules/mod_jshopping_filters_extended/js/chosen.jquery.js".'?'.$document->getMediaVersion());
+    $document->addScript(Uri::base()."modules/mod_jshopping_filters_extended/js/chosen.js".'?'.$document->getMediaVersion());
+}
+if ($use_ui_slider){
+    $document->addStyleSheet(Uri::base()."modules/mod_jshopping_filters_extended/css/jquery-ui-slider.css".'?'.$document->getMediaVersion());
+    $document->addScript(Uri::base()."modules/mod_jshopping_filters_extended/js/jquery-ui.min-slider.js".'?'.$document->getMediaVersion());
+}
+if ($controller == 'category' && $category_id && ($addonParams['category_characteristics_settings'] ?? 0)) {
+    $params_by_cat = modJshopping_filters_extendedHelper::getModParamsByCategory($category_id);
+    $show_characteristics_id_checkbox = $params_by_cat['ch_id_checkbox'] ?? $show_characteristics_id_checkbox;
+    $show_characteristics_id_select = $params_by_cat['ch_id_select'] ?? $show_characteristics_id_select;
+    $show_characteristics_id_slider = $params_by_cat['ch_id_slider'] ?? $show_characteristics_id_slider;
+    $show_sets = $params_by_cat['show_sets'];
+}
+$show_characteristics_id = array_unique(array_merge($show_characteristics_id_checkbox, $show_characteristics_id_select, $show_characteristics_id_slider));
 
 $contextfilter = modJshopping_filters_extendedHelper::getContextFilter();
 $filter_active = modJshopping_filters_extendedHelper::getFilterActive($get_filter_only_url, $contextfilter, 0);
+$extra_fields_sl = $mainframe->getUserStateFromRequest($contextfilter.'extra_fields_sl', 'extra_fields_sl', []);    
+
+if ($display_active_filter_after_filter && $ajax_view == 0) {
+    $filter_active_fa = $filter_active;
+} else {
+    $filter_active_fa = null;
+}
 
 if ($show_manufacturers && $controller != 'manufacturer'){
     $manufacturers = $filter_active['manufacturers'];
-    $filter_manufactures = modJshopping_filters_extendedHelperItems::getManufacturers($page_params);
+    $filter_manufactures = modJshopping_filters_extendedHelperItems::getManufacturers($page_params, $filter_active_fa);
 }
 
-if ($show_categorys) {	    
-    $filter_categorys = modJshopping_filters_extendedHelperItems::getCategorys($page_params, $show_categorys_in_category);
+if ($show_categorys) {
+    $filter_categorys = modJshopping_filters_extendedHelperItems::getCategorys($page_params, $show_categorys_in_category, $filter_active_fa);
 	$categorys = ($controller == 'category' && $category_id) ? array($category_id) : $filter_active['categorys'];
 }
 
-if ($show_vendors && $controller!="vendor"){    
+if ($show_vendors && $controller!="vendor"){
     $vendors = $filter_active['vendors'];
-    $filter_vendors = modJshopping_filters_extendedHelperItems::getVendors($page_params);
+    $filter_vendors = modJshopping_filters_extendedHelperItems::getVendors($page_params, $filter_active_fa);
 }
 
 $fprice_from = $filter_active['price_from'];
@@ -188,31 +192,27 @@ for($i=1; $i<=10; $i++) {
     if (!$prices_list[$i][0] && !$prices_list[$i][1]) unset($prices_list[$i]);
 }
 if ($show_prices_slider){
-    $maxminPrices = modJshopping_filters_extendedHelperItems::getInProductsMaxMinPrice($page_params);
+    $maxminPrices = modJshopping_filters_extendedHelperItems::getInProductsMaxMinPrice($page_params, $filter_active_fa);
     if ($maxminPrices['count'] > 1){
-        $document->addStyleSheet(JURI::base()."modules/mod_jshopping_filters_extended/css/jquery-ui-slider.css");
-        $document->addScript(JURI::base()."modules/mod_jshopping_filters_extended/js/jquery-ui.min-slider.js");
         $min_price = $fprice_from ? $fprice_from : $maxminPrices['min_price'];
         $max_price = $fprice_to ? $fprice_to : $maxminPrices['max_price'];
     }
 }
 
 if ($show_characteristics){
-    $characteristics = modJshopping_filters_extendedHelperItems::getCharacteristics($page_params, $show_characteristics_id, $show_text_ch_as_list);
+    $characteristics = modJshopping_filters_extendedHelperItems::getCharacteristics($page_params, $show_characteristics_id, $show_text_ch_as_list, $filter_active_fa);
     $extra_fields_active = $filter_active['extra_fields'];
     $extra_fields_t_active = $filter_active['extra_fields_t'];
-
     $dispatcher->triggerEvent('onAfterLoadCharacteristicModFilter',array(&$characteristics, &$extra_fields_active));
 }
 
-if ($show_labels){    
-    $listLabels = modJshopping_filters_extendedHelperItems::getLabels($page_params);
+if ($show_labels){
+    $listLabels = modJshopping_filters_extendedHelperItems::getLabels($page_params, $filter_active_fa);
     $labels_active = $filter_active['labels'];
-
 }
     
 if ($show_attributes){
-    $listAttribut = modJshopping_filters_extendedHelperItems::getAttributs($page_params, $show_attributes_id);
+    $listAttribut = modJshopping_filters_extendedHelperItems::getAttributs($page_params, $show_attributes_id, $filter_active_fa);
     $attribut_active = $filter_active['attribut_active_value'];
 }
 
@@ -254,7 +254,7 @@ if ($show_rating) {
 }
      
 if ($show_delivery_time) {
-    $listDeliveryTimes = modJshopping_filters_extendedHelperItems::getDeliveryTimes($page_params);    
+    $listDeliveryTimes = modJshopping_filters_extendedHelperItems::getDeliveryTimes($page_params, $filter_active_fa);   
     $delivery_time_active = $filter_active['delivery_time_active'];
 }
 
@@ -262,4 +262,4 @@ $inputCore = new InputsFiltersExtendedCore();
 $inputCore->set('use_select_chosen', $use_select_chosen);
 $inputCore->set('use_select_chosen_multiple', $use_select_chosen_multiple);
 
-require(JModuleHelper::getLayoutPath('mod_jshopping_filters_extended', $params->get('layout', 'default')));
+require(ModuleHelper::getLayoutPath('mod_jshopping_filters_extended', $params->get('layout', 'default')));

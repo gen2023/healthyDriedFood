@@ -1,6 +1,10 @@
 <?php
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
+
 defined("JPATH_PLATFORM") or die;
-\JFactory::getLanguage()->load('mod_jshopping_filters_extended', JPATH_ROOT);
+Factory::getLanguage()->load('mod_jshopping_filters_extended', JPATH_ROOT);
 
 class JFormFieldExtrafields extends JFormField{
 	
@@ -9,10 +13,10 @@ class JFormFieldExtrafields extends JFormField{
     public function getInput() {
 		include_once JPATH_SITE."/components/com_jshopping/bootstrap.php";
 		require_once JPATH_SITE.'/modules/mod_jshopping_filters_extended/helper.php';
-		$doc = \JFactory::getDocument();
-		$doc->addStyleSheet(JURI::root().'components/com_jshopping/css/addons/menu_filter.css');
+		$doc = Factory::getDocument();
+		$doc->addStyleSheet(Uri::root().'components/com_jshopping/css/addons/menu_filter.css');
 
-		$list = \JSFactory::getAllProductExtraField();		
+		$list = JSFactory::getAllProductExtraField();		
 		$values = JSFactory::getAllProductExtraFieldValueDetail();
 		$module_params = modJshopping_filters_extendedHelper::getModuleParams();		
 		$show_text_ch_as_list = $module_params->show_text_ch_as_list ?? 0;
@@ -84,7 +88,7 @@ class JFormFieldExtrafields extends JFormField{
 
 	private function getExtrafieldsTextValues($id) {		
         $rows = array();
-        $db = \JFactory::getDbo();
+        $db = Factory::getDbo();
 		$query = "SELECT distinct `extra_field_".$id."` as val FROM `#__jshopping_products` as p
 		LEFT JOIN `#__jshopping_products_to_extra_fields` as ex ON ex.product_id = p.product_id
 		WHERE `extra_field_".$id."`!='' 

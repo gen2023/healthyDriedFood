@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="4.0" type="plugin" group="jshoppingadmin" method="upgrade">
+    <name>JoomShopping Feed Fields</name>
+    <creationDate>2025-12-01</creationDate>
+    <version>2.0.0</version>
+    <author>Sofona</author>
+    <authorEmail>master.sofona@gmail.com</authorEmail>
+    <authorUrl>https://sofona.com/</authorUrl>
+    <license>GNU General Public License version 2 or later</license>
+    <description>Dynamic extra feed fields for JoomShopping products</description>
+
+    <files>
+        <filename plugin="field_feed">field_feed.php</filename>
+				<folder>forms</folder>
+				<folder>sql</folder>
+    </files>
+
+	<config>
+      <fields name="params">
+        <fieldset name="basic">
+		    <field 
+				name="setkalist" 
+				type="subform" 
+				formsource="plugins/jshoppingadmin/field_feed/forms/list.xml" 
+				class="advancedSelect" 
+				min="0" 
+				max="9999" 
+				multiple="true" 
+				layout="joomla.form.field.subform.repeatable" 
+				groupByFieldset="true" 
+				label="Список" 
+				description="Список" 
+			/>
+        </fieldset>
+			</fields>
+    </config>
+
+    <!-- SQL при установке -->
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.sql</file>
+        </sql>
+    </install>
+
+    <!-- SQL при удалении -->
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.sql</file>
+        </sql>
+    </uninstall>
+</extension>

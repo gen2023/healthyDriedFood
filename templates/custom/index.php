@@ -50,6 +50,12 @@ $wa->useStyle('lightgallery.min.style');
 $wa->useStyle('main.custom.style');
 $wa->useStyle('media.custom.style');
 
+    // $wa->useScript('jquery');
+    $wa->useScript('swiper.script');
+    $wa->useScript('lightgallery.script');
+    $wa->useScript('inputmask.script');
+    $wa->useScript('main.custom.script');
+
 $user = Factory::getApplication()->getIdentity();
 
 if ($this->params->get('logoFile')) {
@@ -100,14 +106,6 @@ if ($user->guest) {
     <div id="toTop" class="icon-up"></div>
     
         <?php include 'html/modal.php'; ?>
-
-    <?php
-    $wa->useScript('jquery.script');
-    $wa->useScript('swiper.script');
-    $wa->useScript('lightgallery.script');
-    $wa->useScript('inputmask.script');
-    $wa->useScript('main.custom.script');
-    ?>
 
 </body>
 

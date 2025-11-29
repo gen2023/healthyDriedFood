@@ -1,6 +1,9 @@
 <?php
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Factory;
+
 defined("JPATH_PLATFORM") or die;
-JFormHelper::loadFieldClass("list");
+FormHelper::loadFieldClass("list");
 
 class JFormFieldShopvendors extends JFormFieldList{
 	
@@ -8,7 +11,7 @@ class JFormFieldShopvendors extends JFormFieldList{
 
     public function getOptions(){
         $options = [];
-        $db = \JFactory::getDbo();
+        $db = Factory::getDbo();
         $query = $db->getQuery(true);
         $query->select("jv.id,jv.shop_name");
         $query->from("#__jshopping_vendors AS jv");

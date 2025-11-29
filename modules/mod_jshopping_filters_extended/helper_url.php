@@ -1,4 +1,8 @@
 <?php
+use Joomla\CMS\Application\ApplicationHelper;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
+use Joomla\CMS\Factory;
+
 include_once JPATH_SITE."/modules/mod_jshopping_filters_extended/helper.php";
 
 class modJshoppingFiltersExtendedHelperUrl {
@@ -126,7 +130,7 @@ class modJshoppingFiltersExtendedHelperUrl {
     }
 
     public static function getSanitizingFull($val) {
-        $val = \JApplicationHelper::stringURLSafe($val);
+        $val = ApplicationHelper::stringURLSafe($val);
         $val = str_replace([',', '-'], '', $val);
         return $val;
     }
@@ -146,10 +150,10 @@ class modJshoppingFiltersExtendedHelperUrl {
 				$list[$_alias] = ['name' => 'attr_val', 'id' => $v->attr_id, 'type' => 'attribut', 'type_val' => 'ids'];
 			}
 
-			$list_ch = JSFactory::getAllProductExtraField();                
+			$list_ch = JSFactory::getAllProductExtraField();
 			foreach($list_ch as $v) {
 				$_alias = self::getSanitizingFull($v->name);
-				if ($v->type == 0) {
+				if ($v->type != 1) {
 					$list[$_alias] = ['name' => 'extra_fields', 'id' => $v->id, 'type'=> 'extra_field', 'type_val' => 'ids'];
 				} else {
 					if ($params->show_text_ch_as_list == 1) {
@@ -180,14 +184,14 @@ class modJshoppingFiltersExtendedHelperUrl {
 				$list['category'][0][$_alias.'.'.$v->id] = $v->id;
 			}
 
-			$_attrib = \JSFactory::getTable("attributvalue");
+			$_attrib = JSFactory::getTable("attributvalue");
 			$list_attr = $_attrib->getAllAttributeValues();        
 			foreach($list_attr as $v) {
 				$_alias = self::getSanitizingFull($v->name);
 				$list['attribut'][$v->attr_id][$_alias] = $v->value_id;
 			}
 
-			$_productfieldvalue = \JSFactory::getTable("productfieldvalue");
+			$_productfieldvalue = JSFactory::getTable("productfieldvalue");
 			$list_ch = $_productfieldvalue->getAllList();
 			foreach($list_ch as $v) {
 				$_alias = self::getSanitizingFull($v->name);
@@ -234,14 +238,14 @@ class modJshoppingFiltersExtendedHelperUrl {
 				$list['category'][$v->id] = ['name' => $_alias.'.'.$v->id];
 			}
 
-			$_attrib = \JSFactory::getTable("attributvalue");
+			$_attrib = JSFactory::getTable("attributvalue");
 			$list_attr = $_attrib->getAllAttributeValues();
 			foreach($list_attr as $v) {
 				$_alias = self::getSanitizingFull($v->name);
 				$list['attribut'][$v->value_id] = ['name' => $_alias, 'aid' => $v->attr_id];
 			}
 
-			$_productfieldvalue = \JSFactory::getTable("productfieldvalue");
+			$_productfieldvalue = JSFactory::getTable("productfieldvalue");
 			$list_ch = $_productfieldvalue->getAllList();
 			foreach($list_ch as $v) {
 				$_alias = self::getSanitizingFull($v->name);
@@ -254,8 +258,8 @@ class modJshoppingFiltersExtendedHelperUrl {
     public static function getManufacturerList() {
         static $list;
         if (!isset($list)){
-            $lang = \JSFactory::getLang();
-            $db = \JFactory::getDBO();
+            $lang = JSFactory::getLang();
+            $db = Factory::getDBO();
             $query = "SELECT manufacturer_id as id, `".$lang->get('name')."` as name FROM `#__jshopping_manufacturers`";
             $db->setQuery($query);
             $list = $db->loadObJectList();
@@ -266,8 +270,8 @@ class modJshoppingFiltersExtendedHelperUrl {
     public static function getCategoryList() {
         static $list;
         if (!isset($list)){
-            $lang = \JSFactory::getLang();
-            $db = \JFactory::getDBO();
+            $lang = JSFactory::getLang();
+            $db = Factory::getDBO();
             $query = "SELECT category_id as id, `".$lang->get('name')."` as name FROM `#__jshopping_categories`";
             $db->setQuery($query);
             $list = $db->loadObJectList();

@@ -1,9 +1,12 @@
 <?php
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
+
 defined('_JEXEC') or die('Restricted access');
 include_once JPATH_SITE."/modules/mod_jshopping_filters_extended/helper.php";
 include_once JPATH_SITE."/modules/mod_jshopping_filters_extended/helper_url.php";
 
-class plgJshoppingrouterFilters_extended extends JPlugin {
+class plgJshoppingrouterFilters_extended extends CMSPlugin {
 
     public function onAfterBuildRoute(&$query, &$segments) {        
         if (!modJshopping_filters_extendedHelper::getModuleParamsfilter_only_url()) {
@@ -24,7 +27,7 @@ class plgJshoppingrouterFilters_extended extends JPlugin {
         if (!modJshopping_filters_extendedHelper::getModuleParamsfilter_only_url()) {
             return;
         }
-        $reservedFirstAlias = \JSFactory::getReservedFirstAlias();
+        $reservedFirstAlias = JSFactory::getReservedFirstAlias();
         $filter_segment_index = null;
         foreach($segments as $k => $v) {
             if (!substr_count($v, '-')) {
@@ -34,11 +37,11 @@ class plgJshoppingrouterFilters_extended extends JPlugin {
                 if (in_array($v, $reservedFirstAlias)) {
                     continue;
                 }
-                $catalias = \JSFactory::getAliasCategory();
+                $catalias = JSFactory::getAliasCategory();
                 if (array_search($v, $catalias, true)) {
                     continue;
                 }
-                $manalias = \JSFactory::getAliasManufacturer();
+                $manalias = JSFactory::getAliasManufacturer();
                 if (array_search($v, $manalias, true)) {
                     continue;
                 }

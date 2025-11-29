@@ -5,7 +5,8 @@ class filterExtCache {
 
     private static $instances = [];
     private $max_time = 7 * 24 * 60 * 60;
-    private $enabled = 1;    
+    private $enabled = 1;
+    private $lang = '';
 
     public static function getInstance(){
         $cls = static::class;
@@ -16,13 +17,17 @@ class filterExtCache {
     }
 
     public function getCacheName($name, $params) {
-        $res = $name.'-';
+        $res = $name.'-'.$this->lang.'-';
         $res .= md5(serialize($params));
         return $res;
     }
 
     public function setEnabled($val) {
         $this->enabled = $val;
+    }
+
+    public function setLang($val) {
+        $this->lang = $val;
     }
 
     public function get($name) {

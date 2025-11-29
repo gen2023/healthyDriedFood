@@ -1,7 +1,10 @@
+<?php
+use Joomla\CMS\Language\Text;
+?>
 <?php if (isset($filter_manufactures) && is_array($filter_manufactures) && count($filter_manufactures)) {?>
 <div class="fblock box_manufacrurer<?php echo $span;?>" group="manufacturer" show_group_name="0">
     <input type="hidden" name="manufacturers[]" value="0" />
-    <div class="head"><?php print \JText::_('MANUFACTURER')?></div>        
+    <div class="head"><?php print Text::_('MANUFACTURER')?></div>        
     
     <?php if ($show_manufacturers=='1'){?>
         <div class="filters-lists <?php echo modJshopping_filters_extendedHelper::addScrollingClass($filter_manufactures, $params->get('filter_scrolling_number_manufacturer', 0)); ?>">

@@ -1,6 +1,10 @@
 <?php
+use Joomla\CMS\Factory;
+use Joomla\Filesystem\Folder;
+use Joomla\Filesystem\File;
+
 defined('_JEXEC') or die('Restricted access');
-$db = \JFactory::getDbo();
+$db = Factory::getDbo();
 
 $name = "JoomShopping Plugin Filter extended";
 $element = "filters_extended";
@@ -37,7 +41,7 @@ foreach(array(
 	'/plugins/jshoppingadmin/'.$element,
 	'/plugins/jshoppingrouter/'.$element
     ) as $folder){
-    \JFolder::delete(JPATH_ROOT.'/'.$folder);
+    Folder::delete(JPATH_ROOT.'/'.$folder);
 }
 
 // delete files
@@ -47,5 +51,5 @@ foreach(array(
 	'language/en-GB/en-GB.mod_jshopping_'.$element.'.ini',
 	'language/ru-RU/ru-RU.mod_jshopping_'.$element.'.ini'
 ) as $file){
-	\JFile::delete(JPATH_ROOT.'/'.$file);
+	File::delete(JPATH_ROOT.'/'.$file);
 }

@@ -1,4 +1,7 @@
 <?php
+
+use Joomla\CMS\Language\Text;
+
 class InputsFiltersExtendedCore {
 
     private $use_select_chosen = 0;
@@ -21,11 +24,15 @@ class InputsFiltersExtendedCore {
         $this->folder = $dir;
     }
 
-    function getSelect($name, $values, $selected = '', $image = '', $imagedir = '', $field_id = 'id', $css_class = ''){
-        if ($this->use_select_chosen && $this->use_select_chosen_multiple) {
+    function getSelect($name, $values, $selected = '', $image = '', $imagedir = '', $field_id = 'id', $css_class = '', $first_name = ''){
+        $use_multiple = 0;
+        if ($this->use_select_chosen && $this->use_select_chosen_multiple && substr($name, -2) == '[]') {
+            $use_multiple = 1;
+        }
+        if ($this->use_select_chosen && $use_multiple) {
             $first_name = '';
-        } else {
-            $first_name = \JText::_('JALL');
+        } elseif($first_name == ''){
+            $first_name = Text::_('JALL');
         }
 
         $values = array_merge(
@@ -36,8 +43,8 @@ class InputsFiltersExtendedCore {
         $multiple = '';
         if ($this->use_select_chosen){
             $css_class_select .= ' chosen-select ';
-            if ($this->use_select_chosen_multiple){
-                $multiple = 'multiple="multiple"';         
+            if ($use_multiple){
+                $multiple = 'multiple="multiple"';
             }
         }
         foreach($values as $k => $value){
@@ -64,7 +71,7 @@ class InputsFiltersExtendedCore {
     function getRadio($name, $values, $selected = '', $image = '', $imagedir = '', $field_id = 'id', $css_class = ''){
         $html = '';
         $values = array_merge(
-            [(object)[$field_id => '', 'name' => \JText::_('JALL')]],
+            [(object)[$field_id => '', 'name' => Text::_('JALL')]],
             $values
         );
         foreach($values as $key => $value){            

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+  <fieldset name="sample" class="sample-subform">
+    <field name="field_key" type="text" label="Название поля" description="Латинскими, без пробелов и спецсимволов"/>
+
+    <field name="title" type="text" label="Название для админки" description=""/>
+
+		<field
+			name="field_type"
+			type="list"
+			label="Тип поля"
+			default="text"
+      class="form-select"
+			>
+			<option value="number">Число</option>
+			<option value="editor">Текст+редактор</option>
+			<option value="text">Текст</option>
+		</field>    
+  </fieldset>
+</form>

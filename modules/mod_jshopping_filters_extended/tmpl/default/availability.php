@@ -1,6 +1,9 @@
+<?php
+use Joomla\CMS\Language\Text;
+?>
 <?php if ($show_quantity){?>  
 <div class="fblock quantity_filter<?php echo $span;?>" group="qty">
-    <div class="head"><?php print JText::_('AVAILABILITY')?></div>
+    <div class="head"><?php print Text::_('AVAILABILITY')?></div>
     <?php if ($show_quantity == 1) {?>
 		<div class='filters-lists'>
             <?php print $inputCore->getRadio('quantity_filter', $listAvailability, $quantity_filter); ?>

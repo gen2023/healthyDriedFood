@@ -313,7 +313,7 @@ class SofonaimportpromController extends BaseController
         'image' => $mainImage,
         'main_category_id' => $CategoryId,
         'min_price' => (float) $offer->price,
-        'currency_id' => 2,
+        'currency_id' => 1,
         'hits' => 0,
         'add_price_unit_id' => 3,
         'product_date_added' => $now,
