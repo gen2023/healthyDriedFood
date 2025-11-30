@@ -520,5 +520,26 @@ $(document).ready(function () {
     });
   });
 
+  const pageProduct=document.querySelector('.productfull');
+  if(pageProduct){
+    const tabProduct=pageProduct.querySelector('.product-tabs');
+      const buttons = tabProduct.querySelectorAll(".tab-btn");
+    const tabs = tabProduct.querySelectorAll(".tab-item");
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", function () {
+            const tab = this.dataset.tab;
+            console.log(tab);
+            
+
+            buttons.forEach(b => b.classList.remove("active"));
+            this.classList.add("active");
+
+            tabs.forEach(t => t.classList.remove("active"));
+            tabProduct.querySelector('#'+tab).classList.add("active");
+        });
+    });
+  }
+
 
 });

@@ -119,23 +119,6 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
                             </div>
                         <?php } ?>
 
-                        <?php if (is_array($this->product->extra_field)) { ?>
-                            <div class="extra_fields mb15">
-                                <?php foreach ($this->product->extra_field as $extra_field) { ?>
-                                        <div class="flex between align-center extra_field_item">
-                                            <span class="extra_fields_name"><?php print $extra_field['name']; ?></span><?php if ($extra_field['description']) { ?>
-                                                <span class="extra_fields_description">
-                                                    <?php print $extra_field['description']; ?>
-                                                </span><?php } ?>
-                                            <span class="extra_fields_value">
-                                                <?php print $extra_field['value']; ?>
-                                            </span>
-                                        </div>
-                                        <?php print $extra_field['tmp_product_html_after_row'] ?? ''; ?>
-                                <?php } ?>
-                            </div>
-                        <?php } ?>
-
                         <?php if ($product->product_quantity > 0) { ?>
                             <div class="flex between align-center">
                                 <div class="extra_fields_name"><?= Text::_('TPL_CUSTOM_ENTER_QUAN'); ?>:</div>
@@ -207,10 +190,48 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
             </div>
         </div>
         <div class="prod-descr mb15">
-            <div class="text-wrap">
-                <div class="ttl sm mb15"><?= Text::_('TPL_CUSTOM_PROD_DESCR') ?></div>
-                <div><?php print $this->product->description; ?></div>
+            <div class="product-tabs text-wrap">
+
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-tab="tab-desc">
+                        <?= Text::_('TPL_CUSTOM_PROD_DESCR') ?>
+                    </button>
+                    <button class="tab-btn" data-tab="tab-extra">
+                        <?= Text::_('TPL_CUSTOM_PROD_CHAR') ?>
+                    </button>
+                </div>
+
+                <div class="tabs-content">
+
+                    <div class="tab-item active" id="tab-desc">
+                        <div><?= $this->product->description; ?></div>
+                    </div>
+
+                    <div class="tab-item" id="tab-extra">
+                        <?php if (is_array($this->product->extra_field)) { ?>
+                            <div class="extra_fields mb15">
+                                <?php foreach ($this->product->extra_field as $extra_field) { ?>
+                                    <div class="flex between align-center extra_field_item">
+                                        <span class="extra_fields_name"><?= $extra_field['name']; ?></span>
+
+                                        <?php if ($extra_field['description']) { ?>
+                                            <span class="extra_fields_description">
+                                                <?= $extra_field['description']; ?>
+                                            </span>
+                                        <?php } ?>
+
+                                        <span class="extra_fields_value"><?= $extra_field['value']; ?></span>
+                                    </div>
+
+                                    <?= $extra_field['tmp_product_html_after_row'] ?? ''; ?>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+
+                </div>
             </div>
+
         </div>
         <?php
         if ($materials) { ?>

@@ -178,7 +178,9 @@ class AggregatorModel extends BaseModel
 		$query = $this->db->getQuery(true)
 			->select('*')
 			->from($this->db->quoteName('#__jshopping_currencies'))
+			->where($this->db->quoteName('currency_publish') . ' = 1')
 			->order($this->db->quoteName('currency_ordering') . ' ASC');
+			
 
 		$this->db->setQuery($query);
 
@@ -193,7 +195,7 @@ class AggregatorModel extends BaseModel
 		$query = $this->db->getQuery(true)
 			->select('*')
 			->from($this->db->quoteName('#__jshopping_category_custom_values'))
-			->where($this->db->quoteName('field_id') . ' = ' . (int) $id);
+			->where($this->db->quoteName('field_id') . ' = ' . $id);
 
 		return $this->db->setQuery($query)->loadObjectList();
 	}

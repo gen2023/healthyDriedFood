@@ -457,33 +457,33 @@ class SofonaimportpromController extends BaseController
           // }
         }
       }
+      // if ($productId) {
+      //   // Характеристики
+      //   foreach ($offer->param as $param) {
+      //     $name = (string) $param['name'];
+      //     $value = (string) $param;
+      //     if ($name && $value) {
+      //       // $this->addProductExtraField($productId, $name, $value);
+      //       $result = $this->addProductExtraField($productId, $name, $value);
+      //       if ($result['field_created'])
+      //         $charStats['created_fields']++;
+      //       if ($result['value_created'])
+      //         $charStats['created_values']++;
+      //       $charStats['used_fields']++;
 
-      // Характеристики
-      foreach ($offer->param as $param) {
-        $name = (string) $param['name'];
-        $value = (string) $param;
-        if ($name && $value) {
-          // $this->addProductExtraField($productId, $name, $value);
-          $result = $this->addProductExtraField($productId, $name, $value);
-          if ($result['field_created'])
-            $charStats['created_fields']++;
-          if ($result['value_created'])
-            $charStats['created_values']++;
-          $charStats['used_fields']++;
-
-        }
-      }
-      // Страна происхождения
-      $country = (string) $offer->country_of_origin;
-      if ($country) {
-        $result = $this->addProductExtraField($productId, 'Cтрана происхождения', $country);
-        if ($result['field_created'])
-          $charStats['created_fields']++;
-        if ($result['value_created'])
-          $charStats['created_values']++;
-        $charStats['used_fields']++;
-      }
-
+      //     }
+      //   }
+      //   // Страна происхождения
+      //   $country = (string) $offer->country_of_origin;
+      //   if ($country) {
+      //     $result = $this->addProductExtraField($productId, 'Cтрана происхождения', $country);
+      //     if ($result['field_created'])
+      //       $charStats['created_fields']++;
+      //     if ($result['value_created'])
+      //       $charStats['created_values']++;
+      //     $charStats['used_fields']++;
+      //   }
+      // }
       // Изображения
       if (!empty($allPictures)) {
         $stats = $this->addProductImages($productId, $allPictures);
