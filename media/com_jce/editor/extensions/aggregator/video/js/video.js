@@ -1,4 +1,4 @@
-/* jce - 2.9.96 | 2025-11-13 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.97 | 2025-12-15 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 WFAggregator.add("video", {
     params: {
         width: "",
@@ -31,7 +31,11 @@ WFAggregator.add("video", {
     },
     getValues: function(data) {
         var sources = [];
-        return $('input[name="video_source[]"]').each(function() {
+        return $("input[id], select[id]", "#video_options").each(function() {
+            var key = $(this).attr("id"), val = $(this).val();
+            if (!key) return !0;
+            "checkbox" === this.type && (val = !!this.checked), data[key] = val;
+        }), $('input[name="video_source[]"]').each(function() {
             var val = $(this).val();
             val !== data.src && sources.push(val);
         }), sources.length && (data.video_source = sources), $(".uk-repeatable", "#video_attributes").each(function() {

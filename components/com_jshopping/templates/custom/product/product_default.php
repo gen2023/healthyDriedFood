@@ -47,8 +47,18 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
                             <?php foreach ($this->images as $k => $image) { ?>
                                 <div class="swiper-slide" data-src="<?php print $this->image_product_path ?>/full_<?php print $image->image_name; ?>" title="<?php print htmlspecialchars($image->_title) ?>">
                                     <div class="img-wrap">
+                                        <?php if ($product->label_id) { ?>
+                                            <div class="product_label">
+                                                <?php if ($product->_label_image) { ?>
+                                                    <img src="<?php print $product->_label_image ?>" alt="<?php print htmlspecialchars($product->_label_name) ?>" />
+                                                <?php } else { ?>
+                                                    <span class="label_name"><?php print $product->_label_name; ?></span>
+                                                <?php } ?>
+                                            </div>
+                                        <?php } ?>
                                         <img src="<?php print $this->image_product_path ?>/full_<?php print $image->image_name; ?>" alt="<?php print $this->product->name ?>"
-                                            title="<?php print $this->product->name ?>" />
+                                            title="<?php print $this->product->name ?>" class="img-product"/>
+					                    <?php print $this->_tmp_product_html_after_image;?>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -177,9 +187,9 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
                                     <button type="submit" class="btn button btn-wishlist btn-secondary icon-wishlist"
                                         onclick="jQuery('#to').val('wishlist');"><?= Text::_('TPL_CUSTOM_PROD_ADD_WISHLIST') ?></button>
                                 <?php } ?>
-                            <?php } else { ?>
+                            <?php } /*else { ?>
                                 <div class="btn toOrder" data-toOrder_product_id="<?php print $this->product->product_id; ?>"><?= Text::_('TPL_CUSTOM_BTN_TO_ORDER'); ?></div>
-                            <?php } ?>
+                            <?php } */ ?>
                             <?php print $this->_tmp_product_html_buttons; ?>
                             <input type="hidden" name="to" id='to' value="cart" />
                             <input type="hidden" name="product_id" id="product_id" value="<?php print $this->product->product_id ?>" />
@@ -220,7 +230,20 @@ $materials = PlgSystemProduct_Materials::getRelatedMaterials($productId);
                                             </span>
                                         <?php } ?>
 
-                                        <span class="extra_fields_value"><?= $extra_field['value']; ?></span>
+                                        <?php
+                                        $value = trim($extra_field['value']);
+                                        $items = array_map('trim', explode(',', $value));
+                                        $items = array_filter($items);
+
+                                        if (count($items) > 1): ?>
+                                            <ul class="extra_fields_value">
+                                                <?php foreach ($items as $item): ?>
+                                                    <li><?= htmlspecialchars($item); ?></li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        <?php else: ?>
+                                            <span class="extra_fields_value"><?= htmlspecialchars($value); ?></span>
+                                        <?php endif; ?>
                                     </div>
 
                                     <?= $extra_field['tmp_product_html_after_row'] ?? ''; ?>

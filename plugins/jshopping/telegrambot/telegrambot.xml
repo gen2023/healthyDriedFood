@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshopping" method="upgrade">
+    <name>PLG_TELEGRAMBOT_JOOMSHOPPING_ORDER</name>
+		<creationDate>2024-10-02</creationDate>
+		<updateDate>2025-10-06</updateDate>
+    <version>1.1.0</version>
+    <author>Sofona</author>
+    <authorUrl>https://sofona.com/</authorUrl>
+    <description>PLG_JSHOPPING_TELEGRAMBOT_DESCRIPTION</description>
+    <files>
+        <filename plugin="telegrambot">telegrambot.php</filename>
+				<filename>models/TelegrambotModel.php</filename>
+				<filename>script.php</filename>
+    </files>
+		<languages>
+				<language tag="en-GB">language/en-GB/plg_jshopping_telegrambot.sys.ini</language>
+				<language tag="ru-RU">language/ru-RU/plg_jshopping_telegrambot.sys.ini</language>
+				<language tag="en-GB">language/en-GB/plg_jshopping_telegrambot.ini</language>
+				<language tag="ru-RU">language/ru-RU/plg_jshopping_telegrambot.ini</language>
+				<language tag="uk-UA">language/uk-UA/plg_jshopping_telegrambot.sys.ini</language>
+				<language tag="uk-UA">language/uk-UA/plg_jshopping_telegrambot.ini</language>
+		</languages>
+		<scriptfile>script.php</scriptfile>
+    <config>
+        <fields name="params">
+            <fieldset name="basic" label="PLG_JSHOPPING_TELEGRAMBOT_TRANSFER_SETTINGS">
+            </fieldset>
+        </fields>
+    </config>
+		<updateservers>
+    	<server type="extension" name="PLG_JSHOPPING_TELEGRAMBOT">https://gitvault.sofona.info/telegrambot/update.xml</server>
+  	</updateservers>
+
+</extension>

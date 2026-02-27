@@ -512,30 +512,33 @@
 	.page-flex .right-side .prod-wrap {
 		width: calc(33.33% - 12px);
 	}
-	.rating_list_container .global_info{
+
+	.rating_list_container .global_info {
 		grid-template-columns: 1fr;
 		gap: 10px;
-		.info{
+
+		.info {
 			display: flex;
 			align-items: center;
 			gap: 10px;
 		}
 	}
-	
-  .com-content-article {
-		    flex-direction: column-reverse;
-				.prod-wrap1{
-		    width: calc(33.33% - 12px);
+
+	.com-content-article {
+		flex-direction: column-reverse;
+
+		.prod-wrap1 {
+			width: calc(33.33% - 12px);
+		}
 	}
-	}
-	
+
 }
 
 @media (max-width: 768px) {
 	.page-flex .right-side .prod-wrap {
 		width: calc(50% - 12px);
 	}
-	
+
 
 	.jshop_prod_cart {
 		flex-wrap: wrap;
@@ -765,11 +768,12 @@
 			}
 		}
 	}
-	
-	.rating_list_container{
+
+	.rating_list_container {
 		grid-template-columns: 1fr;
 		gap: 20px;
-		.rating_report{
+
+		.rating_report {
 			max-width: unset;
 		}
 	}
@@ -1256,6 +1260,7 @@
 			margin-bottom: 8px;
 		}
 	}
+
 	.com-content-article .prod-wrap1,
 	.prod-wrap {
 		width: calc(100% - 12px);
@@ -1266,14 +1271,20 @@
 	.page-flex .right-side .prod-wrap {
 		width: calc(100% - 12px);
 	}
-	.cart_popup .jshop_prod_cart_popup{
+
+	.cart_popup .jshop_prod_cart_popup {
 		grid-template-columns: 1fr;
-		.info_product{
+
+		.info_product {
 			width: auto;
 		}
-		.right{
+
+		.right {
 			justify-content: center;
 		}
+	}
+	.productfull .intro .product-img-slider .img-wrap img.img-product{
+		    height: 90vw;
 	}
 }
 
@@ -1281,6 +1292,10 @@
 	body {
 		font-size: 12px;
 		line-height: 1.5;
+	}
+
+	.productfull .extra_field_item {
+		flex-direction: column;
 	}
 
 	.product {
@@ -1327,16 +1342,16 @@
 	}
 }
 
-  @media (min-width: 992px) {
-    .blog-items.columns-2 {
-      grid-template-columns: 1fr 1fr;
-    }
+@media (min-width: 992px) {
+	.blog-items.columns-2 {
+		grid-template-columns: 1fr 1fr;
+	}
 
-    .blog-items.columns-3 {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
+	.blog-items.columns-3 {
+		grid-template-columns: 1fr 1fr 1fr;
+	}
 
-    .blog-items.columns-4 {
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
-  }
+	.blog-items.columns-4 {
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+	}
+}

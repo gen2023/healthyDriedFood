@@ -33,11 +33,11 @@ class JConfig {
 	public $offset = 'UTC';
 	public $mailonline = true;
 	public $mailer = 'smtp';
-	public $mailfrom = 'system@healthydriedfood.com';
+	public $mailfrom = 'system@haealthydriedfood.com';
 	public $fromname = 'HealthyDriedFood';
 	public $sendmail = '/usr/sbin/sendmail';
 	public $smtpauth = true;
-	public $smtpuser = 'support@healthydriedfood.com';
+	public $smtpuser = 'support@haealthydriedfood.com';
 	public $smtppass = '9ZU5Ex48js';
 	public $smtphost = 'mail.adm.tools';
 	public $smtpsecure = 'ssl';

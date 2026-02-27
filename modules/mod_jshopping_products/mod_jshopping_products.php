@@ -12,13 +12,13 @@ if (!defined('JPATH_JOOMSHOPPING')) {
     define('JPATH_JOOMSHOPPING', JPATH_SITE . '/components/com_jshopping');
 }
 
-require_once JPATH_JOOMSHOPPING . '/bootstrap.php';
+// require_once JPATH_JOOMSHOPPING . '/bootstrap.php';
 
 $app = Factory::getApplication();
 $wa = $app->getDocument()->getWebAssetManager();
 
-JSFactory::loadCssFiles();
-JSFactory::loadLanguageFile();
+// JSFactory::loadCssFiles();
+// JSFactory::loadLanguageFile();
 
 $data['jshopConfig'] = JSFactory::getConfig();
 
@@ -37,6 +37,8 @@ $show_in_stock = (int) $params->get('show_in_stock', 1);
 $manufacturer_ids = $params->get('manufacturer_ids', '');
 $use_inline_script = (int) $params->get('use_inline_script', 0);
 $show_pagination = (int) $params->get('show_pagination', 0);
+$ordering_by_extra_field = (int) $params->get('ordering_by_extra_field', 0);
+
 $moduleId = (int) $module->id;
 $limitstart = (int) Factory::getApplication()->input->getInt("mod{$moduleId}_limitstart", 0);
 
@@ -46,11 +48,23 @@ $query = $db->getQuery(true)
     ->select([
         'p.product_id',
         'COALESCE(SUM(oi.product_quantity), 0) AS sales_count',
-    ])
-    ->from($db->quoteName('#__jshopping_products', 'p'))
+    ]);
+    
+if ($sortField == 'product_extra_field' && !empty($ordering_by_extra_field)) {
+    $query->select(
+        $db->quoteName('ef.extra_field_' . (int) $ordering_by_extra_field) . ' AS extra_field_value'
+    );
+}
+
+$query->from($db->quoteName('#__jshopping_products', 'p'))
     ->leftJoin($db->quoteName('#__jshopping_order_item', 'oi') . ' ON oi.product_id = p.product_id')
-    ->leftJoin($db->quoteName('#__jshopping_orders', 'o') . ' ON o.order_id = oi.order_id AND o.order_status = 6')
-    ->where($db->quoteName('p.product_publish') . ' = 1');
+    ->leftJoin($db->quoteName('#__jshopping_orders', 'o') . ' ON o.order_id = oi.order_id AND o.order_status = 6');
+
+if ($sortField == 'product_extra_field' && !empty($ordering_by_extra_field)) {
+    $query->leftJoin($db->quoteName('#__jshopping_products_to_extra_fields', 'ef') . ' ON ' . $db->quoteName('p.product_id') . ' = ' . $db->quoteName('ef.product_id'));
+    $query->leftJoin($db->quoteName('#__jshopping_products_extra_field_values', 'efv') . ' ON ' . $db->quoteName('efv.id') . ' = ' . $db->quoteName('ef.extra_field_' . (int) $ordering_by_extra_field));
+}
+$query->where($db->quoteName('p.product_publish') . ' = 1');
 
 if ($show_in_stock == 0 && $selectedType != 'list_by_product_id') {
     $query->where($db->quoteName('p.product_quantity') . ' > 0');
@@ -104,7 +118,12 @@ switch ($selectedType) {
         break;
 }
 
-$query->order($db->quoteName($sortField) . ' ' . strtoupper($orderDir));
+if ($sortField == 'product_extra_field' && !empty($ordering_by_extra_field)) {
+    $query->order($db->quoteName('efv.ordering') . ' ' . strtoupper($orderDir));
+
+} else {
+    $query->order($db->quoteName($sortField) . ' ' . strtoupper($orderDir));
+}
 
 $countQuery = clone $query;
 $countQuery->clear('select')->clear('order')->clear('limit')->clear('group');
@@ -151,10 +170,16 @@ if ($model) {
 
 if ($use_swiper == 1) {
 
-    /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+    if (!$wa->assetExists('style', 'swiper_css')) {
+        $wa->registerStyle('swiper_css', 'mod_jshopping_products/swiper.min.css', [], ['relative' => true]);
+    }
+    $wa->useStyle('swiper_css');
 
-    $wa->registerAndUseStyle('mod_slider_swiper_css', 'mod_jshopping_products/swiper.min.css', [], ['relative' => true]);
-    $wa->registerAndUseScript('mod_slider_swiper_js', 'mod_jshopping_products/swiper.min.js', [], ['relative' => true, 'defer' => true]);
+    if (!$wa->assetExists('script', 'swiper_js')) {
+        $wa->registerScript('swiper_js', 'mod_jshopping_products/swiper.min.js', [], ['relative' => true, 'defer' => true]);
+    }
+    $wa->useScript('swiper_js');
+
 }
 
 if ($use_inline_script == 1) {

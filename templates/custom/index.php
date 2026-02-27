@@ -105,7 +105,7 @@ if ($user->guest) {
     </div>
     <div id="toTop" class="icon-up"></div>
     
-        <?php include 'html/modal.php'; ?>
+        <?php // include 'html/modal.php'; ?>
 
 </body>
 

@@ -69,4 +69,52 @@ class sofonaimportpromModel extends BaseadminModel
     }
 
 
+    public function getOrderInfoByAgregatorId($orderAgregatorId, $agregator)
+    {
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+
+        $query = $db->getQuery(true)
+            ->select('order_id, order_status')
+            ->from($db->qn('#__jshopping_orders'))
+            ->where($db->qn($agregator) . ' = ' . $db->q($orderAgregatorId));
+        $db->setQuery($query);
+        return $db->loadObject();
+    }
+
+    public function getOrderStatusName($status_id)
+    {
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $lang = JSFactory::getLang();
+        $query = $db->getQuery(true)
+            ->select($db->qn('name_ru-RU') . 'as name')
+            ->from($db->qn('#__jshopping_order_status'))
+            ->where('status_id' . ' = ' . $db->q($status_id));
+        $db->setQuery($query);
+        return $db->loadResult();
+    }
+
+    public function saveOrderHistory($order_id, $order_status, $notify, $comments)
+    {
+        $history = JSFactory::getTable('orderHistory');
+        $history->order_id = $order_id;
+        $history->order_status_id = $order_status;
+        $history->status_date_added = Helper::getJsDate();
+        $history->customer_notify = $notify;
+        $history->comments = $comments;
+        $history->include_comment = 0;
+        return $history->store();
+    }
+
+    public function getProductByField($product_field, $value)
+    {
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from($db->qn('#__jshopping_products'))
+            ->where($db->qn($product_field) . ' = ' . $db->q($value));
+        $db->setQuery($query);
+        return $db->loadObject();
+    }
+
 }

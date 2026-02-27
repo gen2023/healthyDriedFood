@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="2.5" method="upgrade" group="jshoppingproducts">
+	<name>JoomShopping Addon Label multiselect</name>
+	<creationDate>24.11.2025</creationDate> 
+	<version>2.0.2</version>
+	<author>Sofona</author>
+	<authorEmail>master.sofona@gmail.com</authorEmail>
+	<authorUrl>sofona.com</authorUrl>
+	<copyright></copyright>
+	<license>Open Source License, GNU GPL</license>
+	<description>Plugin label multiselect</description> 
+    <files>
+        <filename plugin="addon_label_multiselect">addon_label_multiselect.php</filename>
+    </files>
+</extension>

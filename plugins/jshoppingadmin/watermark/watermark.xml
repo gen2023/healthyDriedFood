@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshoppingadmin" method="upgrade">
+	<name>JoomShopping - Product Watermark</name>
+	<author>Sofona</author>
+	<creationDate>2025.12.16</creationDate>
+	<copyright>Copyright © Sofona.com. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<authorEmail>info@sofona.com</authorEmail>
+	<authorUrl>https://sofona.com/</authorUrl>
+    <version>4.0.0</version>
+	<files>
+		<filename plugin="watermark">watermark.php</filename>
+		<filename>index.html</filename>
+	</files>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="image1" type="imagelist" directory="images" default="" label="Watermark Thumb image" description="Watermark Thumb image" />
+                <field name="image2" type="imagelist" directory="images" default="" label="Watermark Middle image" description="Watermark Middle image" />
+                <field name="image3" type="imagelist" directory="images" default="" label="Watermark Full image" description="Watermark Full image" />
+                <field name="quality" type="text" default="85" label="Image quality" description="Image quality (0-100)" />
+            </fieldset>
+        </fields>
+    </config>
+</extension>

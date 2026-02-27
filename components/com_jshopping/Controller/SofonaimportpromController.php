@@ -1,18 +1,10 @@
 <?php
 
 namespace Joomla\Component\Jshopping\Site\Controller;
-// use Joomla\Component\Jshopping\Administrator\Helper\HelperAdmin;
 use Joomla\CMS\Factory;
 use Joomla\Component\Jshopping\Site\Lib\JSFactory;
-// use Joomla\CMS\HTML\HTMLHelper;
-// use Joomla\Component\Jshopping\Site\Helper\SelectOptions;
-// use Joomla\CMS\Pagination\Pagination;
-// use Joomla\CMS\Language\Text;
-// use Joomla\CMS\Response\JsonResponse;
-// use Joomla\Component\Jshopping\Site\Helper\Helper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Registry\Registry;
-// use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Component\Jshopping\Site\Lib\ImageLib;
 
@@ -304,15 +296,16 @@ class SofonaimportpromController extends BaseController
       $db->setQuery($query);
       $CategoryId = (int) $db->loadResult();
       // $now = date('Y-m-d H:i:s');
+      $price = round((float) $offer->price * 0.9, 2); // -10%
 
       $product = [
         'product_ean' => $ean,
         'product_publish' => 1,
-        'product_price' => (float) $offer->price,
+        'product_price' => $price,
         'product_quantity' => $available,
         'image' => $mainImage,
         'main_category_id' => $CategoryId,
-        'min_price' => (float) $offer->price,
+        'min_price' => $price,
         'currency_id' => 1,
         'hits' => 0,
         'add_price_unit_id' => 3,
@@ -351,12 +344,12 @@ class SofonaimportpromController extends BaseController
       $productUpdate = [
         'product_ean' => $ean,
         // 'product_publish' => 1,
-        'product_price' => (float) $offer->price,
+        'product_price' => $price,
         'product_quantity' => $available,
         'image' => $mainImage,
-        'main_category_id' => $CategoryId,
-        'min_price' => (float) $offer->price,
-        'currency_id' => 2,
+        // 'main_category_id' => $CategoryId,
+        'min_price' => $price,
+        'currency_id' => 1,
         // 'hits' => 0,
         'add_price_unit_id' => 3,
         // 'product_date_added' => $now,
@@ -409,54 +402,56 @@ class SofonaimportpromController extends BaseController
         // file_put_contents(JPATH_ROOT . '/logs/vendorcodes.log', (string) $offer['id'] . ' =inserted ' . "\n", FILE_APPEND);
 
       }
+      if (!$productId) {
+        $externalCategoryId = (int) $CategoryId;
 
-      // Привязка товара к категории и родительской категории
-      $externalCategoryId = (int) $CategoryId;
+        if ($externalCategoryId > 0) {
+          // Сначала удалим все старые связи
+          $db->setQuery(
+            $db->getQuery(true)
+              ->delete($db->quoteName('#__jshopping_products_to_categories'))
+              ->where($db->quoteName('product_id') . ' = ' . (int) $productId)
+          );
+          $db->execute();
 
-      if ($externalCategoryId > 0) {
-        // Сначала удалим все старые связи
-        $db->setQuery(
-          $db->getQuery(true)
-            ->delete($db->quoteName('#__jshopping_products_to_categories'))
-            ->where($db->quoteName('product_id') . ' = ' . (int) $productId)
-        );
-        $db->execute();
+          // Соберём все external category id: текущую и родительскую
+          $externalCategoryIds = [$externalCategoryId];
 
-        // Соберём все external category id: текущую и родительскую
-        $externalCategoryIds = [$externalCategoryId];
+          // Получим parent_id этой категории из XML
+          $parentCategoryId = null;
+          foreach ($xml->shop->categories->category as $cat) {
+            if ((int) $cat['id'] === $externalCategoryId && isset($cat['parentId'])) {
+              $parentCategoryId = (int) $cat['parentId'];
+              break;
+            }
+          }
 
-        // Получим parent_id этой категории из XML
-        $parentCategoryId = null;
-        foreach ($xml->shop->categories->category as $cat) {
-          if ((int) $cat['id'] === $externalCategoryId && isset($cat['parentId'])) {
-            $parentCategoryId = (int) $cat['parentId'];
-            break;
+          if ($parentCategoryId) {
+            $externalCategoryIds[] = $parentCategoryId;
+          }
+
+          // Привязка ко всем найденным категориям
+          foreach ($externalCategoryIds as $extCatId) {
+            // $query = $db->getQuery(true)
+            //   ->select($db->quoteName('category_id'))
+            //   ->from($db->quoteName('#__jshopping_category_custom_values'))
+            //   ->where($db->quoteName('value') . ' = ' . (int) $extCatId);
+            // $db->setQuery($query);
+            // $localCategoryId = (int) $db->loadResult();
+
+            // if ($localCategoryId > 0) {
+            $insert = $db->getQuery(true)
+              ->insert($db->quoteName('#__jshopping_products_to_categories'))
+              ->columns(['product_id', 'category_id'])
+              ->values((int) $productId . ', ' . (int) $extCatId);
+            $db->setQuery($insert);
+            $db->execute();
+            // }
           }
         }
-
-        if ($parentCategoryId) {
-          $externalCategoryIds[] = $parentCategoryId;
-        }
-
-        // Привязка ко всем найденным категориям
-        foreach ($externalCategoryIds as $extCatId) {
-          // $query = $db->getQuery(true)
-          //   ->select($db->quoteName('category_id'))
-          //   ->from($db->quoteName('#__jshopping_category_custom_values'))
-          //   ->where($db->quoteName('value') . ' = ' . (int) $extCatId);
-          // $db->setQuery($query);
-          // $localCategoryId = (int) $db->loadResult();
-
-          // if ($localCategoryId > 0) {
-          $insert = $db->getQuery(true)
-            ->insert($db->quoteName('#__jshopping_products_to_categories'))
-            ->columns(['product_id', 'category_id'])
-            ->values((int) $productId . ', ' . (int) $extCatId);
-          $db->setQuery($insert);
-          $db->execute();
-          // }
-        }
       }
+      // Привязка товара к категории и родительской категории
+
       // if ($productId) {
       //   // Характеристики
       //   foreach ($offer->param as $param) {

@@ -915,7 +915,13 @@ body .autoscroll-preloader .spinner {
   align-items: center;
 
   >li {
-    margin-right: 24px
+    margin-right: 24px;
+    &.item-360,
+    &.item-361,
+    &.item-400,
+    &.item-401{
+      display: none;
+    }
   }
 
   >li>a {
@@ -1994,25 +2000,43 @@ body .autoscroll-preloader .spinner {
     opacity: .5;
   }
 
+  .multilabel {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 15px;
+
+  }
+
   .image_block {
     position: relative;
-    border-radius: var(--radius-medium);
     // background: #fff;
-    overflow: hidden;
-    padding-bottom: 96.7%;
+    // overflow: hidden;
+    // padding-bottom: 96.7%;
     margin-bottom: 16px;
 
-    img {
+    .product_label {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 15px;
+      left: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    a img {
+      // position: absolute;
+      // top: 0;
+      // left: 0;
+      // right: 0;
+      // bottom: 0;
       // width: 82%;
       // height: 85%;
       object-fit: contain;
       margin: auto;
       width: 100%;
+      border-radius: var(--radius-medium);
+
     }
 
 
@@ -3270,18 +3294,18 @@ body .autoscroll-preloader .spinner {
 
     .single-image {
       position: relative;
-      width: 93.4%;
-      padding-bottom: 93.4%;
+      // width: 93.4%;
+      // padding-bottom: 93.4%;
       margin: 0 auto;
 
       img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        // position: absolute;
+        // top: 0;
+        // left: 0;
+        // right: 0;
+        // bottom: 0;
         object-fit: contain;
-        margin: auto;
+        // margin: auto;
       }
     }
 
@@ -3291,18 +3315,42 @@ body .autoscroll-preloader .spinner {
 
       .img-wrap {
         position: relative;
-        width: 93.4%;
-        padding-bottom: 93.4%;
+        // width: 93.4%;
+        // padding-bottom: 93.4%;
         margin: 0 auto;
 
-        img {
+        .product_label {
           position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          object-fit: contain;
-          margin: auto;
+          top: 10px;
+          left: 10px;
+          display: flex;
+          gap: 10px;
+        }
+
+        .multilabel {
+          position: absolute;
+          top: 15px;
+          left: 15px;
+          display: flex;
+          gap: 10px;
+
+        }
+
+        img {
+          // position: absolute;
+          // top: 0;
+          // left: 0;
+          // right: 0;
+          // bottom: 0;
+          object-fit: cover;
+          // margin: auto;
+          border-radius: var(--radius-medium);
+
+          &.img-product {
+            height: 543px;
+            width: 100%;
+          }
+
         }
       }
     }
@@ -3440,7 +3488,12 @@ body .autoscroll-preloader .spinner {
 
   .extra_field_item {
     border-bottom: 1px dashed #c8c8cc;
-    margin-bottom: 10px;
+    // margin-bottom: 10px;
+    padding: 10px;
+
+    &:hover {
+      background: var(--lightgrey);
+    }
   }
 
   .extra_fields_name {
@@ -3516,9 +3569,9 @@ body .autoscroll-preloader .spinner {
       border-radius: 5px;
       transition: 0.2s;
       font-size: 16px;
-    line-height: 1;
-    font-weight: 600;
-    border: unset;
+      line-height: 1;
+      font-weight: 600;
+      border: unset;
 
       &:hover,
       &.active {
@@ -3657,10 +3710,16 @@ body .autoscroll-preloader .spinner {
   font-size: 16px;
   line-height: 1.5;
   letter-spacing: -0.32px;
+  width: 50%;
 }
 
 .extra_fields_value {
   font-weight: 400;
+  width: 50%;
+
+  li:hover {
+    color: var(--primary1);
+  }
 }
 
 .recently-viewed {
@@ -4469,7 +4528,7 @@ ol.default-list {
     }
   }
 }
-
+.nevigen-novaposhta-pickup-postomat,
 .nevigen-novaposhta-pickup-postcode,
 .nevigen-novaposhta-pickup-warehouse,
 .nevigen-novaposhta-courier-address-street,
@@ -5466,5 +5525,25 @@ ol.default-list {
   h3 {
     margin-top: 28px;
     margin-bottom: 8px;
+  }
+}
+.price_list_product{
+  .card{
+    background: #fff;
+    padding: 20px;
+    border-radius: var(--radius-medium);
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    form{
+      width: max-content;
+    }
+    .search_block input{
+          border: 2px solid var(--black);
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 24px;
+    }
   }
 }

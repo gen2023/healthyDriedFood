@@ -27,8 +27,10 @@ class RozetkaController extends BaseController
 
         //передваем ид с таблицы __jshopping_category_custom_values
         $categoryAggregator = $model->getCategoryCF(4);
+        $categoryAggregatorName = $model->getCategoryCF(6);
 
         $currencies = $model->getCurrencies();
+
 
         $filters = [
             'base' => [
@@ -79,9 +81,18 @@ class RozetkaController extends BaseController
             $categoryAggregatorMap[(int) $promItem->category_id] = $promItem->value;
         }
 
+        $categoryAggregatorNameMap = [];
+        foreach ($categoryAggregatorName as $promItem) {
+            $categoryAggregatorNameMap[(int) $promItem->category_id] = $promItem->value;
+        }        
+
         foreach ($categories as $category) {
             $catId = (int) $category->category_id;
             $name = htmlspecialchars($category->{'name_uk-UA'});
+                        if (isset($categoryAggregatorNameMap[$catId])) {
+                $name = $categoryAggregatorNameMap[$catId];
+
+            }
             $categoryElement = $categoriesElement->addChild('category', $name);
             $categoryElement->addAttribute('id', $catId);
             $parentId = (int) $category->category_parent_id;
@@ -110,17 +121,18 @@ class RozetkaController extends BaseController
         $imageUrl = $shopUrl . 'components/com_jshopping/files/img_products/';
 
         $offers = $shop->addChild('offers');
-        foreach ($products as $product) {
-            
-        $infoDopField = $model->getInfoDopField($product->product_id);
-        if((int)$infoDopField['view_rozetka']==1) continue;
+        
+        foreach ($products as $key => $product) {
 
-            echo 'Product ID: ' . $product->product_id . '<br>';
-            $product->unlimited == 1 ? $product->product_quantity = 25 : $product->product_quantity = $product->product_quantity;
+            $infoDopField = $model->getInfoDopField($product->product_id);
+            if ((int) $infoDopField['view_rozetka'] == 1)
+                continue;
+
+            // echo 'Product ID: ' . $product->product_id . '<br>';
 
             $offer = $offers->addChild('offer');
             $offer->addAttribute('id', $product->product_id);
-            $offer->addAttribute('available', $product->product_quantity > 0 ? 'true' : 'true');
+            $offer->addAttribute('available', $product->product_quantity > 0 ? 'true' : 'false');
             $offer->addAttribute('selling_type', 'u');
 
             $productcategory = $product->main_category_id;
@@ -133,7 +145,13 @@ class RozetkaController extends BaseController
 
             $offer->addChild('url', htmlspecialchars($urls));
 
-            $price = $product->product_price + 15;
+            //                 $percent = isset($infoDopField['percent_rozetka']) ? (float) $infoDopField['percent_rozetka'] : 0;
+                
+            // $markup = ($percent > 0) ? $percent : 10;
+            // $price = $product->product_price * (1 + $markup / 100);
+            // $price = round($price, 2);
+
+            $price = $product->product_price * 1.10;
 
             $offer->addChild('price', number_format($price, 2, '.', ''));
 
@@ -142,13 +160,31 @@ class RozetkaController extends BaseController
             $currencyIso = isset($currencyMap[$currencyId]) ? $currencyMap[$currencyId] : 'UAH';
             $offer->addChild('currencyId', $currencyIso);
 
-            $offer->addChild('stock_quantity', (int) $product->product_quantity > 0 ? (int) $product->product_quantity : '1');
+            $offer->addChild('stock_quantity', (int) $product->product_quantity);
             $offer->addChild('article', $product->product_ean);
 
-            
+            $weight = 0;
+
+            if (!empty($product->extra_fields)) {
+                foreach ($product->extra_fields as $extra) {
+                    if ((int) $extra['field_id'] == 7) {
+                        $weight = $extra['value']; // в кг
+                        break;
+                    }
+                }
+            }
+
             $name_product_ru = $product->{'name_ru-RU'};
             if ($infoDopField['name_rozetka_ru']) {
                 $name_product_ru = $infoDopField['name_rozetka_ru'];
+            }
+            
+            // if ($key>30){
+            //     $name_product_ru .= ' Healthy Dried Food';
+            // }            
+
+            if ($weight !=0){
+                $name_product_ru .= ' '.$weight;
             }
             $offer->addChild('name', htmlspecialchars($name_product_ru));
 
@@ -157,7 +193,18 @@ class RozetkaController extends BaseController
                 $name_product_uk = $infoDopField['name_rozetka_ua'];
             }
 
+            // if ($key>30){
+            // $name_product_uk .= ' Healthy Dried Food';
+            // }     
+
+            if ($weight !=0){
+                $name_product_uk .= ' '.$weight;
+            }
             $offer->addChild('name_ua', htmlspecialchars($name_product_uk));
+
+            if($infoDopField['new_category']){
+                $productcategory=$infoDopField['new_category'];
+            }
 
             $offer->addChild('categoryId', (int) $productcategory);
 
@@ -167,7 +214,7 @@ class RozetkaController extends BaseController
                     $offer->addChild('picture', htmlspecialchars($imageUrlFull));
                 }
             }
-            $offer->addChild('vendor', 'Healthy Dried Food');
+            $offer->addChild('vendor', 'Без бренду');
 
             $description = $product->{'description_ru-RU'};
             $descriptionUa = $product->{'description_uk-UA'};
@@ -182,10 +229,10 @@ class RozetkaController extends BaseController
             $offer->addChildCData('description', $this->cleanRozetkaDescription($description));
             $offer->addChildCData('description_ua', $this->cleanRozetkaDescription($descriptionUa));
 
-            if ((int) $product->product_quantity <= 0) {
-                $offer->addChild('param', 'Передзамовити')->addAttribute('name', 'Кнопка передзамовлення');
-                $offer->addChild('param', '4')->addAttribute('name', 'Термін доставки');
-            }
+            // if ((int) $product->product_quantity <= 0) {
+            //     $offer->addChild('param', 'Передзамовити')->addAttribute('name', 'Кнопка передзамовлення');
+            //     $offer->addChild('param', '4')->addAttribute('name', 'Термін доставки');
+            // }
 
             if (!empty($product->extra_fields)) {
                 $skipIds = [];
@@ -220,34 +267,35 @@ class RozetkaController extends BaseController
         Factory::getApplication()->enqueueMessage('XML успешно создан: ' . $filePath);
 
     }
-function cleanRozetkaDescription($text)
-{
-    if (!$text) return '';
+    function cleanRozetkaDescription($text)
+    {
+        if (!$text)
+            return '';
 
-    // 1. Удаляем emoji (все юникодные emoji)
-    $text = preg_replace('/[\x{1F300}-\x{1FAFF}\x{1F000}-\x{1F9FF}\x{2600}-\x{27BF}]/u', '', $text);
+        // 1. Удаляем emoji (все юникодные emoji)
+        $text = preg_replace('/[\x{1F300}-\x{1FAFF}\x{1F000}-\x{1F9FF}\x{2600}-\x{27BF}]/u', '', $text);
 
-    // 2. Удаляем изображения
-    $text = preg_replace('#<img[^>]*?>#is', '', $text);
+        // 2. Удаляем изображения
+        $text = preg_replace('#<img[^>]*?>#is', '', $text);
 
-    // 3. Удаляем iframe, video, source
-    $text = preg_replace('#<(iframe|video|source)[^>]*?>.*?</\1>#is', '', $text);
-    $text = preg_replace('#<(iframe|video|source)[^>]*?>#is', '', $text);
+        // 3. Удаляем iframe, video, source
+        $text = preg_replace('#<(iframe|video|source)[^>]*?>.*?</\1>#is', '', $text);
+        $text = preg_replace('#<(iframe|video|source)[^>]*?>#is', '', $text);
 
-    // 4. Удаляем ссылки, оставляя текст внутри
-    $text = preg_replace('#<a[^>]*>(.*?)</a>#is', '$1', $text);
+        // 4. Удаляем ссылки, оставляя текст внутри
+        $text = preg_replace('#<a[^>]*>(.*?)</a>#is', '$1', $text);
 
-    // 5. Удаляем URL в тексте
-    $text = preg_replace('#https?://[^\s<]+#i', '', $text);
+        // 5. Удаляем URL в тексте
+        $text = preg_replace('#https?://[^\s<]+#i', '', $text);
 
-    // 6. Удаляем лишние повторяющиеся пробелы
-    $text = preg_replace('/\s{2,}/', ' ', $text);
+        // 6. Удаляем лишние повторяющиеся пробелы
+        $text = preg_replace('/\s{2,}/', ' ', $text);
 
-    // 7. Тримим
-    $text = trim($text);
+        // 7. Тримим
+        $text = trim($text);
 
-    return $text;
-}
+        return $text;
+    }
 
 
 }

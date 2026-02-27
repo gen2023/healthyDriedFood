@@ -3,9 +3,11 @@
     <name>MOD_JSHOPPING_PRODUCTS_LIST</name>
 	<creationDate>22.05.2025</creationDate>
     <author>Sofona</author>
+    <authorEmail>master.sofona@gmail.com</authorEmail>
+    <authorUrl>sofona.com</authorUrl>    
     <copyright>© 2025 Sofona. All rights reserved.</copyright>
     <license>Open Source License, GNU GPL</license>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 	<description>MOD_JSHOPPING_PRODUCTS_LIST_DESCRIPTION</description>
 	<files>
 	    <filename module="mod_jshopping_products">mod_jshopping_products.php</filename>
@@ -91,7 +93,14 @@
                     <option value="product_id">MOD_JSHOPPING_PRODUCTS_LIST_SORT_ID</option>
                     <option value="hits">MOD_JSHOPPING_PRODUCTS_LIST_SORT_POPYLAR_VIEW</option>
                     <option value="product_price">MOD_JSHOPPING_PRODUCTS_LIST_SORT_PRICE</option>
+                    <option value="product_extra_field">MOD_JSHOPPING_PRODUCTS_LIST_SORT_EXTRA_FIELD</option>
                 </field>
+                <field
+                    name="ordering_by_extra_field"
+                    type="number"
+                    label="MOD_JSHOPPING_PRODUCTS_LIST_SORT_EXTRA_FIELD_IDS"
+                    showon="sort:product_extra_field"
+                />
                 <field
                     name="ordering"
 					type="radio"

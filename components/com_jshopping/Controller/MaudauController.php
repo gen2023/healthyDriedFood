@@ -63,14 +63,14 @@ class MaudauController extends BaseController
         // foreach ($infoShop as $key => $value) {
         //     $shop->addChild($key, $value);
         // }
-        $currenciesElement = $shop->addChild('currencies');
-        foreach ($currencies as $currency) {
-            $rate = number_format($currency->currency_value, 2, '.', '');
-            $currenciesElement->addChild('currency')
-                ->addAttribute('id', $currency->currency_code_iso);
-            $currenciesElement->currency[count($currenciesElement->currency) - 1]
-                ->addAttribute('rate', $rate);
-        }
+        // $currenciesElement = $shop->addChild('currencies');
+        // foreach ($currencies as $currency) {
+        //     $rate = number_format($currency->currency_value, 2, '.', '');
+        //     $currenciesElement->addChild('currency')
+        //         ->addAttribute('id', $currency->currency_code_iso);
+        //     $currenciesElement->currency[count($currenciesElement->currency) - 1]
+        //         ->addAttribute('rate', $rate);
+        // }
 
         $categoriesElement = $shop->addChild('categories');
 
@@ -114,29 +114,35 @@ class MaudauController extends BaseController
 
             $infoDopField = $model->getInfoDopField($product->product_id);
             if ((int) $infoDopField['view_maudau'] == 1)
-            continue;
+                continue;
 
             echo 'Product ID: ' . $product->product_id . '<br>';
-            $product->unlimited == 1 ? $product->product_quantity = 25 : $product->product_quantity = $product->product_quantity;
 
             $offer = $offers->addChild('offer');
             $offer->addAttribute('id', $product->product_id);
             $offer->addAttribute('available', $product->product_quantity > 0 ? 'true' : 'false');
 
             $name_product_ru = $product->{'name_ru-RU'};
-            $offer->addChild('name', htmlspecialchars($name_product_ru));
+            $offer->addChild('name_ru', htmlspecialchars($name_product_ru));
             $name_product_uk = $product->{'name_uk-UA'};
             $offer->addChild('name_ua', htmlspecialchars($name_product_uk));
 
             $maxLen = 10000;
-            $description = $product->{'description_ru-RU'} ?? '';
-            $descriptionUa = $product->{'description_uk-UA'} ?? '';
+            $stockRu = '<p><strong>В наличии: ' . $product->product_quantity . '</strong></p><br>';
+            $stockUa = '<p><strong>В наявності: ' . $product->product_quantity . '</strong></p><br>';
+            $description = $stockRu;
+            $descriptionUa = $stockUa;
+
+            $description .= $product->{'description_ru-RU'} ?? '';
+            $descriptionUa .= $product->{'description_uk-UA'} ?? '';
+
             $description = mb_substr($description, 0, $maxLen);
             $descriptionUa = mb_substr($descriptionUa, 0, $maxLen);
-            $offer->addChild('description', htmlspecialchars($description));
+
+            $offer->addChild('description_ru', htmlspecialchars($description));
             $offer->addChild('description_ua', htmlspecialchars($descriptionUa));
 
-            $price = $product->product_price + 15;
+            $price = $product->product_price * 1.10;
             $offer->addChild('price', number_format($price, 2, '.', ''));
 
             $productcategory = $product->main_category_id;
@@ -145,7 +151,8 @@ class MaudauController extends BaseController
             }
             $offer->addChild('categoryId', (int) $productcategory);
 
-            $offer->addChild('vendor', 'Healthy Dried Food');
+            // $offer->addChild('vendor', 'Healthy Dried Food');
+            $offer->addChild('vendor', 'No Brand');
 
             $country = '';
             foreach ($product->extra_fields as $extra) {
@@ -162,7 +169,7 @@ class MaudauController extends BaseController
                     $imageUrlFull = $imageUrl . basename($image);
                     $offer->addChild('picture', htmlspecialchars($imageUrlFull));
                 }
-            }            
+            }
         }
 
         // Куда сохраняем
