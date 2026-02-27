@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop OneStepCheckout
- * @version    1.1.0
+ * @version    1.1.3
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -11,6 +11,7 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Jshopping\Site\Helper\Helper;
 
 ?>
 <div id="nevigenOneStepCheckoutCartEditModal" class="modal fade" tabindex="-1" aria-hidden="true">
@@ -21,8 +22,8 @@ use Joomla\CMS\Language\Text;
 					<?php echo Text::_('JSHOP_CART'); ?>
 				</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"
-				        data-nevigen-onestepcheckout-cart-edit="close"
-				        aria-label="Close"></button>
+						data-nevigen-onestepcheckout-cart-edit="close"
+						aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				<div data-nevigen-onestepcheckout-cart-edit="message"></div>
@@ -32,14 +33,15 @@ use Joomla\CMS\Language\Text;
 						$image = $this->image_product_path . '/' . $image;
 						?>
 						<div class="row mb-2 border-bottom align-items-center"
-						     data-nevigen-onestepcheckout-cart-edit="product"
-						     data-key="<?php echo $key; ?>">
+							 data-nevigen-onestepcheckout-cart-edit="product"
+							 data-key="<?php echo $key; ?>">
 							<div class="col-12 col-md-5 mb-2">
 								<div class="row align-items-center">
 									<div class="col col-lg-4 col-md-2">
-										<a  href="<?php echo $product['href'] ?>">
-											<img class="nevigen-onestepcheckout-edit-cart-product-image" src="<?php echo $image; ?>"
-											     alt="<?php echo htmlspecialchars($product['product_name']); ?>"/>
+										<a href="<?php echo $product['href'] ?>">
+											<img class="nevigen-onestepcheckout-edit-cart-product-image"
+												 src="<?php echo $image; ?>"
+												 alt="<?php echo htmlspecialchars($product['product_name']); ?>"/>
 										</a>
 									</div>
 									<div class="col col-lg-8 col-md-4">
@@ -64,9 +66,9 @@ use Joomla\CMS\Language\Text;
 													: <span><?php echo $product['manufacturer_code'] ?></span>
 												</div>
 											<?php endif; ?>
-											<?php echo \JSHelper::sprintAtributeInCart($product['attributes_value']); ?>
-											<?php echo \JSHelper::sprintFreeAtributeInCart($product['free_attributes_value']); ?>
-											<?php echo \JSHelper::sprintFreeExtraFiledsInCart($product['extra_fields']); ?>
+											<?php echo Helper::sprintAtributeInCart($product['attributes_value']); ?>
+											<?php echo Helper::sprintFreeAtributeInCart($product['free_attributes_value']); ?>
+											<?php echo Helper::sprintFreeExtraFiledsInCart($product['extra_fields']); ?>
 											<?php if ($this->jshopConfig->show_delivery_time_step5 && $product['delivery_times_id']) : ?>
 												<div class="deliverytime">
 													<?php echo Text::_('JSHOP_DELIVERY_TIME') ?>:
@@ -81,34 +83,38 @@ use Joomla\CMS\Language\Text;
 								<div class="row align-items-center">
 									<div class="col-3 small"
 										 data-nevigen-onestepcheckout-cart-edit-product-price="<?php echo $key ?>">
-										<?php echo \JSHelper::formatprice($product['price']) ?>
+										<?php echo Helper::formatprice($product['price']) ?>
 									</div>
 									<div class="col-4">
-										<div class="input-group input-group-sm"
-										     data-nevigen-onestepcheckout-cart-edit-quantity-container>
-											<button class="btn btn-secondary btn-sm m-0"
-											        data-nevigen-onestepcheckout-cart-edit-quantity="-"
-											        data-product="<?php echo $key ?>">-
-											</button>
-											<input type="text" name="quantity[<?php echo $key ?>]"
-											       value="<?php echo $product['quantity'] ?>"
-											       data-nevigen-onestepcheckout-cart-edit-quantity-input="<?php echo $key ?>"
-											       class="form-control text-center form-sm">
-											<button class="btn btn-secondary btn-sm m-0"
-											        data-nevigen-onestepcheckout-cart-edit-quantity="+"
-											        data-product="<?php echo $key ?>">+
-											</button>
-										</div>
+										<?php if (empty($product['not_qty_update'])): ?>
+											<div class="input-group input-group-sm"
+												 data-nevigen-onestepcheckout-cart-edit-quantity-container>
+												<button class="btn btn-secondary btn-sm m-0"
+														data-nevigen-onestepcheckout-cart-edit-quantity="-"
+														data-product="<?php echo $key ?>">-
+												</button>
+												<input type="text" name="quantity[<?php echo $key ?>]"
+													   value="<?php echo $product['quantity'] ?>"
+													   data-nevigen-onestepcheckout-cart-edit-quantity-input="<?php echo $key ?>"
+													   class="form-control text-center form-sm">
+												<button class="btn btn-secondary btn-sm m-0"
+														data-nevigen-onestepcheckout-cart-edit-quantity="+"
+														data-product="<?php echo $key ?>">+
+												</button>
+											</div>
+										<?php else: ?>
+											<?php echo $product['quantity'] ?>
+										<?php endif; ?>
 									</div>
 									<div class="col-4">
 										<div class="text-end fw-bold"
-										     data-nevigen-onestepcheckout-cart-edit-product-sum="<?php echo $key ?>">
-											<?php echo \JSHelper::formatprice($product['price'] * $product['quantity']); ?>
+											 data-nevigen-onestepcheckout-cart-edit-product-sum="<?php echo $key ?>">
+											<?php echo Helper::formatprice($product['price'] * $product['quantity']); ?>
 										</div>
 									</div>
 									<div class="col-1">
 										<button class="btn btn-light text-danger btn-sm"
-										        onclick="window.NevigenOneStepCheckout().cartEditRemoveProduct(<?php echo $key; ?>)">
+												onclick="window.NevigenOneStepCheckout().cartEditRemoveProduct(<?php echo $key; ?>)">
 											<i class="icon-remove"></i>
 										</button>
 									</div>
@@ -124,7 +130,7 @@ use Joomla\CMS\Language\Text;
 						<?php echo Text::_('JSHOP_PRICE_TOTAL') ?>
 					</div>
 					<div class="nevigen-jshop-cart-cart-sum" data-nevigen-onestepcheckout-cart-edit="total">
-						<?php echo \JSHelper::formatprice($this->summ); ?>
+						<?php echo Helper::formatprice($this->summ); ?>
 					</div>
 				</div>
 			<?php endif; ?>

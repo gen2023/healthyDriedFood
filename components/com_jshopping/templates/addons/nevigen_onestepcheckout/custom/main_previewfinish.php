@@ -22,8 +22,7 @@ $form_address = $this->form_address;
 		<div class="nevigen-onestepcheckout_finish_comment_block_add">
 			<label for="order_add_info"><?php echo Text::_('TPL_CUSTOM_PAGE_CHECKOUT_TITLE_COMMENT'); ?></label>
 			<div class="nevigen-onestepcheckout_finish_comment_block_add_textarea">
-				<textarea class="form-control" id="order_add_info" name="order_add_info"
-					placeholder="<?= Text::_('TPL_CUSTOM_PAGE_CHECKOUT_TITLE_COMMENT_PLACEHOLDER') ?>"></textarea>
+				<textarea class="form-control" id="order_add_info" name="order_add_info" placeholder="<?= Text::_('TPL_CUSTOM_PAGE_CHECKOUT_TITLE_COMMENT_PLACEHOLDER') ?>"></textarea>
 			</div>
 		</div>
 		<?php if (!empty($privacy_statement = $form_address->getInput('privacy_statement'))): ?>
@@ -32,28 +31,27 @@ $form_address = $this->form_address;
 					<?php echo $privacy_statement; ?>
 				</div>
 				<div class="col">
-					<a class="nevigen-onestepcheckout-privacy-statement policy text-reset" data-bs-toggle="modal"
-						href="#onestep_privacy_statement">
+					<a class="nevigen-onestepcheckout-privacy-statement policy text-reset" data-bs-toggle="modal" href="#onestep_privacy_statement">
 						<?php echo Text::_('JSHOP_PRIVACY_STATEMENT'); ?>
 					</a>
 				</div>
 			</div>
 		<?php endif; ?>
 		<?php /* if ($this->jshopConfig->display_agb): ?>
-			<div class="mt-2">
-				<input type="checkbox" class="form-check-input me-1" name="agb" id="agb-chcbx" required />
-				<label class="form-check-label" for="agb-chcbx">
-					<a class="nevigen-onestepcheckout-agb text-reset" data-bs-toggle="modal" href="#onestep_agb">
-						<?php echo Text::_('JSHOP_AGB'); ?>
-					</a>
-					<?php echo Text::_('JSHOP_AND'); ?>
-					<a class="nevigen-onestepcheckout-policy-return text-reset" data-bs-toggle="modal" href="#return_policy">
-						<?php echo Text::_('JSHOP_RETURN_POLICY') ?>
-					</a>
-					<?php echo Text::_('JSHOP_CONFIRM'); ?>
-				</label>
-			</div>
-		<?php endif; */?>
+ <div class="mt-2">
+	 <input type="checkbox" class="form-check-input me-1" name="agb" id="agb-chcbx" required />
+	 <label class="form-check-label" for="agb-chcbx">
+		 <a class="nevigen-onestepcheckout-agb text-reset" data-bs-toggle="modal" href="#onestep_agb">
+			 <?php echo Text::_('JSHOP_AGB'); ?>
+		 </a>
+		 <?php echo Text::_('JSHOP_AND'); ?>
+		 <a class="nevigen-onestepcheckout-policy-return text-reset" data-bs-toggle="modal" href="#return_policy">
+			 <?php echo Text::_('JSHOP_RETURN_POLICY') ?>
+		 </a>
+		 <?php echo Text::_('JSHOP_CONFIRM'); ?>
+	 </label>
+ </div>
+<?php endif; */ ?>
 		<?php if ($this->no_return): ?>
 			<div class="nevigen-onestepcheckout_finish_comment_block mt-1">
 				<div class="row_no_return text-danger">
@@ -171,35 +169,68 @@ $form_address = $this->form_address;
 				<input type="checkbox" name="customer_register" id="customer_register" class="form-check-input" value="1">
 				<label class="form-check-label" for="customer_register">
 					<?php echo Text::_('PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_CUSTOMER_REGISTER') ?>
-					<i class="ms-2 icon-info-circle hasTooltip"
-						title="<?php echo Text::_('PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_CUSTOMER_REGISTER_DESC') ?>"
-						data-bs-placement="top"></i>
+					<i class="ms-2 icon-info-circle hasTooltip" title="<?php echo Text::_('PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_CUSTOMER_REGISTER_DESC') ?>" data-bs-placement="top"></i>
 				</label>
 			</div>
 		</div>
 	<?php endif; ?>
 	<?php echo (isset($this->_tmp_ext_html_previewfinish_end)) ? $this->_tmp_ext_html_previewfinish_end : '' ?>
+	<div class="doNotCall">
+		<input type="checkbox" name="customer_register" id="customer_register" class="form-check-input" value="1">
+				<label class="form-check-label" for="customer_register">
+					Не дзвоніть мені для підтвердження замовлення
+				</label>
+		<input type="tert" name="ext_field_1" id="ext_field_1" class="form-check-input" value="Передзвоніть мені" style="display:none;">
+	</div>
 	<div class="nevigen-onestepcheckout-finish mt-4">
 		<button class="btn btn-success icon-cart">
 			<?php echo Text::_('TPL_CUSTOM_PAGE_CHECKOUT_ORDER_FINISH') ?>
 		</button>
 	</div>
 </div>
-<?php /*
+
 <script>
-	const total = <?= $this->fullsumm ?>;
-	const btn = document.querySelector('.nevigen-onestepcheckout-finish button');
-	const minorder = document.querySelector('.minorder-js');
+document.addEventListener('DOMContentLoaded', function() {
+    const doNotCallCheckbox = document.getElementById('customer_register');
+    const hiddenField = document.getElementById('ext_field_1');
 
-	if (total < 300) {
-		btn.classList.add('disabled');
-		btn.disabled = true;
-		minorder.classList.add('active');
-	} else {
-		btn.disabled = false;
-		btn.classList.remove('disabled');
-		minorder.classList.remove('active');
-	}
+    // Функция для установки куки
+    function setCookie(name, value, days) {
+        const d = new Date();
+        d.setTime(d.getTime() + (days*24*60*60*1000));
+        document.cookie = name + "=" + encodeURIComponent(value) + ";path=/;expires=" + d.toUTCString();
+    }
 
+    // Функция для чтения куки
+    function getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i=0;i < ca.length;i++) {
+            let c = ca[i].trim();
+            if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length,c.length));
+        }
+        return null;
+    }
+
+    // Восстанавливаем состояние галочки из куки при загрузке
+    const savedState = getCookie('doNotCall');
+    if (savedState === '1') {
+        doNotCallCheckbox.checked = true;
+        hiddenField.value = 'Недзвонити мені';
+    } else {
+        doNotCallCheckbox.checked = false;
+        hiddenField.value = 'Передзвоніть мені';
+    }
+
+    // Сохраняем состояние при изменении
+    doNotCallCheckbox.addEventListener('change', function() {
+        if (doNotCallCheckbox.checked) {
+            hiddenField.value = 'Недзвонити мені';
+            setCookie('doNotCall', '1', 7); // куки на 7 дней
+        } else {
+            hiddenField.value = 'Передзвоніть мені';
+            setCookie('doNotCall', '0', 7);
+        }
+    });
+});
 </script>
-*/?>

@@ -7,7 +7,7 @@
 	<license>Proprietary. Copyrighted Commercial Software</license>
 	<authorEmail>support@nevigen.com</authorEmail>
 	<authorUrl>https://nevigen.com</authorUrl>
-	<version>1.3.6</version>
+	<version>1.4.0</version>
 	<description>PLG_JSHOPPING_NEVIGEN_NOVAPOSHTA_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<namespace path="src">Joomla\Plugin\JShopping\NevigenNovaposhta</namespace>
@@ -33,5 +33,6 @@
 		<folder>NevigenNovaposhtaPickupShippingForm</folder>
 		<folder>NevigenNovaposhtaCourierShippingForm</folder>
 		<folder>NevigenNovaposhtaPostomatShippingForm</folder>
+		<folder>fields</folder>
 	</layouts>
 </extension>

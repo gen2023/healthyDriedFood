@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop OneStepCheckout
- * @version    1.1.0
+ * @version    1.1.3
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -26,7 +26,7 @@ return new class () implements InstallerScriptInterface {
      *
      * @since  1.0.0
      */
-    protected string $minimumPhp = '7.4';
+    protected string $minimumPhp = '8.1';
 
     /**
      * Minimum Joomla version required to install the extension.
@@ -35,7 +35,7 @@ return new class () implements InstallerScriptInterface {
      *
      * @since  1.0.0
      */
-    protected string $minimumJoomla = '4.2.0';
+    protected string $minimumJoomla = '5.2';
 
     /**
      * Function called after the extension is installed.

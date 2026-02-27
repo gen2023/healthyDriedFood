@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop Novaposhta Shipping Package
- * @version    1.3.6
+ * @version    1.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -99,7 +99,6 @@ class NevigenNovaposhta extends CMSPlugin implements SubscriberInterface
 			$app->getLanguage()->load('addon_nevigen_novaposhta', JPATH_SITE);
 
 			Text::script('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_FORM');
-			Text::script('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_POSTCODE');
 			Text::script('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_RESULTS');
 			Text::script('ADDON_NEVIGEN_NOVAPOSHTA_PLACEHOLDER_WAREHOUSE');
 			Text::script('ADDON_NEVIGEN_NOVAPOSHTA_PLACEHOLDER_POSTOMAT');
@@ -140,22 +139,13 @@ class NevigenNovaposhta extends CMSPlugin implements SubscriberInterface
 		{
 			if ($cart->getShippingParams() === null)
 			{
-				$zip  = (!empty($adv_user->d_zip)) ? $adv_user->d_zip : $adv_user->zip;
+				$city  = (!empty($adv_user->d_city)) ? $adv_user->d_city : $adv_user->city;
 				$data = [
-					'nevigen_novaposhta_postcode'  => $zip,
+					'nevigen_novaposhta_city'  => $city,
 					'nevigen_novaposhta_street'    => $adv_user->d_street,
 					'nevigen_novaposhta_house'     => $adv_user->d_home,
 					'nevigen_novaposhta_apartment' => $adv_user->d_apartment,
 				];
-
-				if (!empty($zip) && (int) NevigenNovaposhtaHelper::config('type_search', 0) === 1)
-				{
-					$city = NevigenNovaposhtaHelper::getCity($zip);
-					if (!empty($city))
-					{
-						$data['nevigen_novaposhta_city'] = $city['name'];
-					}
-				}
 
 				$cart->setShippingParams($data);
 
@@ -202,7 +192,7 @@ class NevigenNovaposhta extends CMSPlugin implements SubscriberInterface
 				return;
 			}
 
-			$city = NevigenNovaposhtaHelper::getCity($data['nevigen_novaposhta_postcode']);
+			$city = NevigenNovaposhtaHelper::getCity($data['nevigen_novaposhta_city']);
 			if (empty($city))
 			{
 				return;
@@ -234,6 +224,13 @@ class NevigenNovaposhta extends CMSPlugin implements SubscriberInterface
 			if (!empty($data['nevigen_novaposhta_apartment']))
 			{
 				$newData['apartment'] = $data['nevigen_novaposhta_apartment'];
+			}
+			if (!empty($delivery_info)){
+				foreach ($delivery_info as $k => $v){
+					if (!isset($newData[$k])){
+						$newData[$k] = '';
+					}
+				}
 			}
 
 			$view->delivery_info = $newData;
@@ -274,16 +271,12 @@ class NevigenNovaposhta extends CMSPlugin implements SubscriberInterface
 			}
 
 
-			$city = NevigenNovaposhtaHelper::getCity($data['nevigen_novaposhta_postcode']);
+			$city = NevigenNovaposhtaHelper::getCity($data['nevigen_novaposhta_city']);
 			if (empty($city))
 			{
 				return;
 			}
 			$order->d_city = $city['name'];
-			if (!empty($data['nevigen_novaposhta_postcode']))
-			{
-				$order->d_zip = $data['nevigen_novaposhta_postcode'];
-			}
 			if (!empty($data['nevigen_novaposhta_warehouse']))
 			{
 				$order->d_street = $data['nevigen_novaposhta_warehouse'];

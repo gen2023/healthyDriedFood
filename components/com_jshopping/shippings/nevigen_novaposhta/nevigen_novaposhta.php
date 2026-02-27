@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop Novaposhta Shipping Package
- * @version    1.3.6
+ * @version    1.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -39,9 +39,18 @@ class nevigen_novaposhta extends \shippingextRoot
 		{
 			$app = Factory::getApplication();
 			/** @var \Joomla\CMS\Session\Session $session */
-			$session   = $app->getSession();
 			$errorName = 'nevigen_novaposhta_error_' . $shipping_method_price->shipping_method_id;
 			$fields    = $cart->getShippingParams();
+			if ((int)NevigenNovaposhtaHelper::config('enabled_cost_order',1) !== 0
+				&& empty(NevigenNovaposhtaHelper::config('sender_city'))){
+				$app->getDocument()->addScriptOptions($errorName,
+					[
+						'message' => Text::sprintf('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_UPDATE_SENDER_CITY','')
+					]
+				);
+
+				return $prices;
+			}
 			if ((float) $cart->getWeightProducts() == 0
 				&& (int)NevigenNovaposhtaHelper::config('enabled_cost_order',1) !== 0)
 			{
@@ -67,20 +76,7 @@ class nevigen_novaposhta extends \shippingextRoot
 				$type = 'doors';
 			}
 
-
-			if (empty($fields) && !empty($session->get('nevigen_novaposhta_postcode')))
-			{
-				$fields['nevigen_novaposhta_postcode'] = $session->get('nevigen_novaposhta_postcode');
-			}
-			if (!empty($fields['nevigen_novaposhta_city']) && empty($fields['nevigen_novaposhta_postcode'])){
-				$city = NevigenNovaposhtaHelper::searchCity($fields['nevigen_novaposhta_city']);
-				if (!empty($city) && !empty($city[0]['ref'])){
-					$fields['nevigen_novaposhta_postcode'] = NevigenNovaposhtaHelper::getPostcodeByRef($city[0]['ref']);
-				}
-
-			}
-
-			if (empty($fields['nevigen_novaposhta_postcode']))
+			if (empty($fields['nevigen_novaposhta_city']))
 			{
 				return $prices;
 			}
@@ -90,7 +86,7 @@ class nevigen_novaposhta extends \shippingextRoot
 				if ($type === 'doors')
 				{
 
-					$dataCity = NevigenNovaposhtaHelper::getCity($fields['nevigen_novaposhta_postcode']);
+					$dataCity = NevigenNovaposhtaHelper::getCity($fields['nevigen_novaposhta_city']);
 
 					if (!empty($dataCity) && empty($dataCity['delivery']))
 					{
@@ -104,7 +100,7 @@ class nevigen_novaposhta extends \shippingextRoot
 					}
 				}
 
-				$calculate = NevigenNovaposhtaHelper::calculateUkraine($fields['nevigen_novaposhta_postcode'], $type);
+				$calculate = NevigenNovaposhtaHelper::calculateUkraine($fields['nevigen_novaposhta_city'], $type);
 				if ($calculate === false)
 				{
 					$app->getDocument()->addScriptOptions($errorName,

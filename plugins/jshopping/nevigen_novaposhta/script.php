@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop Novaposhta Shipping Package
- * @version    1.3.6
+ * @version    1.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software

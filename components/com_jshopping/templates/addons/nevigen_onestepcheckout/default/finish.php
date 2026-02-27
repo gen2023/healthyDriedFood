@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop OneStepCheckout
- * @version    1.1.0
+ * @version    1.1.3
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -11,6 +11,7 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Jshopping\Site\Helper\Helper;
 
 /**
  * Template variables
@@ -136,8 +137,8 @@ use Joomla\CMS\Language\Text;
 														: <span><?php echo $product->manufacturer_code ?></span>
 													</div>
 												<?php endif; ?>
-												<?php echo \JSHelper::sprintAtributeInOrder($product->product_attributes); ?>
-												<?php echo JSHelper::sprintFreeAtributeInOrder($product->product_freeattributes); ?>
+												<?php echo Helper::sprintAtributeInOrder($product->product_attributes); ?>
+												<?php echo Helper::sprintFreeAtributeInOrder($product->product_freeattributes); ?>
 											</div>
 										</div>
 									</div>
@@ -145,21 +146,21 @@ use Joomla\CMS\Language\Text;
 								<div class="col-12 col-md-5">
 									<div class="row align-items-center">
 										<div class="col-5 small">
-											<?php echo \JSHelper::formatprice($product->product_item_price) ?>
+											<?php echo Helper::formatprice($product->product_item_price) ?>
 										</div>
 										<div class="col-2">
-											<?php echo \JSHelper::formatqty($product->product_quantity); ?>
+											<?php echo Helper::formatqty($product->product_quantity); ?>
 											<?php print $product->_qty_unit; ?>
 										</div>
 										<div class="col-5">
 											<div class="text-end fw-bold">
-												<?php echo \JSHelper::formatprice($product->product_item_price
+												<?php echo Helper::formatprice($product->product_item_price
 													* $product->product_quantity, $order->currency_code); ?>
 												<?php echo $product->_ext_price_total_html ?>
 												<?php if ($this->jshopConfig->show_tax_product_in_cart
 													&& $product->product_tax > 0): ?>
 													<span class="taxinfo">
-														<?php echo \JSHelper::productTaxInfo($product->product_tax,
+														<?php echo Helper::productTaxInfo($product->product_tax,
 															$order->display_price); ?>
 													</span>
 												<?php endif; ?>
@@ -177,7 +178,7 @@ use Joomla\CMS\Language\Text;
 							<div class="nevigen-onestepcheckout-finish-cost-subtotal">
 								<b><?php echo Text::_('JSHOP_SUBTOTAL') ?>:</b>
 								<span>
-									<?php echo \JSHelper::formatprice($order->order_subtotal,
+									<?php echo Helper::formatprice($order->order_subtotal,
 										$order->currency_code); ?>
 								</span>
 							</div>
@@ -185,14 +186,14 @@ use Joomla\CMS\Language\Text;
 						<?php if ($order->order_shipping > 0): ?>
 							<div class="nevigen-onestepcheckout-finish-cost-shipping ">
 								<b><?php echo Text::_('JSHOP_CHECKOUT_SHIPPING') ?>:</b>
-								<?php echo \JSHelper::formatprice($order->order_shipping,
+								<?php echo Helper::formatprice($order->order_shipping,
 									$order->currency_code); ?>
 							</div>
 						<?php endif; ?>
 						<?php if ($order->order_payment > 0): ?>
 							<div class="nevigen-onestepcheckout-finish-cost-payment ">
 								<b><?php echo Text::_('JSHOP_CHECKOUT_PAYMENT') ?>:</b>
-								<?php echo \JSHelper::formatprice($order->order_payment,
+								<?php echo Helper::formatprice($order->order_payment,
 									$order->currency_code); ?>
 							</div>
 						<?php endif; ?>
@@ -200,7 +201,7 @@ use Joomla\CMS\Language\Text;
 							<div class="nevigen-onestepcheckout-finish-cost-discount text-success">
 								<b><?php echo Text::_('JSHOP_RABATT_VALUE') ?>:</b>
 								<span>
-									<?php echo '-' . \JSHelper::formatprice($order->order_discount,
+									<?php echo '-' . Helper::formatprice($order->order_discount,
 											$order->currency_code); ?>
 								</span>
 							</div>
@@ -209,7 +210,7 @@ use Joomla\CMS\Language\Text;
 							<div class="fs-5 nevigen-onestepcheckout-finish-cost-total">
 								<b><?php echo $order->getTextTotal() ?>:</b>
 								<span>
-									<?php echo \JSHelper::formatprice($order->order_total,
+									<?php echo Helper::formatprice($order->order_total,
 										$order->currency_code); ?>
 								</span>
 							</div>

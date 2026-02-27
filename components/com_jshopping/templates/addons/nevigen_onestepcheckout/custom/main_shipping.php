@@ -106,3 +106,75 @@ use Joomla\CMS\Language\Text;
 	</div>
 	<?php echo (isset($this->_tmp_ext_html_shipping_end)) ? $this->_tmp_ext_html_shipping_end : '' ?>
 </div>
+
+<script>
+	
+(function () {
+
+    const COOKIE_PREFIX = 'checkout_city_';
+
+    function setCookie(name, value, days = 7) {
+        const d = new Date();
+        d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+        document.cookie = name + '=' + encodeURIComponent(value) +
+            '; expires=' + d.toUTCString() + '; path=/';
+    }
+
+    function getCookie(name) {
+        const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return m ? decodeURIComponent(m[2]) : '';
+    }
+
+    function deleteCookie(name) {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+    }
+
+    function getCurrentShippingId() {
+        const checked = document.querySelector('input[name="sh_pr_method_id"]:checked');
+        return checked ? checked.value : null;
+    }
+
+    document.addEventListener('input', function (e) {
+        if (e.target && e.target.name === 'city') {
+            const shippingId = getCurrentShippingId();
+            if (shippingId === '9' || shippingId === '3') {
+                setCookie(COOKIE_PREFIX + shippingId, e.target.value);
+            }
+        }
+    });
+
+function handleCity() {
+    const input = document.querySelector('input[name="city"]');
+    const shippingId = getCurrentShippingId();
+
+    if (shippingId !== '9' && shippingId !== '3') {
+        deleteCookie(COOKIE_PREFIX + '9');
+        deleteCookie(COOKIE_PREFIX + '3');
+        return;
+    }
+
+    if (!input) return;
+
+    const city = getCookie(COOKIE_PREFIX + shippingId);
+    if (city && !input.value) {
+        input.value = city;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+}
+
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.name === 'sh_pr_method_id') {
+            setTimeout(handleCity, 200);
+            setTimeout(handleCity, 600);
+        }
+    });
+
+    const observer = new MutationObserver(handleCity);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+		document.addEventListener('DOMContentLoaded', handleCity);
+
+})();
+</script>
+

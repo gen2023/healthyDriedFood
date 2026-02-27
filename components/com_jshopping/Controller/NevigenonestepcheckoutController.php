@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop OneStepCheckout
- * @version    1.1.0
+ * @version    1.1.3
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -28,6 +28,7 @@ use Joomla\Component\Jshopping\Site\Helper\Helper;
 use Joomla\Component\Jshopping\Site\Helper\Metadata;
 use Joomla\Component\Jshopping\Site\Lib\JSFactory;
 use Joomla\Component\Jshopping\Site\Model\CartModel;
+use Joomla\Component\Jshopping\Site\Model\CheckoutOrderModel;
 use Joomla\Component\Jshopping\Site\Model\UserregisterModel;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Plugin\System\NevigenJshopBonuses\Extension\NevigenJshopBonuses;
@@ -51,7 +52,7 @@ class NevigenonestepcheckoutController extends BaseController
 
 		if ($this->addonParams === null)
 		{
-			$addon = \JSFactory::getTable('addon', 'jshop');
+			$addon = JSFactory::getTable('addon', 'jshop');
 			$addon->loadAlias('nevigen_onestepcheckout');
 			$params = $addon->getParams();
 
@@ -70,7 +71,7 @@ class NevigenonestepcheckoutController extends BaseController
 
 		if ($this->jshopConfig === null)
 		{
-			$this->jshopConfig = \JSFactory::getConfig();
+			$this->jshopConfig = JSFactory::getConfig();
 		}
 
 		if ((int) $this->addonParams['enabled'] === 1 && $this->checkView === null)
@@ -145,27 +146,31 @@ class NevigenonestepcheckoutController extends BaseController
 
 	public function display($cachable = false, $urlparams = false)
 	{
-		if (!$this->jshopConfig->shop_user_guest){
+		if (!$this->jshopConfig->shop_user_guest)
+		{
 			Helper::checkUserLogin();
 		}
 
 		$cart = JSFactory::getModel('cart', 'Site');
 		$cart->load();
 
-		if ($cart->getCountProduct() == 0){
-			$this->app->redirect(Helper::SEFLink('index.php?option=com_jshopping&controller=cart&task=view',1,1));
+		if ($cart->getCountProduct() == 0)
+		{
+			$this->app->redirect(Helper::SEFLink('index.php?option=com_jshopping&controller=cart&task=view', 1, 1));
 			exit();
 		}
 
-		if ($this->jshopConfig->min_price_order && ($cart->getPriceProducts() < ($this->jshopConfig->min_price_order * $this->jshopConfig->currency_value) )){
+		if ($this->jshopConfig->min_price_order && ($cart->getPriceProducts() < ($this->jshopConfig->min_price_order * $this->jshopConfig->currency_value)))
+		{
 			JSError::raiseNotice("", sprintf(Text::_('JSHOP_ERROR_MIN_SUM_ORDER'), Helper::formatprice($this->jshopConfig->min_price_order * $this->jshopConfig->currency_value)));
 		}
 
-		if ($this->jshopConfig->max_price_order && ($cart->getPriceProducts() > ($this->jshopConfig->max_price_order * $this->jshopConfig->currency_value) )){
+		if ($this->jshopConfig->max_price_order && ($cart->getPriceProducts() > ($this->jshopConfig->max_price_order * $this->jshopConfig->currency_value)))
+		{
 			JSError::raiseNotice("", sprintf(Text::_('JSHOP_ERROR_MAX_SUM_ORDER'), Helper::formatprice($this->jshopConfig->max_price_order * $this->jshopConfig->currency_value)));
 		}
 
-		$adv_user        = \JSFactory::getUser();
+		$adv_user        = JSFactory::getUser();
 		$shop_user_guest = (int) $this->jshopConfig->shop_user_guest;
 
 		PluginHelper::importPlugin('jshoppingcheckout');
@@ -174,12 +179,12 @@ class NevigenonestepcheckoutController extends BaseController
 
 		if ($shop_user_guest === 0)
 		{
-			\JSFactory::getModel('userlogin', 'Site')->setPayWithoutReg();
+			JSFactory::getModel('userlogin', 'Site')->setPayWithoutReg();
 			Helper::checkUserLogin();
 		}
 		elseif ($shop_user_guest === 1 && empty($this->app->getSession()->get('show_pay_without_reg')))
 		{
-			\JSFactory::getModel('userlogin', 'Site')->setPayWithoutReg();
+			JSFactory::getModel('userlogin', 'Site')->setPayWithoutReg();
 			Helper::checkUserLogin();
 		}
 
@@ -208,8 +213,6 @@ class NevigenonestepcheckoutController extends BaseController
 			$adv_user->d_birthday = Helper::getDisplayDate($adv_user->d_birthday, $this->jshopConfig->field_birthday_format);
 		}
 
-		Helper::filterHTMLSafe($adv_user, ENT_QUOTES);
-
 		$form = $this->getFormAddress($adv_user);
 
 		$this->app->triggerEvent('onAfterNevigenOneStepCheckoutGetFormAddress', [&$form]);
@@ -224,6 +227,16 @@ class NevigenonestepcheckoutController extends BaseController
 		$view->set('show_login', ((int) $this->addonParams['show_login'] === 1));
 		$view->set('form_address', $form);
 		$view->set('jshopConfig', $this->jshopConfig);
+
+		if (!empty($cart->rabatt_id))
+		{
+			$coupon = JSFactory::getTable('coupon');
+			$coupon->load($cart->rabatt_id);
+			if (!empty($coupon->coupon_code))
+			{
+				$view->coupon_code_active = $coupon->coupon_code;
+			}
+		}
 
 		$this->app->triggerEvent('onBeforeDisplayCheckoutStep2View', [&$view]);
 
@@ -262,7 +275,7 @@ class NevigenonestepcheckoutController extends BaseController
 				$cart_products[] = $products['product_id'];
 			}
 			$cart_products   = array_unique($cart_products);
-			$_product_option = \JSFactory::getTable('productOption', 'jshop');
+			$_product_option = JSFactory::getTable('productOption', 'jshop');
 			$list_no_return  = $_product_option->getProductOptionList($cart_products, 'no_return');
 			$no_return       = intval(in_array('1', $list_no_return));
 		}
@@ -294,8 +307,8 @@ class NevigenonestepcheckoutController extends BaseController
 
 		if (!empty($type) && !empty($data))
 		{
-			$adv_user = \JSFactory::getUser();
-			$cart     = \JSFactory::getModel('cart', 'jshop');
+			$adv_user = JSFactory::getUser();
+			$cart     = JSFactory::getModel('cart', 'jshop');
 			$cart->load();
 			$user = $this->app->getIdentity();
 			$this->app->triggerEvent('onBeforeNevigenOneStepCheckoutSaveFormData', [$type, $data, $adv_user, $cart]);
@@ -440,7 +453,7 @@ class NevigenonestepcheckoutController extends BaseController
 			$data = $this->app->input->getArray();
 			if (isset($data['points_sub']))
 			{
-				$points_sub = ($data['points_sub'] != '') ? (float)$data['points_sub'] : 0;
+				$points_sub = ($data['points_sub'] != '') ? (float) $data['points_sub'] : 0;
 				if ($points_sub <= 0)
 				{
 					$this->app->getSession()->set('jshop_points_sub', 0);
@@ -470,7 +483,7 @@ class NevigenonestepcheckoutController extends BaseController
 			return false;
 		}
 
-		$checkout = \JSFactory::getModel('checkout', 'jshop');
+		$checkout = JSFactory::getModel('checkout', 'jshop');
 		$checkout->checkStep(2);
 
 		$session           = $this->app->getSession();
@@ -481,11 +494,11 @@ class NevigenonestepcheckoutController extends BaseController
 		$this->app->triggerEvent('onLoadCheckoutStep2save', array());
 
 		/** @var CartModel $cart */
-		$cart = \JSFactory::getModel('cart', 'jshop');
+		$cart = JSFactory::getModel('cart', 'jshop');
 		$cart->load();
 
 
-		$adv_user = \JSFactory::getUser();
+		$adv_user = JSFactory::getUser();
 
 		if (!$this->setAddress($cart, $adv_user))
 		{
@@ -553,7 +566,7 @@ class NevigenonestepcheckoutController extends BaseController
 		$this->jshopConfig->updateNextOrderNumber();
 
 		$payment_method_id = $cart->getPaymentId();
-		$pm_method         = \JSFactory::getTable('paymentMethod', 'jshop');
+		$pm_method         = JSFactory::getTable('paymentMethod', 'jshop');
 		$pm_method->load($payment_method_id);
 		$payment_method = $pm_method->payment_class;
 
@@ -583,7 +596,7 @@ class NevigenonestepcheckoutController extends BaseController
 
 		$sh_params    = $cart->getShippingParams();
 		$pm_params    = $cart->getPaymentParams();
-		$order        = \JSFactory::getTable('order', 'jshop');
+		$order        = JSFactory::getTable('order', 'jshop');
 		$arr_property = $order->getListFieldCopyUserToOrder();
 		foreach ($adv_user as $key => $value)
 		{
@@ -593,7 +606,7 @@ class NevigenonestepcheckoutController extends BaseController
 			}
 		}
 
-		$sh_mt_pr = \JSFactory::getTable('shippingMethodPrice', 'jshop');
+		$sh_mt_pr = JSFactory::getTable('shippingMethodPrice', 'jshop');
 		$sh_mt_pr->load($cart->getShippingPrId());
 		$order->order_date = $order->order_m_date = Helper::getJsDate();
 		$order->order_tax  = $cart->getTax(1, 1, 1);
@@ -636,7 +649,7 @@ class NevigenonestepcheckoutController extends BaseController
 
 		if (is_array($sh_params))
 		{
-			$sh_method = \JSFactory::getTable('shippingMethod', 'jshop');
+			$sh_method = JSFactory::getTable('shippingMethod', 'jshop');
 			$sh_method->load($cart->getShippingId());
 			$shippingForm = $sh_method->getShippingForm();
 			if ($shippingForm)
@@ -757,23 +770,11 @@ class NevigenonestepcheckoutController extends BaseController
 
 		$this->app->triggerEvent('onAfterCreateOrder', array(&$order, &$cart));
 
-		if ($cart->getCouponId())
+		if ($order->order_created)
 		{
-			$coupon = \JSFactory::getTable('coupon', 'jshop');
-			$coupon->load($cart->getCouponId());
-			if ($coupon->finished_after_used)
-			{
-				$free_discount = $cart->getFreeDiscount();
-				if ($free_discount > 0)
-				{
-					$coupon->coupon_value = $free_discount / $this->jshopConfig->currency_value;
-				}
-				else
-				{
-					$coupon->used = $adv_user->user_id;
-				}
-				$coupon->store();
-			}
+			/** @var CheckoutOrderModel $model */
+			$model = JSFactory::getModel('CheckoutOrder', 'Site');
+			$model->couponFinished($order);
 		}
 
 		$order->saveOrderItem($cart->products);
@@ -783,7 +784,7 @@ class NevigenonestepcheckoutController extends BaseController
 
 		$session->set('jshop_end_order_id', $order->order_id);
 
-		$order_history                    = \JSFactory::getTable('orderHistory', 'jshop');
+		$order_history                    = JSFactory::getTable('orderHistory', 'jshop');
 		$order_history->order_id          = $order->order_id;
 		$order_history->order_status_id   = $order->order_status;
 		$order_history->status_date_added = $order->order_date;
@@ -867,9 +868,9 @@ class NevigenonestepcheckoutController extends BaseController
 				else
 				{
 					return $this->setJSONResponse([
-						'price'  => Helper::formatprice($product['price']),
-						'sum'  => Helper::formatprice($product['price'] * $product['quantity']),
-						'cart' => Helper::formatprice($cart->price_product)
+						'price' => Helper::formatprice($product['price']),
+						'sum'   => Helper::formatprice($product['price'] * $product['quantity']),
+						'cart'  => Helper::formatprice($cart->price_product)
 					]);
 				}
 
@@ -896,7 +897,11 @@ class NevigenonestepcheckoutController extends BaseController
 			try
 			{
 				$cart->delete($product_id);
-				$this->setJSONResponse(Helper::formatprice($cart->price_product));
+
+				$this->setJSONResponse([
+					'total'=>Helper::formatprice($cart->price_product),
+					'products' => (!empty($cart->products)) ? array_keys($cart->products) : []
+				]);
 
 			}
 			catch (\Exception $e)
@@ -924,7 +929,7 @@ class NevigenonestepcheckoutController extends BaseController
 		}
 		$remember = (!empty($data['remember']));
 
-		$model = \JSFactory::getModel('userlogin', 'Site');
+		$model = JSFactory::getModel('userlogin', 'Site');
 		if ($model->login($data['login'], $data['password'], array('remember' => $remember)))
 		{
 			Helper::setNextUpdatePrices();
@@ -967,8 +972,8 @@ class NevigenonestepcheckoutController extends BaseController
 		$code = $this->input->get('rabatt', '');
 		if ($code)
 		{
-			$coupon = \JSFactory::getTable('coupon');
-			$cart   = \JSFactory::getModel('cart', 'Site');
+			$coupon = JSFactory::getTable('coupon');
+			$cart   = JSFactory::getModel('cart', 'Site');
 
 			if ($coupon->getEnableCode($code))
 			{
@@ -984,13 +989,28 @@ class NevigenonestepcheckoutController extends BaseController
 		}
 	}
 
+	public function disableRabbatAjax()
+	{
+		if (!Session::checkToken())
+		{
+			return $this->setJSONResponse('', Text::_('JINVALID_TOKEN'), true);
+		}
+
+		$cart = JSFactory::getModel('Cart', 'Site');
+		$cart->load();
+		$cart->setRabatt(0, 0, 0);
+
+		return $this->setJSONResponse();
+
+	}
+
 	protected function customerRegister($data = [])
 	{
 		if (empty($data)) return false;
 		try
 		{
 			$this->app->getLanguage()->load('com_users');
-			$model = \JSFactory::getModel('userregister', 'Site');
+			$model = JSFactory::getModel('userregister', 'Site');
 
 			/** @var UserregisterModel $model */
 			$model->setData($data);
@@ -1026,7 +1046,7 @@ class NevigenonestepcheckoutController extends BaseController
 	protected function getCartAjax()
 	{
 		/** @var CartModel $cart */
-		$cart = \JSFactory::getModel('cart', 'Site');
+		$cart = JSFactory::getModel('cart', 'Site');
 		$cart->init();
 
 		return $cart;
@@ -1226,7 +1246,7 @@ class NevigenonestepcheckoutController extends BaseController
 
 	protected function setDataSmallCart(&$view)
 	{
-		$cart = \JSFactory::getModel('cart', 'jshop');
+		$cart = JSFactory::getModel('cart', 'jshop');
 		$cart->load();
 		$cart->addLinkToProducts(0);
 		$cart->setDisplayFreeAttributes();
@@ -1247,7 +1267,7 @@ class NevigenonestepcheckoutController extends BaseController
 		$view->set('no_image', $this->jshopConfig->noimage);
 		$view->set('discount', $cart->getDiscountShow());
 		$view->set('free_discount', $cart->getFreeDiscount());
-		$deliverytimes = \JSFactory::getAllDeliveryTime();
+		$deliverytimes = JSFactory::getAllDeliveryTime();
 		$view->set('deliverytimes', $deliverytimes);
 		if (!$this->jshopConfig->without_shipping)
 		{
@@ -1273,9 +1293,9 @@ class NevigenonestepcheckoutController extends BaseController
 			$tax_list = $cart->getTaxExt(0, 1, 1);
 		}
 
-		$lang              = \JSFactory::getLang();
+		$lang              = JSFactory::getLang();
 		$name              = $lang->get('name');
-		$pm_method         = \JSFactory::getTable('paymentMethod', 'jshop');
+		$pm_method         = JSFactory::getTable('paymentMethod', 'jshop');
 		$payment_method_id = $cart->getPaymentId();
 		$pm_method->load($payment_method_id);
 		$view->set('payment_name', $pm_method->$name);
@@ -1306,11 +1326,11 @@ class NevigenonestepcheckoutController extends BaseController
 
 	protected function getDeliveryTimeDate($cart): array
 	{
-		$sh_mt_pr = \JSFactory::getTable('shippingMethodPrice', 'jshop');
+		$sh_mt_pr = JSFactory::getTable('shippingMethodPrice', 'jshop');
 		$sh_mt_pr->load($cart->getShippingPrId());
 		if ($this->jshopConfig->show_delivery_time_checkout && $cart->getShippingPrId())
 		{
-			$deliverytimes = \JSFactory::getAllDeliveryTime();
+			$deliverytimes = JSFactory::getAllDeliveryTime();
 			$delivery_time = (isset($deliverytimes[$sh_mt_pr->delivery_times_id]))
 				? $deliverytimes[$sh_mt_pr->delivery_times_id] : '';
 			if (!$delivery_time && $this->jshopConfig->delivery_order_depends_delivery_product)
@@ -1341,7 +1361,7 @@ class NevigenonestepcheckoutController extends BaseController
 
 	protected function getPayments($adv_user, &$cart): array
 	{
-		$paymentmethod       = \JSFactory::getTable('paymentmethod', 'jshop');
+		$paymentmethod       = JSFactory::getTable('paymentmethod', 'jshop');
 		$shipping_id         = $cart->getShippingId();
 		$all_payment_methods = $paymentmethod->getAllPaymentMethods(1, $shipping_id);
 		$i                   = 0;
@@ -1471,16 +1491,16 @@ class NevigenonestepcheckoutController extends BaseController
 
 	protected function getShippings($adv_user, $id_country, &$cart): array
 	{
-		$shippingmethod      = \JSFactory::getTable('shippingMethod', 'jshop');
-		$shippingmethodprice = \JSFactory::getTable('shippingMethodPrice', 'jshop');
+		$shippingmethod      = JSFactory::getTable('shippingMethod', 'jshop');
+		$shippingmethodprice = JSFactory::getTable('shippingMethodPrice', 'jshop');
 
 		if ($this->jshopConfig->show_delivery_time_checkout)
 		{
-			$deliverytimes = \JSFactory::getAllDeliveryTime();
+			$deliverytimes = JSFactory::getAllDeliveryTime();
 		}
 		if ($this->jshopConfig->show_delivery_date)
 		{
-			$deliverytimedays = \JSFactory::getAllDeliveryTimeDays();
+			$deliverytimedays = JSFactory::getAllDeliveryTimeDays();
 		}
 
 
@@ -1573,7 +1593,7 @@ class NevigenonestepcheckoutController extends BaseController
 		$this->app->triggerEvent('onBeforeSaveCheckoutStep3save', array(&$post));
 
 		$params_pm          = $params[$payment_method] ?? '';
-		$paym_method        = \JSFactory::getTable('paymentmethod', 'jshop');
+		$paym_method        = JSFactory::getTable('paymentmethod', 'jshop');
 		$paym_method->class = $payment_method;
 		$payment_method_id  = $paym_method->getId();
 		$paym_method->load($payment_method_id);
@@ -1710,10 +1730,10 @@ class NevigenonestepcheckoutController extends BaseController
 
 		$this->app->triggerEvent('onBeforeSaveCheckoutStep4save', array());
 
-		$shipping_method_price = \JSFactory::getTable('shippingMethodPrice', 'jshop');
+		$shipping_method_price = JSFactory::getTable('shippingMethodPrice', 'jshop');
 		$shipping_method_price->load($sh_pr_method_id);
 
-		$sh_method = \JSFactory::getTable('shippingMethod', 'jshop');
+		$sh_method = JSFactory::getTable('shippingMethod', 'jshop');
 		$sh_method->load($shipping_method_price->shipping_method_id);
 		$params_sm = $params[$sh_method->shipping_id] ?? '';
 
@@ -1762,7 +1782,7 @@ class NevigenonestepcheckoutController extends BaseController
 		if ($this->jshopConfig->show_delivery_date)
 		{
 			$delivery_date    = '';
-			$deliverytimedays = \JSFactory::getAllDeliveryTimeDays();
+			$deliverytimedays = JSFactory::getAllDeliveryTimeDays();
 			$day              = $deliverytimedays[$shipping_method_price->delivery_times_id] ?? null;
 			if ($day)
 			{
@@ -1787,7 +1807,7 @@ class NevigenonestepcheckoutController extends BaseController
 		$payment_method_id = $cart->getPaymentId();
 		if ($payment_method_id)
 		{
-			$paym_method = \JSFactory::getTable('paymentmethod', 'jshop');
+			$paym_method = JSFactory::getTable('paymentmethod', 'jshop');
 			$paym_method->load($payment_method_id);
 			$cart->setDisplayItem(1, 1);
 			$paym_method->setCart($cart);
@@ -1819,7 +1839,7 @@ class NevigenonestepcheckoutController extends BaseController
 
 	protected function isCorectMethodForPayment(&$cart, $shipping_id, $ajax = false): bool
 	{
-		$shipping_method = \JSFactory::getTable('shippingmethod', 'jshop');
+		$shipping_method = JSFactory::getTable('shippingmethod', 'jshop');
 		$shipping_method->load($shipping_id);
 
 		if (empty($shipping_method->payments))
@@ -1832,7 +1852,7 @@ class NevigenonestepcheckoutController extends BaseController
 		{
 			if ((int) $this->jshopConfig->step_4_3 === 1 && $ajax)
 			{
-				$paymentmethod       = \JSFactory::getTable('paymentmethod', 'jshop');
+				$paymentmethod       = JSFactory::getTable('paymentmethod', 'jshop');
 				$all_payment_methods = $paymentmethod->getAllPaymentMethods(1, $shipping_id);
 				if (!empty($all_payment_methods))
 				{
@@ -2045,7 +2065,7 @@ class NevigenonestepcheckoutController extends BaseController
 			{
 				if ($this->listCountry === null)
 				{
-					$country           = \JSFactory::getTable('country');
+					$country           = JSFactory::getTable('country');
 					$this->listCountry = $country->getAllCountries();
 				}
 

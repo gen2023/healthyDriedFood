@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop Novaposhta Shipping Package
- * @version    1.3.6
+ * @version    1.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -21,65 +21,37 @@ extract($displayData);
  * @var  int    $shippingId     Shipping id.
  * @var  int    $valuePostcode  Postcode value
  * @var  string $valueCity      City value
- * @var  array  $postomat      Pickup points array
+ * @var  array  $postomat       Pickup points array
  * @var  string $valuePoshtomat Pickup point value
- * @var  int    $typeSearch     Type search api NP
- *                              0 - postcode city
- *                              1 - city name
  *
  */
 
-$inputClass = 'w-auto nevigen_novaposhta-input-postcode';
-$inputId = 'nevigen_novaposhta_postcode_'.$shippingId;
-if (($typeSearch === 1))
-{
-	$inputClass = 'nevigen_novaposhta-input-city';
-	$inputId = 'nevigen_novaposhta_postcode_city_'.$shippingId;
+$inputId    = 'nevigen_novaposhta_city_' . $shippingId;
 
-	// Load asses autocomplete
-	/** @var \Joomla\CMS\WebAsset\WebAssetManager $assets */
-	$assets = \Joomla\CMS\Factory::getApplication()->getDocument()->getWebAssetManager();
-	$assets->usePreset('nevigen_novaposhta.autocomplete');
-}
+// Load asses autocomplete
+/** @var \Joomla\CMS\WebAsset\WebAssetManager $assets */
+$assets = \Joomla\CMS\Factory::getApplication()->getDocument()->getWebAssetManager();
+$assets->usePreset('nevigen_novaposhta.autocomplete');
 ?>
 <div class="nevigen_novaposhta-pickup-container" data-nevigen-novaposhta-container="<?php echo $shippingId ?>">
 	<div data-nevigen-novaposhta-message="<?php echo $shippingId ?>"></div>
 	<div class="row g-1">
-		<div class="nevigen-novaposhta-pickup-postcode mt-2 <?php echo ($typeSearch === 0) ? 'col-md-2' : 'col-md-4'; ?>">
+		<div class="nevigen-novaposhta-pickup-city mt-2 col-md-4">
 			<label for="<?php echo $inputId ?>">
-				<?php echo ($typeSearch === 0) ? Text::_('ADDON_NEVIGEN_NOVAPOSHTA_PLACEHOLDER_POSTCODE')
-					: Text::_('ADDON_NEVIGEN_NOVAPOSHTA_LABEL_CITY') ?>
+				<?php echo Text::_('ADDON_NEVIGEN_NOVAPOSHTA_LABEL_CITY'); ?>
 			</label>
-			<?php if ($typeSearch === 0): ?>
-				<input type="text" name="params[<?php echo $shippingId ?>][nevigen_novaposhta_postcode]"
-					   id="<?php echo $inputId ?>"
-					   placeholder="03170"
-					   data-nevigen-novaposhta="pickup"
-					   onchange="window.NevigenNovaposhta.checkPostcode(this,<?php echo $shippingId ?>)"
-					   oninput="window.NevigenNovaposhta.validPostcode(this,<?php echo $shippingId ?>)"
-					   class="form-control uk-input w-auto nevigen_novaposhta-input-postcode"
-					   value="<?php echo $valuePostcode ?>"/>
-				<a class="nevigen_novaposhta-find-postcode small" href="https://index.ukrposhta.ua/find-post-index"
-				   target="_blank">
-					<?php echo Text::_('ADDON_NEVIGEN_NOVAPOSHTA_FIND_ZIP'); ?>
-				</a>
-			<?php else: ?>
+
 				<div data-nevigen-novaposhta-autocomplete="city">
 					<input type="text" name="params[<?php echo $shippingId ?>][nevigen_novaposhta_city]"
 						   id="<?php echo $inputId ?>"
 						   placeholder="<?php echo Text::_('ADDON_NEVIGEN_NOVAPOSHTA_PLACEHOLDER_CITY') ?>"
-						   class="form-control uk-input <?php echo $inputClass; ?>"
+						   class="form-control uk-input nevigen_novaposhta-input-city"
 						   oninput="window.NevigenNovaposhta.searchCity(this,<?php echo $shippingId ?>)"
 						   data-nevigen-novaposhta="postomat"
 						   value="<?php echo $valueCity ?>"/>
 				</div>
-				<input type="hidden" name="params[<?php echo $shippingId ?>][nevigen_novaposhta_postcode]"
-					   id="postcode_<?php echo $shippingId ?>"
-					   data-nevigen-novaposhta="postomat"
-					   value="<?php echo $valuePostcode ?>"/>
-			<?php endif; ?>
 		</div>
-		<div class="nevigen-novaposhta-pickup-postomat mt-2 <?php echo ($typeSearch === 0) ? 'col-md-10' : 'col-md-8'; ?>">
+		<div class="nevigen-novaposhta-pickup-postomat mt-2 col-md-8">
 			<label for="nevigen_novaposhta_postomat_<?php echo $shippingId ?>">
 				<?php echo Text::_('ADDON_NEVIGEN_NOVAPOSHTA_PLACEHOLDER_POSTOMAT'); ?>
 			</label>
@@ -87,7 +59,7 @@ if (($typeSearch === 1))
 					id="nevigen_novaposhta_postomat_<?php echo $shippingId ?>"
 					onchange="window.NevigenNovaposhta.calculation(this,'postomat',<?php echo $shippingId; ?>)"
 					class="form-control uk-select w-auto nevigen_novaposhta-select-pickup-points"
-				<?php echo (empty($valuePostcode) || empty($postomat)) ? ' disabled ' : ''; ?>>
+				<?php echo (empty($valueCity) || empty($postomat)) ? ' disabled ' : ''; ?>>
 				<option value="">
 					<?php echo Text::_('ADDON_NEVIGEN_NOVAPOSHTA_PLACEHOLDER_POSTOMAT'); ?>
 				</option>

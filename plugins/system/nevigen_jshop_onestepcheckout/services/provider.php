@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Package
  * @subpackage  plg_system_radicalmart
- * @version     1.1.0
+ * @version     1.1.3
  * @author      Delo Design - delo-design.ru
  * @copyright   Copyright (c) 2023 Delo Design. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html

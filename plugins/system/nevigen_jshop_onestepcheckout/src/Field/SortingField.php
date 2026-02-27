@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop OneStepCheckout
- * @version    1.1.0
+ * @version    1.1.3
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -11,6 +11,7 @@
 namespace Joomla\Plugin\System\NevigenJshopOneStepCheckout\Field;
 
 use Joomla\CMS\Form\FormField;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
 
 class SortingField extends FormField
 {
@@ -60,7 +61,7 @@ class SortingField extends FormField
 		{
 			if ($this->fields === null)
 			{
-				$jshopConfig  = \JSFactory::getConfig();
+				$jshopConfig  = JSFactory::getConfig();
 				$tmp          = $jshopConfig->getListFieldsRegister();
 				$this->fields = $tmp['address'];
 

@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop OneStepCheckout Package
- * @version    1.1.0
+ * @version    1.1.3
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -17,6 +17,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Component\Jshopping\Site\Helper\Helper;
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
 use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Plugin\System\NevigenJshopOneStepCheckout\Helper\NevigenHelper;
 
@@ -63,7 +64,7 @@ class NevigenJshopOneStepCheckout extends CMSPlugin
 		$app = $this->getApplication();
 		if ($app->isClient('site') && $app->input->getString('option') === 'com_jshopping')
 		{
-			if (!class_exists('JSFactory') || !class_exists('JSHelper'))
+			if (!class_exists('JSFactory'))
 			{
 				$bootstrap = JPATH_ROOT . '/components/com_jshopping/bootstrap.php';
 				if (is_file($bootstrap))
@@ -75,7 +76,7 @@ class NevigenJshopOneStepCheckout extends CMSPlugin
 
 			if ($this->addonParams === null)
 			{
-				$addon = \JSFactory::getTable('addon', 'jshop');
+				$addon = JSFactory::getTable('addon', 'jshop');
 				$addon->loadAlias('nevigen_onestepcheckout');
 				$params = $addon->getParams();
 
@@ -91,7 +92,7 @@ class NevigenJshopOneStepCheckout extends CMSPlugin
 
 			if ($this->jshopConfig === null)
 			{
-				$this->jshopConfig = \JSFactory::getConfig();
+				$this->jshopConfig = JSFactory::getConfig();
 			}
 
 			if ($this->addonEnabled)
@@ -141,7 +142,7 @@ class NevigenJshopOneStepCheckout extends CMSPlugin
 			$shop_register_type[] = HTMLHelper::_('select.option', $i,
 				Text::_('PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_PARAMS_SHOP_REGISTER_TYPE_' . $i), 'id', 'name');
 		}
-		$jshopConfig = \JSFactory::getConfig();
+		$jshopConfig = JSFactory::getConfig();
 		$listoptions = [
 			'option.key'  => 'id',
 			'option.text' => 'name',
@@ -301,7 +302,7 @@ class NevigenJshopOneStepCheckout extends CMSPlugin
 			if (is_file($path))
 			{
 				//Set variables
-				$order = \JSFactory::getTable('order');
+				$order = JSFactory::getTable('order');
 				$order->load($order_id);
 				$order->prepareOrderPrint('order_show');
 				$params      = (isset($this->addonParams['finish'])) ? $this->addonParams['finish'] : [];

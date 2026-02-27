@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop OneStepCheckout
- * @version    1.1.0
+ * @version    1.1.3
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -9,6 +9,7 @@
  */
 
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Jshopping\Site\Helper\Helper;
 
 \defined('_JEXEC') or die;
 
@@ -47,7 +48,7 @@ use Joomla\CMS\Language\Text;
 								<div>
 									<?php if ($shipping->calculeprice > 0): ?>
 										<span class="nvg_shipping_cost">
-											<?php echo \JSHelper::formatprice($shipping->calculeprice); ?>
+											<?php echo Helper::formatprice($shipping->calculeprice); ?>
 										</span>
 									<?php else: ?>
 										<span class="btn btn-sm btn-success nvg_shipping_cost">
@@ -64,17 +65,17 @@ use Joomla\CMS\Language\Text;
 										<div class="weight">
 											<?php if ($price->shipping_weight_to != 0)
 											{
-												echo \JSHelper::formatweight($price->shipping_weight_from) .
-													' - ' . \JSHelper::formatweight($price->shipping_weight_to);
+												echo Helper::formatweight($price->shipping_weight_from) .
+													' - ' . Helper::formatweight($price->shipping_weight_to);
 											}
 											else
 											{
 												echo Text::_('JSHOP_FROM') . ' '
-													. \JSHelper::formatweight($price->shipping_weight_from);
+													. Helper::formatweight($price->shipping_weight_from);
 											} ?>
 										</div>
 										<div class="price">
-											<?php echo \JSHelper::formatprice($price->shipping_price); ?>
+											<?php echo Helper::formatprice($price->shipping_price); ?>
 										</div>
 									</div>
 								<?php endforeach; ?>

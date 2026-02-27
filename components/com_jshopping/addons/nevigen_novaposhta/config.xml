@@ -3,7 +3,7 @@
 	<fieldset name="main" addfieldprefix="Joomla\Plugin\JShopping\NevigenNovaposhta\Field">
 		<field name="addon" type="hidden" default="nevigen_novaposhta"/>
 		<field name="apikey" type="text"
-			   hint="1aa4as26f87889daft35ba8cd094ng2dp"
+			   hint="1aa4as26f87889daft35ba8cd09d21wse"
 			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_APIKEY"
 			   class="w-100"/>
 		<field name="currency" type="currency"
@@ -28,13 +28,6 @@
 			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_HEIGHT">
 			<option value="">JNONE</option>
 		</field>
-		<field name="type_search" type="list"
-			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_TYPE_SEARCH"
-			   default="0"
-			   filter="integer">
-			<option value="0">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_TYPE_SEARCH_0</option>
-			<option value="1">ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_TYPE_SEARCH_1</option>
-		</field>
 		<field name="enabled_cost_order" type="list"
 			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_ENABLED_COST_ORDER"
 			   description="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_ENABLED_COST_ORDER_DESC"
@@ -46,8 +39,9 @@
 		</field>
 	</fieldset>
 	<fieldset name="sender">
-		<field name="sender_postcode" type="text"
-			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_SENDER_POSTCODE"/>
+		<field name="sender_city" type="city"
+			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_SENDER_CITY"
+			   class="w-100"/>
 		<field name="sender_type" type="list"
 			   label="ADDON_NEVIGEN_NOVAPOSHTA_PARAMS_SENDER_TYPE"
 			   default="warehouse">

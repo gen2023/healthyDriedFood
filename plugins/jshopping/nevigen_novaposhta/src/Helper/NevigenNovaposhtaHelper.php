@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop Novaposhta Shipping Package
- * @version    1.3.6
+ * @version    1.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -30,14 +30,14 @@ class NevigenNovaposhtaHelper
 	protected static string $api = 'https://api.novaposhta.ua/v2.0/json/';
 	protected static array $calculateUkraine = [];
 
-	public static function calculateUkraine($postcode_recipient = null, $recipientServiceType = null)
+	public static function calculateUkraine($cityName = null, $recipientServiceType = null)
 	{
 		$typeDisplay = (int) self::config('enabled_cost_order', 1);
 		if ($typeDisplay === 0)
 		{
 			return true;
 		}
-		if (empty($recipientServiceType) || empty($postcode_recipient)) return false;
+		if (empty($recipientServiceType) || empty($cityName)) return false;
 
 		$cartData = self::getCartData();
 		if (empty($cartData))
@@ -45,7 +45,7 @@ class NevigenNovaposhtaHelper
 			return false;
 		}
 
-		$sender = self::config('sender_postcode', '');
+		$sender = self::config('sender_city', '');
 		if (empty($sender))
 		{
 			return false;
@@ -53,11 +53,12 @@ class NevigenNovaposhtaHelper
 		$serviceType = ucfirst(self::config('sender_type', 'warehouse'))
 			. ucfirst($recipientServiceType);
 		$sender      = self::getCity($sender);
+
 		if (empty($sender))
 		{
 			return false;
 		}
-		$recipient = self::getCity($postcode_recipient);
+		$recipient = self::getCity($cityName);
 		if (empty($recipient))
 		{
 			return false;
@@ -106,7 +107,6 @@ class NevigenNovaposhtaHelper
 				{
 					$cart->setShippingPrice(0);
 				}
-
 
 				$calculate = [
 					'price'        => $price,
@@ -157,87 +157,59 @@ class NevigenNovaposhtaHelper
 		return false;
 	}
 
-	public static function getPostcodeByRef($ref)
+	public static function getCity($cityName = null)
 	{
-		if (empty($ref))
+		if (empty($cityName))
 		{
 			return false;
 		}
-		$request = self::request('Address', 'getSettlements', [
-			'Ref'   => $ref,
-			'Limit' => 1,
-			'Page'  => 1,
+
+		$request = self::request('Address', 'searchSettlements', [
+			'CityName' => $cityName,
+			'Limit'    => 1,
+			'Page'     => 1,
 		]);
-		if (!empty($request) && !empty($request['data'][0]['Index1']))
+
+		if (!empty($request) && !empty($request['data']) && !empty($request['data'][0]['Addresses'][0]))
 		{
-			return $request['data'][0]['Index1'];
+			$data = [
+				'name'          => $request['data'][0]['Addresses'][0]['Present'],
+				'warehouses'    => $request['data'][0]['Addresses'][0]['Warehouses'],
+				'ref'           => $request['data'][0]['Addresses'][0]['Ref'],
+				'delivery_city' => $request['data'][0]['Addresses'][0]['DeliveryCity'],
+				'delivery'      => $request['data'][0]['Addresses'][0]['AddressDeliveryAllowed'],
+				'street'        => $request['data'][0]['Addresses'][0]['StreetsAvailability'],
+			];
+
+
+			unset($nevigen_novaposhta, $request);
+
+
+			return $data;
 		}
+
 
 		return false;
 	}
 
-	public static function getCity($postcode = null)
+	public static function getWarehouses($city = null, $refData = false, $removeOldData = false)
 	{
-		if (empty($postcode))
+		return self::getWarehousesData('warehouses', $city, $refData, $removeOldData);
+	}
+
+	public static function getPostomat($city = null, $refData = false, $removeOldData = false)
+	{
+		return self::getWarehousesData('postomat', $city, $refData, $removeOldData);
+	}
+
+	protected static function getWarehousesData($type = null, $cityName = null, $refData = false, $removeOldData = false)
+	{
+		if (empty($cityName) || ($type != 'warehouses' && $type != 'postomat'))
 		{
 			return false;
 		}
 
-		/** @var \Joomla\Session\SessionInterface $session */
-		$session            = Factory::getApplication()->getSession();
-		$nevigen_novaposhta = $session->get('nevigen_novaposhta', []);
-		if (empty($nevigen_novaposhta) || empty($nevigen_novaposhta[$postcode]))
-		{
-			$request = self::request('Address', 'searchSettlements', [
-				'CityName' => $postcode,
-				'Limit'    => 1,
-				'Page'     => 1,
-			]);
-			if (!empty($request) && !empty($request['data']) && !empty($request['data'][0]['Addresses'][0]))
-			{
-				$data = [
-					'name'          => $request['data'][0]['Addresses'][0]['Present'],
-					'warehouses'    => $request['data'][0]['Addresses'][0]['Warehouses'],
-					'ref'           => $request['data'][0]['Addresses'][0]['Ref'],
-					'delivery_city' => $request['data'][0]['Addresses'][0]['DeliveryCity'],
-					'delivery'      => $request['data'][0]['Addresses'][0]['AddressDeliveryAllowed'],
-					'street'        => $request['data'][0]['Addresses'][0]['StreetsAvailability'],
-				];
-
-				$nevigen_novaposhta[$postcode] = $data;
-				$session->set('nevigen_novaposhta', $nevigen_novaposhta);
-				unset($nevigen_novaposhta, $request, $session);
-
-
-				return $data;
-			}
-		}
-		else
-		{
-			return $nevigen_novaposhta[$postcode];
-		}
-
-		return false;
-	}
-
-	public static function getWarehouses($postcode = null, $refData = false, $removeOldData = false)
-	{
-		return self::getWarehousesData('warehouses', $postcode, $refData, $removeOldData);
-	}
-
-	public static function getPostomat($postcode = null, $refData = false, $removeOldData = false)
-	{
-		return self::getWarehousesData('postomat', $postcode, $refData, $removeOldData);
-	}
-
-	protected static function getWarehousesData($type = null, $postcode = null, $refData = false, $removeOldData = false)
-	{
-		if (empty($postcode) || ($type != 'warehouses' && $type != 'postomat'))
-		{
-			return false;
-		}
-
-		$city          = self::getCity($postcode);
+		$city          = self::getCity($cityName);
 		$limit         = 1000;
 		$getNewData    = true;
 		$warehousesAll = [];
@@ -398,15 +370,15 @@ class NevigenNovaposhtaHelper
 		return false;
 	}
 
-	public static function getStreets($postcode = null, $word = null)
+	public static function getStreets($cityName = null, $word = null)
 	{
 
-		if (empty($postcode) || empty($word))
+		if (empty($cityName) || empty($word))
 		{
 			return false;
 		}
 
-		$city = self::getCity($postcode);
+		$city = self::getCity($cityName);
 		if ($city)
 		{
 			$limit   = 3000;
@@ -446,7 +418,7 @@ class NevigenNovaposhtaHelper
 			return false;
 		}
 		$data['weight'] = $cart->getWeightProducts();
-		$data['total']  = self::convertApiPrice(floor($cart->getSum()),'to');
+		$data['total']  = self::convertApiPrice(floor($cart->getSum()), 'to');
 		$units          = self::config('units', 'kg');
 		if ($units === 'g')
 		{
@@ -772,16 +744,13 @@ class NevigenNovaposhtaHelper
 			$uahCurrencyId = (int) self::config('currency');
 			$currency      = JSFactory::getTable('currency');
 
-			if ($siteCurrency != $uahCurrencyId)
+			if ($currency->load($uahCurrencyId))
 			{
-				if ($currency->load($uahCurrencyId))
-				{
-					$uahValue = (float) $currency->currency_value;
+				$uahValue = (float) $currency->currency_value;
 
-					if ($uahValue > 0)
-					{
-						$price = $price / $uahValue;
-					}
+				if ($uahValue > 0)
+				{
+					$price = $price / $uahValue;
 				}
 			}
 

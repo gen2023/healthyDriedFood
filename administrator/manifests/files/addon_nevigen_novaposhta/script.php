@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop Novaposhta Shipping Package
- * @version    1.3.6
+ * @version    1.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -23,6 +23,7 @@ use Joomla\DI\ServiceProviderInterface;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\Path;
+use Joomla\Plugin\JShopping\NevigenNovaposhta\Helper\NevigenNovaposhtaHelper;
 
 return new class () implements ServiceProviderInterface {
 	public function register(Container $container)
@@ -176,7 +177,6 @@ return new class () implements ServiceProviderInterface {
 			 */
 			public function update(InstallerAdapter $adapter): bool
 			{
-
 				return true;
 			}
 
@@ -331,6 +331,25 @@ return new class () implements ServiceProviderInterface {
 						$tmp = $this->pathAddon . '/tmp';
 						if (is_dir($tmp)) Folder::delete($tmp);
 					}
+
+					if ($type === 'update'){
+						if ($this->addonTable && $this->addonTable->id)
+						{
+							$params = $this->addonTable->getParams();
+							if (!empty($params) && empty($params['sender_city']))
+							{
+								// Load language
+								$this->app->getLanguage()->load('addon_nevigen_novaposhta', JPATH_SITE);
+
+								$link = '<a class="btn btn-sm btn-success text-white" href="index.php?option=com_jshopping&controller=addons&task=edit&id='
+									.$this->addonTable->id.'">'
+									.Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_UPDATE_SENDER_CITY_TEXT').'</a>';
+								$this->app->enqueueMessage(Text::sprintf('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_UPDATE_SENDER_CITY',$link)
+									,'error');
+							}
+						}
+
+					}
 				}
 
 				return true;
@@ -439,9 +458,9 @@ return new class () implements ServiceProviderInterface {
 							// Set country
 							if (!empty($country_id) && !empty($insertPrice->sh_pr_method_id))
 							{
-								$insertPriceCountry                     = new \stdClass();
-								$insertPriceCountry->sh_pr_method_id    = $insertPrice->sh_pr_method_id;
-								$insertPriceCountry->country_id = $country_id;
+								$insertPriceCountry                  = new \stdClass();
+								$insertPriceCountry->sh_pr_method_id = $insertPrice->sh_pr_method_id;
+								$insertPriceCountry->country_id      = $country_id;
 
 								$this->db->insertObject('#__jshopping_shipping_method_price_countries',
 									$insertPriceCountry);

@@ -8,7 +8,7 @@
 	<license>Proprietary. Copyrighted Commercial Software</license>
 	<authorEmail>support@nevigen.com</authorEmail>
 	<authorUrl>https://nevigen.com</authorUrl>
-	<version>1.3.6</version>
+	<version>1.4.0</version>
 	<description>PKG_NEVIGEN_JSHOP_NOVAPOSHTA_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<languages folder="language">

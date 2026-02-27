@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop OneStepCheckout
- * @version    1.1.0
+ * @version    1.1.3
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -10,6 +10,7 @@
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Jshopping\Site\Helper\Helper;
 
 \defined('_JEXEC') or die;
 
@@ -129,7 +130,7 @@ use Joomla\CMS\Language\Text;
 				</div>
 				<div class="modal-body jviewport-height50">
 					<iframe class="w-100 h-100"
-							src="<?php echo \JSHelper::SEFLink('index.php?option=com_jshopping&controller=content&task=view&page=privacy_statement&tmpl=component'); ?>" frameborder="0"></iframe>
+							src="<?php echo Helper::SEFLink('index.php?option=com_jshopping&controller=content&task=view&page=privacy_statement&tmpl=component'); ?>" frameborder="0"></iframe>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
@@ -148,7 +149,7 @@ use Joomla\CMS\Language\Text;
 				</div>
 				<div class="modal-body jviewport-height50">
 					<iframe class="w-100 h-100"
-							src="<?php echo \JSHelper::SEFLink('index.php?option=com_jshopping&controller=content&task=view&page=agb&tmpl=component', 1); ?>" frameborder="0"></iframe>
+							src="<?php echo Helper::SEFLink('index.php?option=com_jshopping&controller=content&task=view&page=agb&tmpl=component', 1); ?>" frameborder="0"></iframe>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
@@ -166,7 +167,7 @@ use Joomla\CMS\Language\Text;
 			</div>
 			<div class="modal-body jviewport-height50">
 				<iframe class="w-100 h-100"
-						src="<?php echo \JSHelper::SEFLink('index.php?option=com_jshopping&controller=content&task=view&page=return_policy&tmpl=component&cart=1', 1); ?>" frameborder="0"></iframe>
+						src="<?php echo Helper::SEFLink('index.php?option=com_jshopping&controller=content&task=view&page=return_policy&tmpl=component&cart=1', 1); ?>" frameborder="0"></iframe>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>

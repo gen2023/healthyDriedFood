@@ -2,12 +2,12 @@
 <extension version="4.2" type="plugin" group="system" method="upgrade">
 	<name>PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT</name>
 	<author>Nevigen.com</author>
-	<creationDate>November 2024</creationDate>
+	<creationDate>November 2025</creationDate>
 	<copyright>copyright © Nevigen.com. All rights reserved</copyright>
 	<license>Proprietary. Copyrighted Commercial Software</license>
 	<authorEmail>support@nevigen.com</authorEmail>
 	<authorUrl>https://nevigen.com</authorUrl>
-	<version>1.1.0</version>
+	<version>1.1.3</version>
 	<description>PLG_SYSTEM_NEVIGEN_JSHOP_ONESTEPCHECKOUT_DESCRIPTION</description>
 	<namespace path="src">Joomla\Plugin\System\NevigenJshopOneStepCheckout</namespace>
 	<scriptfile>script.php</scriptfile>

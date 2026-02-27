@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen JShop Novaposhta Shipping Package
- * @version    1.3.6
+ * @version    1.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -38,17 +38,18 @@ class NevigenNovaposhtaController extends BaseController
 		{
 			return $this->setJSONResponse('', Text::_('JINVALID_TOKEN'), true);
 		}
-		$postcode = $this->input->getString('postcode');
+		$city = $this->input->getString('city');
 
-		if (empty($postcode))
+		if (empty($city))
 		{
-			return $this->setJSONResponse('', Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_POSTCODE'), true);
+			return $this->setJSONResponse('', Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_CITY'), true);
 		}
 		$type = $this->input->getString('type', '');
 		if (!empty($type))
 		{
-			$result = NevigenNovaposhtaHelper::calculateUkraine($postcode, $type);
-			if ($result === true){
+			$result = NevigenNovaposhtaHelper::calculateUkraine($city, $type);
+			if ($result === true)
+			{
 				return $this->setJSONResponse(['price_string' => 0]);
 			}
 			else
@@ -65,9 +66,13 @@ class NevigenNovaposhtaController extends BaseController
 
 	public function searchCity()
 	{
-		if (!Session::checkToken())
+		$isAdmin = $this->input->getInt('isAdmin',0);
+		if ($isAdmin <= 0)
 		{
-			return $this->setJSONResponse('', Text::_('JINVALID_TOKEN'), true);
+			if (!Session::checkToken())
+			{
+				return $this->setJSONResponse('', Text::_('JINVALID_TOKEN'), true);
+			}
 		}
 
 		$value = $this->input->getString('value');
@@ -77,29 +82,6 @@ class NevigenNovaposhtaController extends BaseController
 		}
 
 		$data = NevigenNovaposhtaHelper::searchCity($value);
-
-		if (!empty($data))
-		{
-			return $this->setJSONResponse($data);
-		}
-
-		return $this->setJSONResponse('', '', true);
-	}
-
-	public function getPostcodeByRef()
-	{
-		if (!Session::checkToken())
-		{
-			return $this->setJSONResponse('', Text::_('JINVALID_TOKEN'), true);
-		}
-
-		$ref = $this->input->getString('ref');
-		if (empty($ref))
-		{
-			return $this->setJSONResponse('', Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_SEARCH_CITY_VALUE'), true);
-		}
-
-		$data = NevigenNovaposhtaHelper::getPostcodeByRef($ref);
 
 		if (!empty($data))
 		{
@@ -121,18 +103,17 @@ class NevigenNovaposhtaController extends BaseController
 			return $this->setJSONResponse('', Text::_('JINVALID_TOKEN'), true);
 		}
 
-		$postcode = $this->input->getString('postcode');
+		$city = $this->input->getString('city');
 
-		if (empty($postcode))
+		if (empty($city))
 		{
-			$message = Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_POSTCODE');
-			if ((int)NevigenNovaposhtaHelper::config('type_search',0) === 1){
-				$message = Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_CITY');
-			}
+
+			$message = Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_CITY');
+
 			return $this->setJSONResponse('', $message, true);
 		}
 
-		$data = NevigenNovaposhtaHelper::getWarehouses($postcode);
+		$data = NevigenNovaposhtaHelper::getWarehouses($city);
 
 		if (!empty($data))
 		{
@@ -154,18 +135,16 @@ class NevigenNovaposhtaController extends BaseController
 			return $this->setJSONResponse('', Text::_('JINVALID_TOKEN'), true);
 		}
 
-		$postcode = $this->input->getString('postcode');
+		$city = $this->input->getString('city');
 
-		if (empty($postcode))
+		if (empty($city))
 		{
-			$message = Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_POSTCODE');
-			if ((int)NevigenNovaposhtaHelper::config('type_search',0) === 1){
-				$message = Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_CITY');
-			}
+			$message = Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_CITY');
+
 			return $this->setJSONResponse('', $message, true);
 		}
 
-		$data = NevigenNovaposhtaHelper::getPostomat($postcode);
+		$data = NevigenNovaposhtaHelper::getPostomat($city);
 
 		if (!empty($data))
 		{
@@ -188,15 +167,15 @@ class NevigenNovaposhtaController extends BaseController
 			return $this->setJSONResponse('', Text::_('JINVALID_TOKEN'), true);
 		}
 
-		$postcode = $this->input->getString('postcode');
+		$city = $this->input->getString('city');
 		$value    = $this->input->getString('value');
-		if (empty($postcode))
+		if (empty($city))
 		{
-			return $this->setJSONResponse('', Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_POSTCODE'), true);
+			return $this->setJSONResponse('', Text::_('ADDON_NEVIGEN_NOVAPOSHTA_ERROR_CITY'), true);
 		}
 		if (!empty($value))
 		{
-			$data = NevigenNovaposhtaHelper::getStreets($postcode, $value);
+			$data = NevigenNovaposhtaHelper::getStreets($city, $value);
 		}
 		if (!empty($data))
 		{
