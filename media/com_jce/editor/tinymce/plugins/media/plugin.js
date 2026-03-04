@@ -1,4 +1,4 @@
-/* jce - 2.9.97 | 2025-12-15 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function() {
     var each = tinymce.each, extend = tinymce.extend, Node = tinymce.html.Node, VK = tinymce.VK, Serializer = tinymce.html.Serializer, DomParser = tinymce.html.DomParser, SaxParser = tinymce.html.SaxParser, DOM = tinymce.DOM;
     function indexOf(array, item) {
@@ -51,7 +51,7 @@
     function isCenterAligned(style) {
         return "block" == style.display && "auto" == style["margin-left"] && "auto" == style["margin-right"];
     }
-    var sandbox_iframes_exclusions = [ "youtube.com", "youtube-nocookie.com", "youtu.be", "vimeo.com", "player.vimeo.com", "dailymotion.com", "embed.music.apple.com", "open.spotify.com", "giphy.com", "dai.ly", "codepen.io", "maps.google.com", "google.com/maps", "docs.google.com", "google.com/docs", "sheets.google.com", "google.com/sheets", "slides.google.com", "google.com/slides", "forms.google.com", "google.com/forms", "canva.com", "slideshare.net", "slides.com", "facebook.com", "instagram.com", "bandcamp.com", "calendly.com" ], mediaProviders = {
+    var sandbox_iframes_exclusions = [ "youtube.com", "youtube-nocookie.com", "youtu.be", "vimeo.com", "player.vimeo.com", "dailymotion.com", "embed.music.apple.com", "open.spotify.com", "giphy.com", "dai.ly", "codepen.io", "maps.google.com", "google.com/maps", "docs.google.com", "google.com/docs", "sheets.google.com", "google.com/sheets", "slides.google.com", "google.com/slides", "forms.google.com", "google.com/forms", "canva.com", "slideshare.net", "slides.com", "facebook.com", "instagram.com" ], mediaProviders = {
         youtube: /youtu(\.)?be(.+)?\/(.+)/,
         vimeo: /vimeo(.+)?\/(.+)/,
         dailymotion: /dai\.?ly(motion)?(\.com)?/,
@@ -62,9 +62,7 @@
         ted: /ted\.com\/talks\/(.+)/,
         twitch: /twitch\.tv\/(.+)/,
         facebook: /facebook\.com\/(.+)/,
-        instagram: /instagram\.com\/(.+)/,
-        bandcamp: /bandcamp\.com\/(.+)/,
-        calendly: /calendly\.com\/(.+)/
+        instagram: /instagram\.com\/(.+)/
     };
     function getMediaProps(ed, data, provider) {
         var id, matches, src, defaultValues = {
@@ -173,16 +171,6 @@
                 allow: "encrypted-media;fullscreen",
                 sandbox: !1,
                 oembed: !1
-            },
-            calendly: {
-                src: "",
-                width: "100%",
-                height: 700,
-                frameborder: 0,
-                style: "min-width:320px",
-                allowtransparency: !0,
-                sandbox: !1,
-                oembed: !1
             }
         }, data = data.replace(/[^a-z0-9-_:&;=%\?\[\]\/\.]/gi, "");
         return defaultValues[provider] || (defaultValues[provider] = {}), defaultValues[provider].src = data, 
@@ -203,8 +191,7 @@
         defaultValues[provider].src = data + "/embed/captioned"), "facebook" === provider && (src = "https://www.facebook.com/plugins/", 
         -1 !== data.indexOf("/videos/") && (src += "video.php?href="), -1 !== data.indexOf("/posts/") && (src += "post.php?href=", 
         defaultValues[provider].height = 247, data = data.replace(/\?.+$/, "")), 
-        defaultValues[provider].src = src + encodeURIComponent(data)), "calendly" === provider && (data = (data = data.replace(/\?.+$/, "")).replace(/\/$/, ""), 
-        defaultValues[provider].src = data), defaultValues[provider];
+        defaultValues[provider].src = src + encodeURIComponent(data)), defaultValues[provider];
     }
     function updateSandbox(editor, node) {
         var src = node.attr("src");
@@ -214,35 +201,22 @@
             }, isSupportedMedia(editor, src));
             if (!1 === defaultAttributes.sandbox ? node.attr("sandbox", null) : node.attr("sandbox", defaultAttributes.sandbox || ""), 
             isLocalUrl(editor, src)) node.attr("sandbox", null); else if (!1 === editor.getParam("media_iframes_sandbox", !0)) node.attr("sandbox", null); else try {
-                var url = new URL(src), host = url.host.toLowerCase(), path = url.pathname.toLowerCase(), cleanHost = 0 === host.indexOf("www.") ? host.substring(4) : host, site = cleanHost + path;
+                var url = new URL(src), host = url.host.toLowerCase(), path = url.pathname.toLowerCase(), site = (host.startsWith("www.") ? host.slice(4) : host) + path;
                 sandbox_iframes_exclusions.some(function(value) {
-                    return !!value && (value = (value = 0 === (value = (value = String(value).toLowerCase()).replace(/^[a-z0-9.+-]+:\/\//, "")).indexOf("www.") ? value.substring(4) : value).replace(/\/+$/, ""), 
-                    0 === site.indexOf(value) || 0 === cleanHost.indexOf(value));
+                    value = value.toLowerCase();
+                    return 0 === site.indexOf(value) || 0 === host.indexOf(value);
                 }) && node.attr("sandbox", null);
             } catch (e) {}
         }
     }
-    function normalizeUrl(u) {
-        (u = (u || "").trim()).startsWith("//") ? u = "placeholder:" + u : /:\/\//i.test(u) || (u = "placeholder://" + u);
-        try {
-            var p = new URL(u);
-            return (p.hostname.replace(/^www\./i, "") + p.pathname.replace(/\/+$/, "")).toLowerCase();
-        } catch (e) {
-            return u.replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/\/+$/, "").toLowerCase();
-        }
-    }
     function isSupportedProvider(editor, url) {
-        for (var providers = editor.settings.media_iframes_supported_media || Object.keys(mediaProviders), supported = !1, testUrl = ("string" == typeof providers && (providers = providers.split(",").map(function(s) {
-            return s.trim();
-        })), normalizeUrl(url)), i = 0; i < providers.length; i++) {
-            var key = providers[i];
-            if (key) {
-                var trimmed = key.replace(/\/+$/, "");
-                if ((mediaProviders[key] || (trimmed = normalizeUrl(trimmed), trimmed = String(trimmed).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), 
-                new RegExp("^" + trimmed))).test(testUrl)) {
-                    supported = mediaProviders[key] ? key : "iframe";
-                    break;
-                }
+        var providers = editor.settings.media_iframes_supported_media || Object.keys(mediaProviders), supported = !1;
+        "string" == typeof providers && (providers = providers.split(","));
+        for (var i = 0; i < providers.length; i++) if (value = providers[i]) {
+            var value = value.replace(/\/$/, "");
+            if ((mediaProviders[value] || new RegExp(value + "/(.+)/")).test(url)) {
+                supported = mediaProviders[value] ? value : "iframe";
+                break;
             }
         }
         return supported;
@@ -259,7 +233,7 @@
         return !editor.settings["media_" + tag + "_allow_local"] || isLocalUrl(editor, url);
     }
     function isSupportedMedia(editor, url, type) {
-        var ext = (url = stripQuery(url = url || "")).split(".").pop().toLowerCase(), audioExts = [ "mp3", "ogg", "webm", "wav", "m4a", "aiff" ], videoExts = [ "mp4", "ogv", "ogg", "webm", "mov", "qt", "mpg", "mpeg", "divx" ];
+        var ext = (url = stripQuery(url)).split(".").pop().toLowerCase(), audioExts = [ "mp3", "ogg", "webm", "wav", "m4a", "aiff" ], videoExts = [ "mp4", "ogv", "ogg", "webm", "mov", "qt", "mpg", "mpeg", "divx" ];
         if ((type = (type || "").toLowerCase()).startsWith("audio/")) {
             if (-1 === indexOf(audioExts, ext)) return !1;
             if (isValidElement(editor, "audio") && isSupportedUrl(editor, "audio", url)) return "audio";
@@ -275,9 +249,6 @@
     }, isLocalUrl = function(editor, url) {
         return !isAbsoluteUrl(url) || (editor = editor.documentBaseURI.toRelative(url), 
         !1 === isAbsoluteUrl(editor));
-    }, validateIframe = function(editor, node) {
-        var src = node.attr("src");
-        return !!isNonEditable(editor, node) || 0 !== node.attributes.length && isSupportedIframe(editor, src);
     }, sanitize = function(editor, html) {
         var blocked, writer = new tinymce.html.Writer();
         return new tinymce.html.SaxParser({
@@ -329,7 +300,7 @@
     }
     function stripQuery(value) {
         var match;
-        return value && ((match = value.match(/^(.*?\.[a-z0-9]{2,10})(?:[?#&].*|$)/i)) ? match[1] : value);
+        return !!value && ((match = value.match(/^(.*?\.[a-z0-9]{2,10})(?:[?#&].*|$)/i)) ? match[1] : value);
     }
     for (var y, ext, lookup = {}, mimes = {}, items = "video/divx,divx,application/pdf,pdf,application/x-shockwave-flash,swf swfl,audio/mpeg,mpga mpega mp2 mp3,audio/ogg,ogg spx oga,audio/x-wav,wav,video/mpeg,mpeg mpg mpe,video/mp4,mp4 m4v,video/ogg,ogg ogv,video/webm,webm,video/quicktime,qt mov,video/x-flv,flv,video/3gpp,3gp,video/x-matroska,mkv".split(/,/), i = 0; i < items.length; i += 2) for (ext = items[i + 1].split(/ /), 
     y = 0; y < ext.length; y++) mimes[ext[y]] = items[i];
@@ -370,7 +341,7 @@
         node = new tinymce.html.Serializer().serialize(node);
         return editor.dom.create("div", {}, node).firstChild;
     }
-    var createPreviewNode = function(editor, node) {
+    function createPreviewNode(editor, node) {
         var name = node.name, msg = (msg = editor.getLang("media.preview_hint", "Click to activate, ALT + Click to toggle placeholder")).replace(/%s/g, "ALT"), src = (node.attr("autoplay") && (node.attr("data-mce-p-autoplay", node.attr("autoplay")), 
         node.attr("autoplay", null)), "iframe" == name && node.attr("src") && (src = node.attr("src"), 
         node.attr("data-mce-p-src", src), node.attr("src", src.replace("autoplay=1", "autoplay=0"))), 
@@ -397,7 +368,7 @@
         }), retainAttributesAndInnerHtml(editor, node, msg), name = Node.create("span", {
             class: "mce-object-shim"
         }), src.append(msg), src.append(name), src;
-    };
+    }
     function processNodeAttributes(editor, tag, node) {
         var key, params, attribs = {}, styles = {}, boolAttrs = editor.schema.getBoolAttrs();
         for (key in node.attributes.map) {
@@ -437,61 +408,83 @@
         }), elm.append(embed)), "iframe" === tag && updateSandbox(editor, elm), 
         elm;
     }
-    function convertMediaToPlaceholder(editor, node) {
-        var media_live_embed = editor.settings.media_live_embed, strict_embed = !1 !== editor.settings.media_strict_embed;
-        if (node.parent.attr("data-mce-object")) return !1;
-        if (node.firstChild && "bookmark" == node.firstChild.attr("data-mce-type") && node.firstChild.remove(), 
-        "iframe" === node.name) if (node.attr("src")) {
-            if (!1 === validateIframe(editor, node)) return node.remove(), !1;
-        } else media_live_embed = !1;
-        if (!isValidElement(editor, node.name) && !isNonEditable(editor, node)) return node.remove(), 
-        !1;
-        if ("iframe" !== node.name) {
-            var src = node.attr("src") || node.attr("data") || "", type = node.attr("type") || node.attr("data-mce-p-type") || "";
-            if (!src) {
-                if ("video" === node.name || "audio" === node.name) {
-                    for (var sources = node.getAll("source"), j = 0; j < sources.length; j++) {
-                        var source = sources[j];
-                        !source.attr("src") || isSupportedUrl(editor, node.name, source.attr("src")) || (source.remove(), 
-                        sources.splice(j, 1));
+    function isWithinEmbed(node) {
+        for (;node = node.parent; ) if (node.attr("data-mce-object")) return 1;
+    }
+    function placeHolderConverter(editor) {
+        return function(nodes) {
+            for (var node, i = nodes.length, media_live_embed = editor.settings.media_live_embed, strict_embed = !1 !== editor.settings.media_strict_embed; i--; ) if ((node = nodes[i]).parent && !node.parent.attr("data-mce-object")) {
+                if (node.firstChild && "bookmark" == node.firstChild.attr("data-mce-type") && node.firstChild.remove(), 
+                "iframe" === node.name) if (node.attr("src")) {
+                    if (!1 === function(editor, node) {
+                        var src = node.attr("src");
+                        return !!isNonEditable(editor, node) || isSupportedIframe(editor, src);
+                    }(editor, node)) {
+                        node.remove();
+                        continue;
                     }
-                    sources.length && (src = sources[0].attr("src"), type = sources[0].attr("type") || type);
-                }
-                if ("object" === node.name) {
-                    var params = node.getAll("param");
-                    if (params.length) for (j = 0; j < params.length; j++) {
-                        var param = params[j];
-                        param.attr("movie") && (src = param.attr("value"));
+                } else media_live_embed = !1;
+                if (isValidElement(editor, node.name) || isNonEditable(editor, node)) {
+                    if ("iframe" !== node.name) {
+                        var src = node.attr("src") || node.attr("data") || "", type = node.attr("type") || node.attr("data-mce-p-type") || "";
+                        if (!src) {
+                            if ("video" === node.name || "audio" === node.name) {
+                                for (var sources = node.getAll("source"), j = 0; j < sources.length; j++) {
+                                    var source = sources[j];
+                                    !source.attr("src") || isSupportedUrl(editor, node.name, source.attr("src")) || (source.remove(), 
+                                    sources.splice(j, 1));
+                                }
+                                sources.length && (src = sources[0].attr("src"), 
+                                type = sources[0].attr("type") || type);
+                            }
+                            if ("object" === node.name) {
+                                var params = node.getAll("param");
+                                if (params.length) for (j = 0; j < params.length; j++) {
+                                    var param = params[j];
+                                    param.attr("movie") && (src = param.attr("value"));
+                                }
+                                src || (embed = node.getAll("embed")).length && (src = embed[0].attr("src"), 
+                                type = embed[0].attr("type") || type);
+                            }
+                        }
+                        if (!src) {
+                            media_live_embed = !1;
+                            continue;
+                        }
+                        if (!isSupportedUrl(editor, node.name, src)) {
+                            node.remove();
+                            continue;
+                        }
+                        if (strict_embed) {
+                            var embed, newName = isSupportedMedia(editor, src, type);
+                            if (!newName) {
+                                node.remove();
+                                continue;
+                            }
+                            if ("iframe" == newName && !isSupportedProvider(editor, src)) {
+                                node.remove();
+                                continue;
+                            }
+                            newName !== node.name && each(node.children(), function(elm) {
+                                editor.schema.isValidChild(newName, elm.name) || elm.remove();
+                            }), node.name = newName, node.attr("src", src), "object" == newName && (node.attr("data", src), 
+                            node.attr("src", null), embed = stripQuery(src).split(".").pop(), 
+                            node.attr("type", mimes[embed] || "application/octet-stream"));
+                        }
                     }
-                    src || (embed = node.getAll("embed")).length && (src = embed[0].attr("src"), 
-                    type = embed[0].attr("type") || type);
-                }
+                    !media_live_embed || isObjectEmbed(node.name) || isResponsiveMedia(node) || isNonEditable(editor, node) ? isWithinEmbed(node) || (isResponsiveMedia(node) && node.parent.attr({
+                        contentEditable: "false",
+                        "data-mce-contenteditable": "true"
+                    }), node.replace(createPlaceholderNode(editor, node))) : isWithinEmbed(node) || node.replace(createPreviewNode(editor, node));
+                } else node.remove();
             }
-            if (!src) return media_live_embed = !1;
-            if (!isSupportedUrl(editor, node.name, src)) return node.remove(), !1;
-            if (strict_embed) {
-                var embed, newName = isSupportedMedia(editor, src, type);
-                if (!newName) return node.remove(), !1;
-                if ("iframe" == newName && !isSupportedProvider(editor, src)) return node.remove(), 
-                !1;
-                newName !== node.name && each(node.children(), function(elm) {
-                    editor.schema.isValidChild(newName, elm.name) || elm.remove();
-                }), node.name = newName, node.attr("src", src), "object" == newName && (node.attr("data", src), 
-                node.attr("src", null), embed = stripQuery(src).split(".").pop(), 
-                node.attr("type", mimes[embed] || "application/octet-stream"));
-            }
-        }
-        !media_live_embed || isObjectEmbed(node.name) || isResponsiveMedia(node) || isNonEditable(editor, node) ? isWithinEmbed(node) || (isResponsiveMedia(node) && node.parent.attr({
-            contentEditable: "false",
-            "data-mce-contenteditable": "true"
-        }), node.replace(createPlaceholderNode(editor, node))) : isWithinEmbed(node) || node.replace(createPreviewNode(editor, node));
+        };
     }
     var retainAttributesAndInnerHtml = function(editor, sourceNode, targetNode) {
         var attrName, attrValue, attribs, ai, innerHtml, boolAttrs = editor.schema.getBoolAttrs(), src = sourceNode.attr("src"), style = (src && (defaultAttributes = getMediaProps(0, {
             src: src
         }, isSupportedMedia(editor, src)), each(defaultAttributes, function(val, name) {
-            tinymce.is(sourceNode.attr(name)) || name in boolAttrs || ("style" === name && tinymce.is(val, "object") && (val = editor.dom.serializeStyle(val)), 
-            sourceNode.attr(name, val));
+            tinymce.is(sourceNode.attr(name)) || name in boolAttrs || sourceNode.attr(name, val);
         }), updateSandbox(editor, sourceNode)), editor.dom.parseStyle(sourceNode.attr("style"))), defaultAttributes = sourceNode.attr("width") || style.width || "", height = sourceNode.attr("height") || style.height || "", style = editor.dom.parseStyle(sourceNode.attr("style"));
         for (each([ "bgcolor", "align", "border", "vspace", "hspace" ], function(na) {
             var v = sourceNode.attr(na);
@@ -541,9 +534,6 @@
             inner: !0
         }).serialize(sourceNode) : innerHtml) && (targetNode.attr("data-mce-html", escape(sanitize(editor, innerHtml))), 
         targetNode.empty());
-    }, isWithinEmbed = function(node) {
-        for (;node = node.parent; ) if (node.attr("data-mce-object")) return !0;
-        return !1;
     };
     function htmlToData(ed, mediatype, html) {
         var data = {
@@ -563,26 +553,17 @@
         }), data;
     }
     function updateMedia(ed, data, elm) {
-        var preview, attribs = {}, node = ed.dom.getParent(elm || ed.selection.getNode(), "[data-mce-object]"), boolAttrs = ed.schema.getBoolAttrs(), nodeName = (boolAttrs.preload = !0, 
-        node.nodeName.toLowerCase()), elm = (each([ "block", "center", "left", "right" ], function(val) {
+        var preview, attribs = {}, node = ed.dom.getParent(elm || ed.selection.getNode(), "[data-mce-object]"), boolAttrs = ed.schema.getBoolAttrs(), nodeName = node.nodeName.toLowerCase(), elm = (each([ "block", "center", "left", "right" ], function(val) {
             ed.dom.removeClass(node, "mce-object-preview-" + val);
         }), -1 !== node.className.indexOf("mce-object-preview") && (nodeName = (preview = node).getAttribute("data-mce-object"), 
         node = ed.dom.select(nodeName, node)[0]), preview && preview.removeAttribute("style"), 
         each(data, function(value, name) {
-            if ("innerHTML" === name && value) return attribs["data-mce-html"] = escape(value), 
-            !0;
-            if ("img" !== nodeName && !htmlSchema.isValid(nodeName, name) && -1 == name.indexOf("-")) return !0;
-            if (name in boolAttrs && ("false" == value || !value) && (value = null, 
-            "autoplay" == name) && (attribs["data-mce-p-" + name] = null), "img" === nodeName && (!htmlSchema.isValid(nodeName, name) || "src" === name) && null !== value) return attribs["data-mce-p-" + name] = value, 
-            !0;
-            if ("iframe" == nodeName && "src" == name && (value = (attribs["data-mce-p-" + name] = value).replace("autoplay=1", "autoplay=1")), 
-            "class" == name && value) return ed.dom.addClass(node, value), !0;
-            if ("style" == name) {
-                if (value) return tinymce.is(value, "object") && (value = ed.dom.serializeStyle(value)), 
-                ed.dom.setStyles(node, ed.dom.parseStyle(value)), !0;
-                value = null;
-            }
-            attribs[name] = value = "sandbox" == name && !1 === value ? null : value;
+            return "innerHTML" === name && value ? (attribs["data-mce-html"] = escape(value), 
+            !0) : "img" !== nodeName && !htmlSchema.isValid(nodeName, name) && -1 == name.indexOf("-") || (tinymce.is(boolAttrs[name]) && !value && (value = null, 
+            "autoplay" == name) && (attribs["data-mce-p-" + name] = null), "img" !== nodeName || htmlSchema.isValid(nodeName, name) && "src" !== name || null === value ? ("iframe" == nodeName && "src" == name && (value = (attribs["data-mce-p-" + name] = value).replace("autoplay=1", "autoplay=1")), 
+            "class" == name && value ? (ed.dom.addClass(node, value), !0) : "style" == name && value ? (ed.dom.setStyles(node, ed.dom.parseStyle(value)), 
+            !0) : void (attribs[name] = value = "sandbox" == name && !1 === value ? null : value)) : (attribs["data-mce-p-" + name] = value, 
+            !0));
         }), ed.dom.setAttribs(node, attribs), ed.dom.parseStyle(node.getAttribute("style")));
         preview && (isCenterAligned(elm) && ed.dom.addClass(preview, "mce-object-preview-center"), 
         elm.float) && ed.dom.addClass(preview, "mce-object-preview-" + elm.float), 
@@ -631,7 +612,6 @@
         ed.onMouseDown.add(objectActivate), ed.onKeyDown.add(objectActivate), ed.onNodeChange.addToTop(function(ed, cm, n, collapsed, o) {
             !isMediaNode(n) || isNonEditable(ed, n) || o.contenteditable || (o.contenteditable = !0);
         }), ed.onPreInit.add(function() {
-            var editor;
             ed.onUpdateMedia.add(function(ed, o) {
                 o.before && o.after && isSupportedMedia(ed, o.before) && each(ed.dom.select("video.mce-object, audio.mce-object, iframe.mce-object, img.mce-object"), function(elm) {
                     var html, src = elm.getAttribute("src");
@@ -647,10 +627,8 @@
                 });
             }), "html4" === ed.settings.schema && (ed.schema.addValidElements("iframe[longdesc|name|src|frameborder|marginwidth|marginheight|scrolling|align|width|height|allowfullscreen|seamless|*]"), 
             ed.schema.addValidElements("video[src|autobuffer|autoplay|loop|controls|width|height|poster|*],audio[src|autobuffer|autoplay|loop|controls|*],source[src|type|media|*],embed[src|type|width|height|*]")), 
-            ed.parser.addNodeFilter("iframe,video,audio,object,embed", (editor = ed, 
-            function(nodes) {
-                for (var node, i = nodes.length; i--; ) (node = nodes[i]).parent && convertMediaToPlaceholder(editor, node);
-            })), ed.serializer.addAttributeFilter("data-mce-object", function(nodes, name) {
+            ed.parser.addNodeFilter("iframe,video,audio,object,embed", placeHolderConverter(ed)), 
+            ed.serializer.addAttributeFilter("data-mce-object", function(nodes, name) {
                 for (var node, i = nodes.length; i--; ) (node = nodes[i]).parent && !function(editor, node) {
                     editor = nodeToMedia(editor, node);
                     isObjectEmbed(editor.name) || node.empty(), node.replace(editor), 
@@ -786,9 +764,6 @@
             },
             isMediaHtml: function(html) {
                 return !!(html = html.trim().match(/^<([a-zA-Z0-9]+)\b/)) && isPreviewMedia(html[1].toLowerCase());
-            },
-            convertMediaToPlaceholder: function(node) {
-                return convertMediaToPlaceholder(ed, node);
             }
         });
     });

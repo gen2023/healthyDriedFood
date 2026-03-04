@@ -9,7 +9,7 @@
  * other free or open source software licenses
  */
 // no direct access
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Factory;

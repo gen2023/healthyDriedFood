@@ -6,7 +6,7 @@
  */
 defined('JPATH_BASE') or die;
 
-use Joomla\Filesystem\Path;
+use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Plugin\CMSPlugin;
 
 class WfTemplateCore extends CMSPlugin

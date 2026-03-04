@@ -8,7 +8,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
@@ -25,40 +25,9 @@ use Joomla\CMS\Uri\Uri;
 
 class JceViewProfiles extends HtmlView
 {
-    /**
-     * An array of items
-     *
-     * @var  array
-     */
     protected $items;
-
-    /**
-     * The pagination object
-     *
-     * @var  \Joomla\CMS\Pagination\Pagination
-     */
     protected $pagination;
-
-    /**
-     * The model state
-     *
-     * @var  \Joomla\CMS\Object\CMSObject
-     */
     protected $state;
-
-    /**
-     * Form object for search filters
-     *
-     * @var  \Joomla\CMS\Form\Form
-     */
-    public $filterForm;
-
-    /**
-     * The active search filters
-     *
-     * @var  array
-     */
-    public $activeFilters;
 
     protected function isEmpty()
     {

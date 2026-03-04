@@ -6,12 +6,14 @@
     <authorEmail>lomart@lomart.fr</authorEmail>
     <authorUrl>www.lomart.fr</authorUrl>
     <copyright></copyright>
-    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <version>5.2.1</version>
-    <creationDate>2025-06-04</creationDate>
+    <license>https://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
+    <version>5.3.0</version>
+    <creationDate>2026-02-01</creationDate>
     <description>SCSS_COMPILER_XML_DESC</description>
+    <namespace path="src">Lomart\Plugin\System\SCSSCompiler</namespace>
     <files>
-        <filename plugin="scsscompiler">scsscompiler.php</filename>
+        <folder plugin="scsscompiler">services</folder>
+        <folder>src</folder>
         <folder>vendor</folder>
         <folder>language</folder>
         <filename>changelog.txt</filename>
@@ -124,7 +126,7 @@
 
 	<scriptfile>install.php</scriptfile> 
     <updateservers>
-        <server type="extension" name="scssCompiler" priority="1">http://lomart.fr/files/scsscompiler/scss_compiler_update.xml</server>
+        <server type="extension" name="scssCompiler" priority="1">https://lomart.fr/files/scsscompiler/scss_compiler_update.xml</server>
     </updateservers>
 
 </extension>

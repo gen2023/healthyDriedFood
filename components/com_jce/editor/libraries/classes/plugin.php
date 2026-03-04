@@ -8,7 +8,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
@@ -287,6 +287,7 @@ class WFEditorPlugin extends CMSObject
 
         $document->addScript(array('jquery.min'), 'jquery');
         $document->addScript(array('jquery-ui.min'), 'jquery');
+        $document->addScript(array('jquery-ui.touch.min'), 'jquery');
 
         $document->addScript(array('plugin.min.js'));
         $document->addStyleSheet(array('plugin.min.css'), 'media');

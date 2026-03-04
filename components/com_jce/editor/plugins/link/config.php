@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 class WFLinkPluginConfig
 {
@@ -18,12 +18,9 @@ class WFLinkPluginConfig
         $plugin = new WFLinkPlugin();
         $attributes = $plugin->getDefaults();
 
-        $custom_classes = (array) $plugin->getParam('custom_classes', []);
-        $custom_classes = array_filter($custom_classes);
-
         $config = array(
             'attributes' => $plugin->getDefaults(),
-            'custom_classes' => $custom_classes,
+            'custom_classes' => $plugin->getParam('link.custom_classes', []),
         );
 
         // expose globally for use by Autolink and Clipboard

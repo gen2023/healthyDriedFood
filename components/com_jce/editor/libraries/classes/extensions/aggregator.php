@@ -8,9 +8,9 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
-use Joomla\Filesystem\Folder;
+use Joomla\CMS\Filesystem\Folder;
 
 class WFAggregatorExtension extends WFExtension
 {

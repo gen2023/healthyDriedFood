@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 // Link Plugin Controller
 class WFLinkPlugin extends WFEditorPlugin
@@ -66,11 +66,6 @@ class WFLinkPlugin extends WFEditorPlugin
         $document->addStyleSheet(array('link'), 'plugins');
         // add link scripts last
         $document->addScript(array('link'), 'plugins');
-    }
-
-    public function showHelp()
-    {
-        return (bool) $this->getParam('help_button', 1);
     }
 
     public function getLinks()

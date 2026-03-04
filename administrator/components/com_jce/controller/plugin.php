@@ -8,7 +8,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/application.php';
 
@@ -16,7 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Language\Text;
-use Joomla\Filesystem\Path;
+use Joomla\CMS\Filesystem\Path;
 
 class JceControllerPlugin extends BaseController
 {

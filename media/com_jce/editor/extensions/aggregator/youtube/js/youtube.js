@@ -1,4 +1,4 @@
-/* jce - 2.9.97 | 2025-12-15 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 WFAggregator.add("youtube", {
     params: {
         width: 560,
@@ -89,11 +89,10 @@ WFAggregator.add("youtube", {
         $.each(data, function(key, val) {
             0 === key.indexOf("youtube_") && (key = key.substr(key.indexOf("_") + 1), 
             "" !== val && !0 !== val || (val = key), attribs[key] = val, delete data[key]);
-        }), -1 !== src.indexOf("youtube-nocookie") ? data.youtube_privacy = 1 : data.youtube_privacy = 0, 
-        u.query.v ? id = u.query.v : (s = /\/?(embed|live|shorts|v)?\/([\w-]+)\b/.exec(u.path)) && "array" === $.type(s) && (id = s.pop()), 
+        }), -1 !== src.indexOf("youtube-nocookie") && (data.youtube_privacy = 1), 
+        u.query.v ? id = u.query.v : (s = /\/?(embed|live|v)?\/([\w-]+)\b/.exec(u.path)) && "array" === $.type(s) && (id = s.pop()), 
         $.each(u.query, function(key, val) {
             if ("v" == key) return !0;
-            "t" == key && (key = "start", val = val.replace(/(\D)/g, ""));
             try {
                 val = decodeURIComponent(val);
             } catch (e) {}
@@ -122,14 +121,13 @@ WFAggregator.add("youtube", {
     getAttributes: function(src) {
         var args = {}, data = this.setValues({
             src: src
-        }) || {}, width = ($.each(data, function(k, v) {
+        }) || {};
+        return $.each(data, function(k, v) {
             "src" !== k && (args[k] = v);
-        }), this.params.width), height = this.params.height;
-        return -1 !== src.indexOf("/shorts/") && (width = this.params.height, height = this.params.width), 
-        args = $.extend(args, {
+        }), args = $.extend(args, {
             src: data.src || src,
-            width: width,
-            height: height
+            width: this.params.width,
+            height: this.params.height
         });
     },
     setAttributes: function() {},

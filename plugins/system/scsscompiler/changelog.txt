@@ -1,3 +1,10 @@
+v5.3.0 - 01/02-2026
+- devient un "service provider"
+
+v5.2.2 - 31/01/2026
+- update scssphp 2.1.0
+- correction des liens vers la documentation du plugin
+
 v5.2.1 - 04/06/2025
 - test version PHP mini 8.2 et Joomla 5.2
 

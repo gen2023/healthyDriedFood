@@ -9,7 +9,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
@@ -105,26 +105,6 @@ class WFApplication extends CMSObject
         $component = ComponentHelper::getComponent($option, true);
 
         return $component->id;
-    }
-
-    private function isFileBrowser()
-    {
-        $app = Factory::getApplication();
-        $option = $app->input->getCmd('option', '');
-
-        if ($option !== 'com_jce') {
-            return false;
-        }
-
-        if ($app->input->getCmd('view') === 'browser') {
-            return true;
-        }
-
-        if ($app->input->getCmd('plugin') === 'browser') {
-            return true;
-        }
-
-        return false;
     }
 
     private function getProfileVars()
@@ -344,7 +324,7 @@ class WFApplication extends CMSObject
                     }
                 }
 
-                // check component, but skip if this is the file browser
+                // check component
                 if (!empty($item->components)) {
                     $components = explode(',', $item->components);
 

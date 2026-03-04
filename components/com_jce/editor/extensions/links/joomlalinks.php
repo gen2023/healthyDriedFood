@@ -8,10 +8,10 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\Filesystem\Folder;
+use Joomla\CMS\Filesystem\Folder;
 
 class WFLinkBrowser_Joomlalinks
 {

@@ -10,9 +10,11 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Path;
+use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Layout\LayoutHelper;
-use Joomla\Filesystem\File;
-use Joomla\Filesystem\Path;
 
 // load helper
 require_once JPATH_PLUGINS . '/fields/mediajce/helper/mediahelper.php';
@@ -25,7 +27,7 @@ if (empty($field->value)) {
 if (is_string($field->value)) {
     $field->value = array(
         'media_src' => $field->value,
-        'media_type' => WfMediaHelper::isImage($field->value) ? 'embed' : 'link',
+        'media_type' => WfMediaHelper::isImage($field->value) ? 'embed' : 'link'
     );
 }
 
@@ -69,7 +71,7 @@ if ($pos = strpos($data->media_src, '#')) {
 }
 
 // get file extension to determine tag
-$extension = pathinfo($data->media_src, PATHINFO_EXTENSION);
+$extension = File::getExt($data->media_src);
 
 // lowercase
 $extension = strtolower($extension);
@@ -170,7 +172,7 @@ if ($layout == 'iframe') {
     $attribs['frameborder'] = 0;
     $attribs['width'] = isset($data->media_width) ? $data->media_width : '100%';
     $attribs['height'] = isset($data->media_height) ? $data->media_height : '100%';
-
+    
     // set lazy loading only if dimensions are set
     if (!empty($data->media_width) && !empty($data->media_height)) {
         $attribs['loading'] = 'lazy';
@@ -192,7 +194,7 @@ $path = trim($path);
 if ($path) {
     // clean slashes
     $path = Path::clean($path);
-
+    
     // set text as basename if not an image
     if ($layout == 'link') {
         // set default target
@@ -224,10 +226,10 @@ if ($path) {
 
         // render with figure and figcaption
         if ($data->media_type == 'embed' && $data->media_caption) {
-
+            
             $figure = array();
             $caption_class = (string) $fieldParams->get('media_caption_class', '');
-
+        
             if ($caption_class) {
                 $caption_class = preg_replace('#[^ \w-]#i', '', $caption_class);
                 $figure['class'] = $caption_class;

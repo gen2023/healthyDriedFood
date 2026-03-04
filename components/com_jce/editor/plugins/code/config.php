@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 class WFCodePluginConfig
 {
@@ -37,7 +37,6 @@ class WFCodePluginConfig
 
         if ($settings['code_allow_style']) {
             $remove[] = 'style';
-            $remove[] = 'link';
         }
 
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], $remove);

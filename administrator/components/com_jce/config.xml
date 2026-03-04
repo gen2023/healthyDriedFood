@@ -39,4 +39,7 @@
         </field>
 
     </fieldset>
+    <fieldset name="updates" label="WF_PREFERENCES_UPDATES">
+        <field name="updates_key" type="password" size="50" default="" label="WF_UPDATES_KEY" description="WF_UPDATES_KEY_DESC" />
+    </fieldset>
 </config>

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -9,11 +8,11 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\Filesystem\File;
-use Joomla\Filesystem\Folder;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
 
@@ -51,7 +50,9 @@ class WFExtension extends CMSObject
     /**
      * Display the extension.
      */
-    public function display() {}
+    public function display()
+    {
+    }
 
     /**
      * Load a plugin extension.
@@ -115,9 +116,7 @@ class WFExtension extends CMSObject
 
         $core = array(
             'aggregator' => array(
-                'dailymotion',
-                'vimeo',
-                'youtube',
+                'dailymotion', 'vimeo', 'youtube',
             ),
             'filesystem' => array(
                 'joomla',
@@ -147,7 +146,7 @@ class WFExtension extends CMSObject
             }
 
             // specific extension
-            if ($extension && !is_file($item . '/' . $extension . '.php')) {
+            if ($extension && !File::exists($item . '/' . $extension . '.php')) {
                 continue;
             }
 
@@ -231,7 +230,7 @@ class WFExtension extends CMSObject
                     }
 
                     if (is_dir($path . '/src')) {
-                        $root = $path . '/src/' . $type . '.php';
+                        $root = $path . '/src/' . $type . '.php'; 
                     }
 
                     if (file_exists($root)) {
@@ -282,8 +281,8 @@ class WFExtension extends CMSObject
     protected function getCustomDefaultAttributes($data)
     {
         $custom = array();
-
-        if (is_string($data)) {
+        
+        if (is_string($data)) {                
             $data = html_entity_decode($data);
             $data = json_decode($data, true);
         }

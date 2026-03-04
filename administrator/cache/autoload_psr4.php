@@ -1,14 +1,6 @@
 <?php
 defined('_JEXEC') or die;
 return [
-	'CodeAlfa\\Component\\JchOptimize\\Administrator\\' => [JPATH_ADMINISTRATOR . '/components/com_jchoptimize/src'],
-	'CodeAlfa\\Module\\JchDashIcons\\Administrator\\' => [JPATH_ADMINISTRATOR . '/modules/mod_jchdashicons/src'],
-	'CodeAlfa\\Module\\JchModeSwitcher\\Administrator\\' => [JPATH_ADMINISTRATOR . '/modules/mod_jchmodeswitcher/src'],
-	'CodeAlfa\\Module\\JchSupportInfo\\Administrator\\' => [JPATH_ADMINISTRATOR . '/modules/mod_jchsupportinfo/src'],
-	'CodeAlfa\\Plugin\\Console\\JchOptimize\\' => [JPATH_PLUGINS . '/console/jchoptimize/src'],
-	'CodeAlfa\\Plugin\\System\\JchOptimize\\' => [JPATH_PLUGINS . '/system/jchoptimize/src'],
-	'CodeAlfa\\Plugin\\System\\JchPageCache\\' => [JPATH_PLUGINS . '/system/jchpagecache/src'],
-	'CodeAlfa\\Plugin\\User\\JchUserState\\' => [JPATH_PLUGINS . '/user/jchuserstate/src'],
 	'Joomla\\Component\\Actionlogs\\Administrator\\' => [JPATH_ADMINISTRATOR . '/components/com_actionlogs/src'],
 	'Joomla\\Component\\Admin\\Administrator\\' => [JPATH_ADMINISTRATOR . '/components/com_admin/src'],
 	'Joomla\\Component\\Associations\\Administrator\\' => [JPATH_ADMINISTRATOR . '/components/com_associations/src'],
@@ -253,7 +245,6 @@ return [
 	'Joomla\\Plugin\\System\\GuidedTours\\' => [JPATH_PLUGINS . '/system/guidedtours/src'],
 	'Joomla\\Plugin\\System\\Highlight\\' => [JPATH_PLUGINS . '/system/highlight/src'],
 	'Joomla\\Plugin\\System\\Httpheaders\\' => [JPATH_PLUGINS . '/system/httpheaders/src'],
-	'Joomla\\Plugin\\System\\Jce\\' => [JPATH_PLUGINS . '/system/jce/src'],
 	'Joomla\\Plugin\\System\\Jlsitemap_cron\\' => [JPATH_PLUGINS . '/system/jlsitemap_cron/src'],
 	'Joomla\\Plugin\\System\\Jooa11y\\' => [JPATH_PLUGINS . '/system/jooa11y/src'],
 	'Joomla\\Plugin\\System\\LanguageCode\\' => [JPATH_PLUGINS . '/system/languagecode/src'],
@@ -308,6 +299,7 @@ return [
 	'Joomla\\Plugin\\Workflow\\Featuring\\' => [JPATH_PLUGINS . '/workflow/featuring/src'],
 	'Joomla\\Plugin\\Workflow\\Notification\\' => [JPATH_PLUGINS . '/workflow/notification/src'],
 	'Joomla\\Plugin\\Workflow\\Publishing\\' => [JPATH_PLUGINS . '/workflow/publishing/src'],
+	'Lomart\\Plugin\\System\\SCSSCompiler\\' => [JPATH_PLUGINS . '/system/scsscompiler/src'],
 	'Sofona\\Component\\ExportXml\\Administrator\\' => [JPATH_ADMINISTRATOR . '/components/com_exportxml/src'],
 	'Sofona\\Component\\ExportXml\\Site\\' => [JPATH_SITE . '/components/com_exportxml/src'],
 ];

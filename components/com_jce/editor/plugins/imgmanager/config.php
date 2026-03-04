@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 class WFImgmanagerPluginConfig
 {
@@ -41,9 +41,7 @@ class WFImgmanagerPluginConfig
         }
 
         $config['attributes'] = $plugin->getDefaultAttributes();
-
-        $custom_classes = (array) $plugin->getParam('custom_classes', []);
-        $config['custom_classes'] = array_filter($custom_classes);
+        $config['custom_classes'] = $plugin->getParam('custom_classes', []);
 
         $settings['imgmanager'] = $config;
     }

@@ -8,7 +8,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
 
@@ -37,25 +37,9 @@ abstract class WFLinkHelper
         return $url;
     }
 
-    private static function getDefaultItemId()
+    public static function removeItemId($url)
     {
-        // get menus
-        $menus = Factory::getApplication()->getMenu('site');
-
-        // get "default" menu
-        $default = $menus->getDefault();
-
-        return $default ? (int) $default->id : 0;
-    }
-
-    public static function removeItemId($url, $defaultId = 0)
-    {
-        if (!$defaultId) {
-            $defaultId = self::getDefaultItemId();
-        }
-        
-        $url = preg_replace('/([&?])Itemid=' . $defaultId . '(&|$)/', '$1', $url);
-        $url = rtrim($url, '?&');
+        $url = preg_replace('#&Itemid=[0-9]+#', '', $url);
 
         return $url;
     }
@@ -82,13 +66,18 @@ abstract class WFLinkHelper
             return $url;
         }
 
-        $defaultId = self::getDefaultItemId();
+        // get menus
+        $menus = Factory::getApplication()->getMenu('site');
+        // get "default" menu
+        $default = $menus->getDefault();
 
         // Itemid is unique
-        if ((int) $defaultId === (int) $vars['Itemid']) {            
-            // remove "default" Itemid
-            $url = self::removeItemId($url, $defaultId);
+        if ($default->id != $vars['Itemid']) {
+            return $url;
         }
+
+        // remove "default" Itemid
+        $url = self::removeItemId($url);
 
         return $url;
     }

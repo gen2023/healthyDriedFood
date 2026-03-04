@@ -8,7 +8,7 @@
  * @copyright   Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-\defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -100,7 +100,7 @@ class JceControllerProfiles extends AdminController
         // Check for request forgeries
         Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
-        $user = Factory::getUser();
+        $user = JFactory::getUser();
         $ids = (array) $this->input->get('cid', array(), 'int');
 
         // Access checks.
