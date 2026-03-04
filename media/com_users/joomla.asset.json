@@ -18,6 +18,18 @@
       "version": "44aa77"
     },
     {
+      "name": "com_users.two-factor-focus",
+      "type": "script",
+      "uri": "com_users/two-factor-focus.min.js",
+      "dependencies": [
+        "core"
+      ],
+      "attributes": {
+        "type": "module"
+      },
+      "version": "bcc78d"
+    },
+    {
       "name": "com_users.two-factor-list",
       "type": "script",
       "uri": "com_users/two-factor-list.min.js",
@@ -30,16 +42,16 @@
       "version": "7fa9d4"
     },
     {
-      "name": "com_users.two-factor-focus",
+      "name": "com_users.activate-user-send-email",
       "type": "script",
-      "uri": "com_users/two-factor-focus.min.js",
+      "uri": "com_users/activate-user-send-email.min.js",
       "dependencies": [
         "core"
       ],
       "attributes": {
         "type": "module"
       },
-      "version": "bcc78d"
+      "version": "3ff4a4"
     }
   ]
 }

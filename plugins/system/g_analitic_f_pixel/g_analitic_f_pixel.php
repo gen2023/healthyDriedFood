@@ -61,7 +61,7 @@ class PlgSystemG_Analitic_F_Pixel extends CMSPlugin
     }
     public function onBeforeCompileHead()
     {
-        if (JFactory::getApplication()->isClient('administrator')) {
+        if (Factory::getApplication()->isClient('administrator')) {
             return;
         }
 

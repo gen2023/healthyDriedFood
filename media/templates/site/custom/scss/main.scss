@@ -1988,6 +1988,7 @@ body .autoscroll-preloader .spinner {
 .product {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   border-radius: var(--radius-medium);
   background: rgba(255, 255, 255, .4);
   color: var(--black);
@@ -2043,7 +2044,10 @@ body .autoscroll-preloader .spinner {
   }
 
   .top_prodoct {
-    // flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .btn-wishlist {
