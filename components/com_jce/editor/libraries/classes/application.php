@@ -9,7 +9,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
@@ -107,6 +107,26 @@ class WFApplication extends CMSObject
         return $component->id;
     }
 
+    private function isFileBrowser()
+    {
+        $app = Factory::getApplication();
+        $option = $app->input->getCmd('option', '');
+
+        if ($option !== 'com_jce') {
+            return false;
+        }
+
+        if ($app->input->getCmd('view') === 'browser') {
+            return true;
+        }
+
+        if ($app->input->getCmd('plugin') === 'browser') {
+            return true;
+        }
+
+        return false;
+    }
+
     private function getProfileVars()
     {
         $app = Factory::getApplication();
@@ -144,10 +164,10 @@ class WFApplication extends CMSObject
         // get the Joomla! area, default to "site"
         $settings['area'] = $app->getClientId() === 0 ? 1 : 2;
 
-        $mobile = new Wf\Detection\MobileDetect();
+        $mobile = new WFDeviceDetect();
 
         // phone
-        if ($mobile->isMobile()) {
+        if ($mobile->isPhone()) {
             $settings['device'] = 'phone';
         }
 
@@ -324,7 +344,7 @@ class WFApplication extends CMSObject
                     }
                 }
 
-                // check component
+                // check component, but skip if this is the file browser
                 if (!empty($item->components)) {
                     $components = explode(',', $item->components);
 

@@ -1,5 +1,5 @@
-<?php 
-defined('_JEXEC') or die; 
+<?php
+defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
@@ -16,21 +16,21 @@ $jshopConfig = JSFactory::getConfig();
     <input type="hidden" name="from_edit" value="1">
 
     <div class="row mb-3">
-        <div class="col">
-            <input type="text" name="expenses" class="form-control" placeholder="Сумма расходов">
-        </div>
-        <div class="col">
-            <?php echo HTMLHelper::_('calendar', '', 'date', 'date', '%d.%m.%Y', [
-                'class' => 'form-control', 
-                'placeholder' => Text::_('JSHOP_DATE')
-            ]); ?>
-        </div>
-        <div class="col"><textarea name="comments" id="" class="form-control"></textarea></div>
-        <div class="col">
-            <button type="submit" class="btn btn-success">Добавить расход</button>
-        </div>
+      <div class="col">
+        <input type="text" name="expenses" class="form-control" placeholder="Сумма расходов">
+      </div>
+      <div class="col">
+        <?php echo HTMLHelper::_('calendar', '', 'date', 'date', '%d.%m.%Y', [
+          'class' => 'form-control',
+          'placeholder' => Text::_('JSHOP_DATE')
+        ]); ?>
+      </div>
+      <div class="col"><textarea name="comments" id="" class="form-control"></textarea></div>
+      <div class="col">
+        <button type="submit" class="btn btn-success">Добавить расход</button>
+      </div>
     </div>
-</form>
+  </form>
 
 </div>
 
@@ -39,7 +39,7 @@ $jshopConfig = JSFactory::getConfig();
 
   <form action="index.php?option=com_jshopping&controller=buhgalteria&task=saveExpenses" method="post">
     <?php echo HTMLHelper::_('form.token'); ?>
-    <input type="hidden" name="product_id" value="<?php echo (int)$this->product->product_id; ?>">
+    <input type="hidden" name="product_id" value="<?php echo (int) $this->product->product_id; ?>">
 
     <table class="table table-striped">
       <thead>

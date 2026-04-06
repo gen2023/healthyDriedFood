@@ -1,46 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="installer" method="upgrade">
-    <name>PLG_INSTALLER_NEVIGEN</name>
-    <author>Nevigen.com</author>
-    <creationDate>October 2025</creationDate>
-    <copyright>copyright © Nevigen.com. All rights reserved</copyright>
-    <license>Proprietary. Copyrighted Commercial Software</license>
-    <authorEmail>support@nevigen.com</authorEmail>
-    <authorUrl>https://nevigen.com</authorUrl>
-    <version>2.3.0</version>
-    <description>PLG_INSTALLER_NEVIGEN_DESCRIPTION</description>
-    <namespace path="src">Joomla\Plugin\Installer\Nevigen</namespace>
-    <scriptfile>script.php</scriptfile>
-    <languages folder="language">
-        <language tag="en-GB">en-GB/plg_installer_nevigen.ini</language>
-        <language tag="en-GB">en-GB/plg_installer_nevigen.sys.ini</language>
-        <language tag="ru-RU">ru-RU/plg_installer_nevigen.ini</language>
-        <language tag="ru-RU">ru-RU/plg_installer_nevigen.sys.ini</language>
-        <language tag="uk-UA">uk-UA/plg_installer_nevigen.ini</language>
-        <language tag="uk-UA">uk-UA/plg_installer_nevigen.sys.ini</language>
-    </languages>
-    <files>
-        <folder>services</folder>
-        <folder plugin="nevigen">src</folder>
-        <folder>tmpl</folder>
-    </files>
-    <config>
-        <fields name="params">
-            <fieldset name="basic">
-                <field name="key" type="text"
-                       label="Key"
-                       class="input-xxlarge"/>
-            </fieldset>
-        </fields>
-    </config>
-    <media destination="plg_installer_nevigen" folder="media">
-        <folder>css</folder>
-        <folder>js</folder>
-        <filename>joomla.asset.json</filename>
-    </media>
-    <updateservers>
-        <server type="extension" priority="1" name="Nevigen Installer Plugin">
-            https://nevigen.com/update?extension=plg_installer_nevigen
-        </server>
-    </updateservers>
+	<name>PLG_INSTALLER_NEVIGEN</name>
+	<author>Nevigen.com</author>
+	<creationDate>March 2026</creationDate>
+	<copyright>copyright © Nevigen.com. All rights reserved</copyright>
+	<license>Proprietary. Copyrighted Commercial Software</license>
+	<authorEmail>support@nevigen.com</authorEmail>
+	<authorUrl>https://nevigen.com</authorUrl>
+	<version>2.4.0</version>
+	<description>PLG_INSTALLER_NEVIGEN_DESCRIPTION</description>
+	<namespace path="src">Joomla\Plugin\Installer\Nevigen</namespace>
+	<scriptfile>script.php</scriptfile>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/plg_installer_nevigen.ini</language>
+		<language tag="en-GB">en-GB/plg_installer_nevigen.sys.ini</language>
+		<language tag="ru-RU">ru-RU/plg_installer_nevigen.ini</language>
+		<language tag="ru-RU">ru-RU/plg_installer_nevigen.sys.ini</language>
+		<language tag="uk-UA">uk-UA/plg_installer_nevigen.ini</language>
+		<language tag="uk-UA">uk-UA/plg_installer_nevigen.sys.ini</language>
+	</languages>
+	<files>
+		<folder>services</folder>
+		<folder plugin="nevigen">src</folder>
+		<folder>tmpl</folder>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="key" type="text"
+					   label="PLG_INSTALLER_NEVIGEN_PARAMS_KEY"
+					   class="input-xxlarge"/>
+				<field name="server" type="list"
+					   label="PLG_INSTALLER_NEVIGEN_PARAMS_SERVER"
+					   description="PLG_INSTALLER_NEVIGEN_PARAMS_SERVER_DESC"
+					   default="">
+					<option value="">PLG_INSTALLER_NEVIGEN_PARAMS_SERVER_0</option>
+					<option value="alternative">PLG_INSTALLER_NEVIGEN_PARAMS_SERVER_1</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+	<media destination="plg_installer_nevigen" folder="media">
+		<folder>css</folder>
+		<folder>js</folder>
+		<filename>joomla.asset.json</filename>
+	</media>
+	<changelogurl>https://nevigen.com/changelogurl?extension=plg_installer_nevigen</changelogurl>
+	<updateservers>
+		<server type="extension" priority="1" name="Nevigen Installer Plugin">
+			https://nevigen.com/update?extension=plg_installer_nevigen
+		</server>
+	</updateservers>
 </extension>

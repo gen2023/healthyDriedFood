@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 class WFImgmanagerPluginConfig
 {
@@ -37,11 +37,15 @@ class WFImgmanagerPluginConfig
                 $config['filetypes'] = $filetypes;
             }
 
+            $config['basic_dialog_classes'] = (bool) $plugin->getParam('attributes_classes', 1);
+
             $config['always_include_dimensions'] = (bool) $plugin->getParam('always_include_dimensions', 1);
         }
 
         $config['attributes'] = $plugin->getDefaultAttributes();
-        $config['custom_classes'] = $plugin->getParam('custom_classes', []);
+
+        $custom_classes = (array) $plugin->getParam('custom_classes', []);
+        $config['custom_classes'] = array_filter($custom_classes);
 
         $settings['imgmanager'] = $config;
     }

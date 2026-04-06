@@ -1,4 +1,4 @@
-/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.99.1 | 2026-03-30 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function() {
     "use strict";
     var DOM = tinymce.DOM, each$1 = tinymce.each;
@@ -118,15 +118,7 @@
         }), tinymce.clipboard.FakeClipboard);
         each([ "mcePasteText", "mcePaste" ], function(cmd) {
             ed.addCommand(cmd, function(ui) {
-                var doc = ed.getDoc(), failed = !1;
-                if (!ui || !FakeClipboard.hasData()) {
-                    try {
-                        doc.execCommand("Paste", !1, null);
-                    } catch (e) {
-                        failed = !0;
-                    }
-                    return (failed = doc.queryCommandEnabled("Paste") ? failed : !0) ? openWin(ed, cmd) : void 0;
-                }
+                if (!ui || !FakeClipboard.hasData()) return openWin(ed, cmd);
                 ed.execCommand("mcePasteFakeClipboard", !1, {
                     isPlainText: "mcePasteText" === cmd
                 });

@@ -115,7 +115,7 @@ class GooglesyncController extends BaseController
 
         if ($google_base_category_id && ($product_id > 0 || $category_id > 0)) {
             $model = $this->getModel('Comexport', 'Administrator');
-            $result = $model->addBinding($google_base_category_id, $category_id, $product_id, $this->export_type);
+            $result = $model->addBinding($google_base_category_id,0, $category_id, $product_id, $this->export_type);
 
             $result['messageSuccess']=Text::_('COM_EXPORTXML_MASSAGE_CATEGORY_ADD');
             echo json_encode($result);

@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen Installer Plugin
- * @version    2.3.0
+ * @version    2.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -101,9 +101,9 @@ class ExtensionHelper
 
 		$source = $element;
 		$folder = '';
-		if ($type === 'plugin' && strpos($element, 'plg_') !== false)
+		if ($type === 'plugin' && str_contains($element, 'plg_'))
 		{
-			if (strpos($element, 'plg_nevigen_audit_') !== false)
+			if (str_contains($element, 'plg_nevigen_audit_'))
 			{
 				$folder  = 'nevigen_audit';
 				$element = substr($element, strlen('plg_nevigen_audit_'));

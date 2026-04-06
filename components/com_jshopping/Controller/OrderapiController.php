@@ -7,6 +7,8 @@ use Joomla\Component\Jshopping\Site\Lib\JSFactory;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
+use Joomla\Database\DatabaseInterface;
+
 // https://api-seller.rozetka.com.ua/apidoc/#api-Orders-GetOrderDetails
 
 class OrderapiController extends BaseController
@@ -19,13 +21,16 @@ class OrderapiController extends BaseController
 
   public function display($cachable = false, $urlparams = false)
   {
+    // die('111111111111111111');
     $resultMau = $this->checkMaudauOrders();
     $resultRozetka = $this->checkRozetkaOrders();
+    $resultProm = $this->checkPromOrders();
     echo 'maudau - ';
     var_dump($resultMau);
     echo '<br /> rozetka - ';
-
     var_dump($resultRozetka);
+    echo '<br /> prom - ';
+    var_dump($resultProm);
     // die('1111111111111111');
   }
 
@@ -66,6 +71,10 @@ class OrderapiController extends BaseController
       }
 
       switch ($order['status']) {
+        case 'delivering': //на доставке
+          $status = 5;
+          break;
+        case 'accepted'://новый
         case 'new_order'://новый
           $status = 12;
           break;
@@ -83,37 +92,44 @@ class OrderapiController extends BaseController
       switch ($order['delivery_type']['delivery_provider']) {
         case 'nova_poshta':
           $shippingMethods = 4;
+          $shippingMethodsName = 'Новая почта';
           break;
 
         default:
           $shippingMethods = 7;
-
+          $shippingMethodsName = 'Укр почта';
           break;
       }
 
       switch ($order['payment_method']['type']) {
         case 'cash_on_delivery':
           $paymentMethods = 2;
+          $paymentMethodsMessage = 'оплата при получении';
           break;
 
         default:
           $paymentMethods = 4;
-
+          $paymentMethodsMessage = 'Оплата на карту';
           break;
       }
+
+      $firstName = $order['customer']['first_name'] ?? $order['recipient']['first_name'] ?? '';
+      $lastName = $order['customer']['last_name'] ?? $order['recipient']['last_name'] ?? '';
+      $phone = $order['customer']['phone'] ?? $order['recipient']['phone'] ?? '';
+      $deliveryAddress = $order['delivery_address']['warehouse']['address'] ?? '';
 
       $orderData = [
         'external_id' => $order['id'],
         'status' => $status,
         'created_at' => date('Y-m-d H:i:s', strtotime($order['created_at'])),
         'customer' => [
-          'first_name' => $order['customer']['first_name'] ?? '',
-          'last_name' => $order['customer']['last_name'] ?? '',
-          'phone' => $order['customer']['phone'] ?? '',
+          'first_name' => $firstName,
+          'last_name' => $lastName,
+          'phone' => $phone,
           'email' => $order['customer']['email'],
         ],
         'delivery' => [
-          'address' => $order['delivery_address']['warehouse']['address'] ?? '',
+          'address' => $deliveryAddress,
         ],
         'products' => $products,
         'total' => $order['total_price'] / 100,
@@ -122,21 +138,40 @@ class OrderapiController extends BaseController
 
       ];
 
-      $firstName = $orderData['customer']['first_name'];
-      $lastName = $orderData['customer']['last_name'];
-      $phone = $orderData['customer']['phone'];
+
       $amount = $orderData['total'];
+
+      $phoneRaw = preg_replace('/\D+/', '', $phone);
+
+      // $viberLink = 'viber://chat?number=%2B' . $phoneRaw;
+      $viberLink = 'https://invite.viber.com/?number=' . $phoneRaw;
+      $telegramLink = 'https://t.me/+' . $phoneRaw;
+      $phoneLink = 'tel:+' . $phoneRaw;
+
 
       $message =
         "<b>Нове замовлення з MAUDAU</b>\n" .
         "ID: {$order['id']}\n\n" .
         "<b>Товари:</b>\n{$productsText}\n" .
-        "Клієнт: {$firstName} {$lastName}\n" .
-        "Телефон: {$phone}\n\n" .
+        "<b>Доставка:</b>\n{$shippingMethodsName}\n" .
+        "<b>Способ оплаты:</b>\n{$paymentMethodsMessage}\n" .
+        "<b>Клієнт:</b> {$firstName} {$lastName}\n" .
+        "<b>Телефон:</b> <a href=\"{$phoneLink}\">{$phone}</a>\n" .
+        "<b>Telegram:</b> <a href=\"{$telegramLink}\">Telegram</a>\n\n" .
+        "<b>Viber:</b> <a href=\"{$viberLink}\">Viber</a>\n\n" .
+        // "Звʼязок: "
+        // . "<a href=\"{$viberLink}\">Viber</a> | "
+        // . "<a href=\"{$telegramLink}\">Telegram</a>\n\n" .
         "<b>Сума:</b> {$amount} грн";
 
+
       $orderInfo = $importModel->getOrderInfoByAgregatorId($order['id'], 'id_order_maudau');
-      // die($status);
+      // var_dump($order);
+      // die();
+      // $stts='orderInfo '. print_r($orderInfo,true) . ' status '. print_r($status,true) . 'order[id] '. print_r($order['id'],true);
+
+      // $this->log('maudau_order',);
+      $this->log('maudau_order_item', $order);
 
       if ($status == 0) {
         $countCanseled += 1;
@@ -145,9 +180,9 @@ class OrderapiController extends BaseController
         continue;
       }
 
-      if ($order['status'] == 'new_order' || $orderInfo == null) {
+      if ($orderInfo == null) {
 
-        // $this->sendTelegram('MAUDAU', $message);
+        $this->sendTelegram('MAUDAU', $message);
 
         $this->creadteOrder($orderData, 'id_order_maudau');
         $countCreate += 1;
@@ -179,7 +214,6 @@ class OrderapiController extends BaseController
       'Пропущенные ID: ' . implode(', ', $skippedIds);
 
     $this->log('maudau_order', $message);
-    $this->log('maudau_order_item', $order);
 
     return $message;
 
@@ -262,6 +296,7 @@ class OrderapiController extends BaseController
     $createdIds = [];
     $updatedIds = [];
     $skippedIds = [];
+    $productsText = '';
 
     foreach ($orders['content']['orders'] ?? [] as $order) {
       $orderId = $order['id'];
@@ -270,25 +305,23 @@ class OrderapiController extends BaseController
       // echo '<pre>';
       // var_dump($infoOrder);
       // die;
- 
+
       $products = [];
 
-      foreach ($infoOrder['content']['items_photos'] as $item) {
+      foreach ($infoOrder['content']['purchases'] as $purchase) {
 
-        $rzItemId = $item['id'];
-
-        $itemDetails = $this->rozetkaGetItemDetails($token, $rzItemId);
-
-        $productEan = $itemDetails['article'] ?? 0;
+        $productEan = $purchase['item']['article'] ?? 0;
 
         $products[] = [
           'product_ean' => $productEan,
-          'name' => $item['item_name'],
-          'quantity' => 1,
-          'price' => (float) $item['item_price'],
+          'name' => $purchase['item_name'],
+          'quantity' => (int) $purchase['quantity'],
+          'price' => (float) $purchase['price'],
         ];
 
+        $productsText .= "• {$purchase['item_name']} x{$purchase['quantity']}\n";
       }
+
       // echo'<pre>';var_dump($infoOrder['content']);echo'</pre>';
       switch ($infoOrder['content']['status_data']['status_group']) {
         case 1: // новый
@@ -310,31 +343,57 @@ class OrderapiController extends BaseController
       switch ($infoOrder['content']['delivery']['delivery_service_id']) {
         case '43660':
           $shippingMethods = 5;
+          $shippingMethodsName = 'Новая почта';
           break;
         case '5':
           $shippingMethods = 4;
+          $shippingMethodsName = 'Новая почта';
           break;
         case '1':
           $shippingMethods = 8;
+          $shippingMethodsName = 'На розетку';
           break;
         default:
           $shippingMethods = 7;
+          $shippingMethodsName = 'Укр почта';
       }
       // var_dump($infoOrder['content']['payment_type']);
+
+      // $this->log('rozetka_order_payment_type', 'orderId = ' . $orderId);
+      // $this->log('rozetka_order_payment_type', $infoOrder['content']['payment_type']);
+
       switch ($infoOrder['content']['payment_type']) {
         case 'cash':
           $paymentMethods = 2;
+          $paymentMethodsMessage = 'Оплата при получении';
 
           break;
         case 'no_cash':
           $paymentMethods = 4;
+          $paymentMethodsMessage = 'Оплата на карту';
+
+          break;
+
+        case 'card':
+        case 'google_pay':
+        case 'apple_pay':
+          $paymentMethods = 7;
+          $paymentMethodsMessage = 'Оплата картой на сайте';
+
           break;
 
         default:
           $paymentMethods = 2;
+          $paymentMethodsMessage = 'Оплата на карту';
 
           break;
       }
+
+      $firstName = $infoOrder['content']['recipient_title']['first_name'] ?? '';
+      $lastName = $infoOrder['content']['recipient_title']['last_name'] ?? '';
+      $phone = $infoOrder['content']['recipient_phone'] ?? '';
+      $amount = (float) $infoOrder['content']['amount_with_discount'];
+      $deliveryAddress = ($infoOrder['content']['delivery']['city']['name_ua'] ?? '') . ', ' . ($infoOrder['content']['delivery']['place_street'] ?? '') . ' ' . ($infoOrder['content']['delivery']['place_house'] ?? '');
 
       $orderData = [
         'external_id' => $infoOrder['content']['id'],
@@ -342,9 +401,9 @@ class OrderapiController extends BaseController
         'created_at' => date('Y-m-d H:i:s', strtotime($infoOrder['content']['created'])),
 
         'customer' => [
-          'first_name' => $infoOrder['content']['recipient_title']['first_name'] ?? '',
-          'last_name' => $infoOrder['content']['recipient_title']['last_name'] ?? '',
-          'phone' => $infoOrder['content']['recipient_phone'] ?? '',
+          'first_name' => $firstName,
+          'last_name' => $lastName,
+          'phone' => $phone,
           'email' => '',
         ],
 
@@ -356,15 +415,34 @@ class OrderapiController extends BaseController
         ],
 
         'products' => $products,
-        'total' => (float) $infoOrder['content']['amount_with_discount'],
+        'total' => $amount,
 
         'shipping_method_id' => $shippingMethods,
         'payment_method_id' => $paymentMethods,
       ];
 
+      // var_dump($orderData);die;
       $orderInfo = $importModel->getOrderInfoByAgregatorId($orderData['external_id'], 'id_order_rozetka');
+      $phoneRaw = preg_replace('/\D+/', '', $phone);
+
+      $viberLink = 'viber://chat?number=%2B' . $phoneRaw;
+      $telegramLink = 'https://t.me/+' . $phoneRaw;
+      $phoneLink = 'tell:+' . $phoneRaw;
 
       if ($orderInfo === null) {
+        $messagetG =
+          "<b>Нове замовлення з ROZETKA</b>\n" .
+          "ID: {$order['id']}\n\n" .
+          "<b>Товари:</b>\n{$productsText}\n" .
+          "Клієнт: {$firstName} {$lastName}\n" .
+          "<b>Доставка:</b>\n{$shippingMethodsName}\n" .
+          "<b>Способ оплаты:</b>\n{$paymentMethodsMessage}\n" .
+          "<b>Телефон:</b> <a href=\"{$phoneLink}\">{$phone}</a>\n" .
+          "<b>Telegram:</b> <a href=\"{$telegramLink}\">Telegram</a>\n\n" .
+          "<b>Viber:</b> <a href=\"{$viberLink}\">Viber</a>\n\n" .
+          "<b>Сума:</b> {$amount} грн";
+
+        $this->sendTelegram('ROZETKA', $messagetG);
 
         $this->creadteOrder($orderData, 'id_order_rozetka');
         $countCreate += 1;
@@ -382,6 +460,7 @@ class OrderapiController extends BaseController
           $skippedIds[] = $order['id'];
         }
       }
+      $this->log('rozetka_order_item', $order);
 
 
 
@@ -435,17 +514,16 @@ class OrderapiController extends BaseController
     return $data['content']['access_token'];
   }
 
-
   private function rozetkaGetOrders(string $token, int $types = 4)
   {
     $createdFrom = date('Y-m-d');
     // $url = $this->apiBase . '/orders/search?&page=1&sort=-id&types=' . $types.'&created_from=' . $createdFrom;
-    
+
     $params = [
       'page' => 1,
       'sort' => '-id',
       'types' => $types,
-      'created_from' => $createdFrom,
+      // 'created_from' => $createdFrom,
     ];
 
     $url = $this->apiBase . '/orders/search?' . http_build_query($params);
@@ -468,7 +546,7 @@ class OrderapiController extends BaseController
 
   private function rozetkaGetOrderDetails(string $token, int $orderId)
   {
-    $url = $this->apiBase . '/orders/' . $orderId . '?expand=user,delivery,status_data,payment_type,payment_type_name';
+    $url = $this->apiBase . '/orders/' . $orderId . '?expand=user,delivery,status_data,payment_type,payment_type_name,purchases';
 
     $ch = curl_init($url);
     curl_setopt_array($ch, [
@@ -502,10 +580,248 @@ class OrderapiController extends BaseController
     curl_close($ch);
 
     $data = json_decode($response, true);
-
-    return $data['content']['item'] ?? [];
+    // echo '<pre>';var_dump($data);die;
+    return $data['content']['item'][0] ?? [];
   }
 
+  private function checkPromOrders()
+  {
+    $importModel = JSFactory::getModel('sofonaimportprom');
+
+    $orders = $this->getOrdersPromByApi();
+    // echo '<pre>';var_dump($orders);die;
+    if (empty($orders) || !is_array($orders)) {
+      return;
+    }
+
+    $countCreate = 0;
+    $countUpdate = 0;
+    $countCanseled = 0;
+    $createdIds = [];
+    $updatedIds = [];
+    $skippedIds = [];
+
+    foreach ($orders as $order) {
+      $products = [];
+      $productsText = '';
+
+      foreach ($order['products'] as $product) {
+        $result = (float) str_replace([' грн', ','], ['', '.'], $product['price']) / 100;
+
+        $products[] = [
+          'product_id' => $product['external_id'] ?? 0,
+          'name' => $product['name'] ?? '',
+          'quantity' => (int) $product['quantity'],
+          'price' => $result,
+        ];
+
+        $productsText .= "• {$product['name']} — {$product['quantity']} шт. x " . ($product['price']) . "\n";
+      }
+      $this->log('prom_order_status', 'orderId = ' . $order['status']);
+      $this->log('prom_order_status', 'orderId = ' . $order['status_name']);
+
+      switch ($order['status']) {
+        // case 'delivered': //на доставке
+        //   $status = 5;
+        //   break;
+        // case 'accepted'://новый
+        // case 'new_order'://новый
+        //   $status = 12;
+        //   break;
+        // case 'delivered': //завершен
+        //   $status = 13;
+        //   break;
+        case 'canceled': //отменен
+          $status = 14;
+          break;
+        default:
+          $status = 12;
+          break;
+      }
+
+      switch ($order['delivery_option']['id']) {
+        case '17663595':
+          $shippingMethods = 4;
+          $shippingMethodsName = 'Новая почта';
+          break;
+
+        case '17663596':
+          $shippingMethods = 7;
+          $shippingMethodsName = 'Укр почта';
+          break;
+
+        default:
+          $shippingMethods = 7;
+          $shippingMethodsName = 'Укр почта';
+          break;
+      }
+
+      switch ($order['payment_option']['id']) {
+        case '9681139':
+          $paymentMethods = 2;
+          $paymentMethodsMessage = 'Оплата при получении';
+          break;
+
+        case '9681138':
+          $paymentMethods = 7;
+          $paymentMethodsMessage = 'Оплата картой на сайте';
+          break;
+
+
+        default:
+          $paymentMethods = 2;
+          $paymentMethodsMessage = 'Оплата при получении';
+          break;
+      }
+
+      $firstName = $order['client']['first_name'] ?? $order['delivery_recipient']['first_name'] ?? '';
+      $lastName = $order['client']['last_name'] ?? $order['delivery_recipient']['last_name'] ?? '';
+      $secondName = $order['client']['second_name'] ?? $order['delivery_recipient']['second_name'] ?? '';
+      $phone = $order['client']['phone'] ?? $order['delivery_recipient']['phone'] ?? '';
+      $deliveryAddress = $order['delivery_address'] ?? '';
+
+      $orderData = [
+        'external_id' => $order['id'],
+        'status' => $status,
+        'created_at' => date('Y-m-d H:i:s', strtotime($order['created_at'])),
+        'customer' => [
+          'first_name' => $firstName,
+          'last_name' => $lastName,
+          'second_name' => $secondName,
+          'phone' => $phone,
+          'email' => $order['email'],
+        ],
+        'delivery' => [
+          'address' => $deliveryAddress,
+        ],
+        'products' => $products,
+        'total' => $order['full_price'],
+        'shipping_method_id' => $shippingMethods ?? 0,
+        'payment_method_id' => $paymentMethods ?? 0,
+
+      ];
+
+
+      $amount = $orderData['full_price'];
+
+      $phoneRaw = preg_replace('/\D+/', '', $phone);
+
+      // $viberLink = 'viber://chat?number=%2B' . $phoneRaw;
+      $viberLink = 'https://invite.viber.com/?number=' . $phoneRaw;
+      $telegramLink = 'https://t.me/+' . $phoneRaw;
+      $phoneLink = 'tel:+' . $phoneRaw;
+
+
+      $message =
+        "<b>Нове замовлення з MAUDAU</b>\n" .
+        "ID: {$order['id']}\n\n" .
+        "<b>Товари:</b>\n{$productsText}\n" .
+        "<b>Доставка:</b>\n{$shippingMethodsName}\n" .
+        "<b>Способ оплаты:</b>\n{$paymentMethodsMessage}\n" .
+        "<b>Клієнт:</b> {$firstName} {$lastName}\n" .
+        "<b>Телефон:</b> <a href=\"{$phoneLink}\">{$phone}</a>\n" .
+        "<b>Telegram:</b> <a href=\"{$telegramLink}\">Telegram</a>\n\n" .
+        "<b>Viber:</b> <a href=\"{$viberLink}\">Viber</a>\n\n" .
+        // "Звʼязок: "
+        // . "<a href=\"{$viberLink}\">Viber</a> | "
+        // . "<a href=\"{$telegramLink}\">Telegram</a>\n\n" .
+        "<b>Сума:</b> {$amount} грн";
+
+
+      $orderInfo = $importModel->getOrderInfoByAgregatorId($order['id'], 'id_order_prom');
+      // var_dump($order);
+      // die();
+      // $stts='orderInfo '. print_r($orderInfo,true) . ' status '. print_r($status,true) . 'order[id] '. print_r($order['id'],true);
+
+      // $this->log('maudau_order',);
+      $this->log('prom_order_item', $order);
+
+      if ($status == 0) {
+        $countCanseled += 1;
+        $skippedIds[] = $order['id'];
+
+        continue;
+      }
+
+      if ($orderInfo == null) {
+
+        $this->sendTelegram('PROM', $message);
+
+        // $this->creadteOrder($orderData, 'id_order_prom');
+        $countCreate += 1;
+        $createdIds[] = $order['id'];
+      } else {
+
+        if ($status !== $orderInfo->order_status) {
+          // $this->updateOrder($orderInfo, $status);
+
+          $countUpdate += 1;
+          $updatedIds[] = $order['id'];
+        } else {
+          // $this->creadteOrder($orderData, 'id_order_maudau',$orderInfo->order_id);
+
+          $countCanseled += 1;
+          $skippedIds[] = $order['id'];
+        }
+
+      }
+
+    }
+
+    $message =
+      'Создано: ' . $countCreate .
+      ' | Обновлено: ' . $countUpdate .
+      ' | Пропущено: ' . $countCanseled . PHP_EOL .
+      'Созданные ID: ' . implode(', ', $createdIds) . PHP_EOL .
+      'Обновленные ID: ' . implode(', ', $updatedIds) . PHP_EOL .
+      'Пропущенные ID: ' . implode(', ', $skippedIds);
+
+    $this->log('prom_order', $message);
+
+    return $message;
+  }
+
+  protected function getOrdersPromByApi()
+  {
+    $apiToken = "18c07c4c55093132d3bf20a7c569c1527eb0e069";
+
+    $dateFrom = date('Y-m-d', strtotime('-31 days'));
+    $url = "https://my.prom.ua/api/v1/orders/list?date_from={$dateFrom}";
+
+    $headers = [
+      "Authorization: Bearer $apiToken",
+      "Accept: application/json"
+    ];
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if (curl_errno($ch)) {
+      $error = curl_error($ch);
+      curl_close($ch);
+      throw new \RuntimeException("Ошибка CURL: " . $error);
+    }
+
+    curl_close($ch);
+
+    if ($httpCode !== 200) {
+      throw new \RuntimeException("Ошибка запроса к API Prom.ua (HTTP {$httpCode})");
+    }
+
+    $data = json_decode($response, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      throw new \RuntimeException("Ошибка разбора JSON: " . json_last_error_msg());
+    }
+
+    $orders = $data['orders'] ?? [];
+
+    return $orders;
+  }
 
   private function sendTelegram(string $from, string $message): void
   {
@@ -649,6 +965,7 @@ class OrderapiController extends BaseController
     $oldSend = $jshopConfig->send_order_email;
     $jshopConfig->send_order_email = 0;
     // var_dump($order);die;
+
     $savedOrder = $ordersModel->save($order);
 
     $jshopConfig->send_order_email = $oldSend;
@@ -682,5 +999,144 @@ class OrderapiController extends BaseController
     file_put_contents($logFile, $entry . PHP_EOL, FILE_APPEND);
   }
 
+  public function getUpdateOrderProduct()
+  {
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
+
+    $found = [];
+    $notFound = [];
+
+    // ручной маппинг
+    $manualMap = [
+      'Сушена морква Healthy Dried Food 100г' => 66,
+      'Конюшина сушена Healthy Dried Food 25г' => 51,
+      'Ехінацея квіти сушені Healthy Dried Food 25г' => 53,
+      'Сушена ромашка Healthy Dried Food 25г' => 18,
+      'Сушений солодкий перець шматочками Healthy Dried Food 100г' => 11,
+      "М'ята сушена Healthy Dried Food 10г" => 16,
+      "Заспокійливий трав'яний збір Healthy Dried Food 25г" => 59,
+      'Чорнобривці квітки сушені Healthy Dried Food 25г' => 31,
+      'Трав’яний збір цукровий–діабет Healthy Dried Food 50г' => 64,
+      'Сушені фріпси з яблука Healthy Dried Food 100г' => 3,
+      'Збір для зміцнення та росту волосся Healthy Dried Food 50г' => 60,
+      'Горобина сушена 50г' => 63,
+    ];
+
+    // нормализуем маппинг
+    $normalizedMap = [];
+    foreach ($manualMap as $name => $id) {
+      $normalizedMap[$this->normalizeName($name)] = $id;
+    }
+
+    // получаем товары
+    $query = $db->getQuery(true)
+      ->select('*')
+      ->from($db->quoteName('#__jshopping_order_item'))
+      ->where($db->quoteName('product_id') . ' = 0');
+
+    $db->setQuery($query);
+    $items = $db->loadObjectList();
+
+    if (!$items) {
+      $this->log('update_order_product', 'Нет товаров с product_id = 0');
+      return;
+    }
+
+    foreach ($items as $item) {
+
+      $name = $this->normalizeName($item->product_name);
+
+      // поиск в БД
+      $query = $db->getQuery(true)
+        ->select('product_id')
+        ->from($db->quoteName('#__jshopping_products'))
+        ->where(
+          '(' .
+          'TRIM(' . $db->quoteName('name_uk-UA') . ') = ' . $db->quote($name) .
+          ' OR ' .
+          'TRIM(' . $db->quoteName('name_ru-RU') . ') = ' . $db->quote($name) .
+          ')'
+        );
+
+      $db->setQuery($query);
+      $productId = $db->loadResult();
+
+      // если не нашли — ищем в ручном маппинге
+      if (!$productId && isset($normalizedMap[$name])) {
+        $productId = (int) $normalizedMap[$name];
+        $source = 'manual';
+      } else {
+        $source = $productId ? 'db' : null;
+      }
+
+      if ($productId) {
+
+        // лог найденных
+        $found[] = [
+          'order_id' => $item->order_id,
+          'order_item_id' => $item->order_item_id,
+          'product_name' => $item->product_name,
+          'normalized_name' => $name,
+          'new_product_id' => $productId,
+          'source' => $source
+        ];
+
+        // обновление
+        $query = $db->getQuery(true)
+          ->update($db->quoteName('#__jshopping_order_item'))
+          ->set($db->quoteName('product_id') . ' = ' . (int) $productId)
+          ->where($db->quoteName('order_item_id') . ' = ' . (int) $item->order_item_id);
+
+        $db->setQuery($query);
+        $db->execute();
+
+        // история заказа
+        $orderInfo = \JSFactory::getTable('order', 'jshop');
+        $orderInfo->load($item->order_id);
+
+        $importModel = \JSFactory::getModel('sofonaimportprom');
+
+        $text = 'изменен id товара с 0 на ' . $productId . ' (' . $item->product_name . ')';
+
+        if (method_exists($importModel, 'saveOrderHistory')) {
+          $importModel->saveOrderHistory(
+            $orderInfo->order_id,
+            $orderInfo->order_status,
+            0,
+            $text
+          );
+        }
+
+      } else {
+
+        // лог ненайденных
+        $notFound[] = [
+          'order_id' => $item->order_id,
+          'order_item_id' => $item->order_item_id,
+          'product_name' => $item->product_name,
+          'normalized_name' => $name
+        ];
+      }
+    }
+
+    // логи
+    $this->log('update_order_product_found', $found);
+    $this->log('update_order_product_not_found', $notFound);
+    $this->log('update_order_product_summary', [
+      'total' => count($items),
+      'found' => count($found),
+      'not_found' => count($notFound)
+    ]);
+  }
+  private function normalizeName($name)
+  {
+    $name = trim($name);
+
+    $name = str_replace(['’', '`', '´'], "'", $name);
+    $name = str_replace(['–', '—'], '-', $name);
+    $name = preg_replace('/\s+/', ' ', $name);
+
+    return $name;
+  }
 
 }

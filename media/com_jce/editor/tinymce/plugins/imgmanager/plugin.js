@@ -1,4 +1,4 @@
-/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.99.1 | 2026-03-30 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function() {
     var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend;
     function isMediaObject(node) {
@@ -6,6 +6,13 @@
     }
     function isImage(node) {
         return node && "IMG" === node.nodeName && !isMediaObject(node);
+    }
+    function getUploadConfig(ed) {
+        return ed.getParam("imgmanager", {}).upload || {};
+    }
+    function getUploadURL(ed, file) {
+        var data = getUploadConfig(ed);
+        return !!(data && data.filetypes && new RegExp(".(" + data.filetypes.join("|") + ")$", "i").test(file.name)) && ed.getParam("site_url") + "index.php?option=com_jce&task=plugin.display&plugin=image";
     }
     tinymce.PluginManager.add("imgmanager", function(ed, url) {
         var self = this;
@@ -63,7 +70,7 @@
             n = isImage(n);
             cm.setDisabled("imgmanager", !n && !collapsed), cm.setActive("imgmanager", n);
         }), ed.onPreInit.add(function() {
-            var cm, form, urlCtrl, descriptionCtrl, args, stylesListCtrl, params = ed.getParam("imgmanager", {}), isMobile = window.matchMedia("(max-width: 600px)").matches;
+            var cm, form, urlCtrl, descriptionCtrl, stylesListCtrl, args, uploader, params = ed.getParam("imgmanager", {}), isMobile = window.matchMedia("(max-width: 600px)").matches;
             !0 === (!0 === params.basic_dialog || isMobile) && (cm = ed.controlManager, 
             form = cm.createForm("image_form"), !(args = {
                 label: ed.getLang("dlg.url", "URL"),
@@ -88,17 +95,48 @@
                         value: urlCtrl.value()
                     });
                 }
+            }), uploader = ed.plugins.upload || !1, params.upload && uploader && extend(args, {
+                upload_label: "upload.label",
+                upload_accept: params.upload.filetypes,
+                upload: function(e, file) {
+                    if (file && file.name) {
+                        var url = getUploadURL(ed, file);
+                        if (!url) return ed.windowManager.alert({
+                            text: ed.getLang("upload.file_extension_error", "File type not supported"),
+                            title: ed.getLang("upload.error", "Upload Error")
+                        }), !1;
+                        urlCtrl.setLoading(!0), extend(file, {
+                            filename: file.name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)\xa3\u20ac$~]/g, ""),
+                            upload_url: url
+                        }), uploader.upload(file, function(response) {
+                            urlCtrl.setLoading(!1);
+                            var response = response.files || [], response = response.length ? response[0] : {};
+                            if (response.file) return urlCtrl.value(response.file), 
+                            response = (response = response.alt || response.name || "").replace(/\.[^.]+$/i, ""), 
+                            descriptionCtrl.value(response), !0;
+                            ed.windowManager.alert({
+                                text: "File upload failed!",
+                                title: ed.getLang("upload.error", "Upload Error")
+                            });
+                        }, function(message) {
+                            ed.windowManager.alert({
+                                text: message,
+                                title: ed.getLang("upload.error", "Upload Error")
+                            }), urlCtrl.setLoading(!1);
+                        });
+                    }
+                }
             }), urlCtrl = cm.createUrlBox("image_url", args), form.add(urlCtrl), 
             descriptionCtrl = cm.createTextBox("image_description", {
                 label: ed.getLang("dlg.description", "Description"),
                 name: "alt",
                 clear: !0
-            }), form.add(descriptionCtrl), stylesListCtrl = cm.createStylesBox("image_class", {
+            }), form.add(descriptionCtrl), !1 !== params.basic_dialog_classes && (stylesListCtrl = cm.createStylesBox("image_class", {
                 label: ed.getLang("image.class", "Classes"),
                 onselect: function() {},
                 name: "classes",
                 styles: params.custom_classes || []
-            }), form.add(stylesListCtrl), ed.addCommand("mceImage", function() {
+            }), form.add(stylesListCtrl)), ed.addCommand("mceImage", function() {
                 var node = ed.selection.getNode();
                 "IMG" == node.nodeName && isMediaObject(node) || ed.windowManager.open({
                     title: ed.getLang("imgmanager.desc", "Image"),
@@ -108,10 +146,9 @@
                         var label = ed.getLang("insert", "Insert"), node = ed.selection.getNode(), src = "", alt = "", classes = params.attributes.classes || "";
                         isImage(node) && ((src = ed.dom.getAttrib(node, "src")) && (label = ed.getLang("update", "Update")), 
                         alt = ed.dom.getAttrib(node, "alt"), classes = ed.dom.getAttrib(node, "class")), 
-                        classes = classes.replace(/mce-[\w\-]+/g, "").replace(/\s+/g, " ").trim().split(" ").filter(function(cls) {
+                        urlCtrl.value(src), descriptionCtrl.value(alt), stylesListCtrl && (classes = classes.replace(/mce-[\w\-]+/g, "").replace(/\s+/g, " ").trim().split(" ").filter(function(cls) {
                             return "" !== cls.trim();
-                        }), urlCtrl.value(src), descriptionCtrl.value(alt), stylesListCtrl.value(classes), 
-                        window.setTimeout(function() {
+                        }), stylesListCtrl.value(classes)), window.setTimeout(function() {
                             urlCtrl.focus();
                         }, 10), DOM.setHTML(this.id + "_insert", label);
                     },
@@ -127,10 +164,10 @@
                             !1;
                             e = {
                                 src: data.url,
-                                alt: data.alt,
-                                class: data.classes
+                                alt: data.alt
                             };
-                            getDataAndInsert(extend(e, self.getAttributes(params))).then();
+                            (e = extend(e, self.getAttributes(params))).class = data.classes || e.class || "", 
+                            getDataAndInsert(e).then();
                         },
                         classes: "primary",
                         scope: self
@@ -165,10 +202,9 @@
             }, data = extend(data, this.getAttributes(o)), ed.dom.create("img", data);
             return !1;
         }, this.getUploadURL = function(file) {
-            var data = this.getUploadConfig();
-            return !ed.plugins.imgmanager_ext && !!(data && data.filetypes && new RegExp(".(" + data.filetypes.join("|") + ")$", "i").test(file.name)) && ed.getParam("site_url") + "index.php?option=com_jce&task=plugin.display&plugin=image";
+            return !ed.plugins.imgmanager_ext && getUploadURL(ed, file);
         }, this.getUploadConfig = function() {
-            return ed.getParam("imgmanager", {}).upload || {};
+            return getUploadConfig(ed);
         };
     });
 }();

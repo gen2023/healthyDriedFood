@@ -8,11 +8,11 @@
  * @copyright   Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
+use Joomla\Filesystem\File;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\Table;
 use Joomla\String\StringHelper;
@@ -26,8 +26,6 @@ abstract class JceProfilesHelper
      */
     public static function createProfilesTable()
     {
-        jimport('joomla.installer.helper');
-
         $app = Factory::getApplication();
 
         $db = Factory::getDBO();

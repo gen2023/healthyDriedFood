@@ -33,15 +33,15 @@ $jshopConfig = JSFactory::getConfig();
       <?php if (!empty($this->consumablesList)): ?>
         <?php foreach ($this->consumablesList as $i => $row): ?>
           <tr>
-            <td><?php echo $i+1; ?></td>
+            <td><?php echo $i + 1; ?></td>
             <td><?php echo (int) $row->consumable_id; ?></td>
             <td><?php echo htmlspecialchars($row->name); ?></td>
             <td class="text-end"><?php echo number_format($row->total_sum, 2); ?></td>
             <td>
-                <a class="btn btn-micro btn-nopad" href="index.php?option=com_jshopping&amp;controller=buhgalteria&amp;task=editConsumable&amp;consumable_id=<?php print $row->consumable_id ?>">
-                  <i class="icon-edit"></i>
-                </a>
-              </td>
+              <a class="btn btn-micro btn-nopad" href="index.php?option=com_jshopping&amp;controller=buhgalteria&amp;task=editConsumable&amp;consumable_id=<?php print $row->consumable_id ?>">
+                <i class="icon-edit"></i>
+              </a>
+            </td>
           </tr>
         <?php endforeach; ?>
       <?php else: ?>

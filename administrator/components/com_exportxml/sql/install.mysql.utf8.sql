@@ -14,6 +14,7 @@ CREATE TABLE `#__com_export_binding` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `google_base_category_id` int(11) NOT NULL,
     `category_id` int(11) NOT NULL,
+    `prom_base_category_id` int(11) NOT NULL,
     `product_id` int(11) NOT NULL,
     `export_type` varchar(255) NOT NULL,
     PRIMARY KEY (`id`)
@@ -37,9 +38,9 @@ CREATE TABLE `#__com_export_params_google` (
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB; 
 
-INSERT INTO `#__com_export_params_google` (`id`, `google_param`) VALUES
-(1, 'size\r'),
-(2, 'color\r');
+INSERT INTO `#__com_export_params_google` (`google_param`) VALUES
+('size\r'),
+('color\r');
 
 DROP TABLE IF EXISTS `#__google_base_category`;
 

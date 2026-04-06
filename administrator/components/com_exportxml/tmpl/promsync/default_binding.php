@@ -9,6 +9,7 @@ use Joomla\CMS\Language\Text;
       <table class="table table-striped table-hover">
         <thead>
           <tr>
+            <th class="text-left"><?= Text::_('COM_EXPORT_CATEGORY_PROM') ?></th>
             <th class="text-left"><?= Text::_('COM_EXPORT_CATEGORY_SHOP') ?></th>
             <th class="text-left"><?= Text::_('COM_EXPORT_PRODUCT_SHOP') ?></th>
             <th class="text-right"><?= Text::_('COM_EXPORT_ACTION') ?></th>
@@ -21,6 +22,7 @@ use Joomla\CMS\Language\Text;
             </tr>
             <?php foreach ($this->results_binding as $value): ?>
               <tr class="category-row" data-id="<?= (int) $value['id'] ?>">
+                <td classs="text-left"><?= htmlspecialchars($value['prom_cat_id'], ENT_QUOTES, 'UTF-8') ?></td>
                 <td classs="text-left"><?= htmlspecialchars($value['category_name'], ENT_QUOTES, 'UTF-8') ?></td>
                 <td classs="text-left"><?= htmlspecialchars($value['product_name'], ENT_QUOTES, 'UTF-8') ?></td>
                 <td class="text-right">
@@ -40,7 +42,7 @@ use Joomla\CMS\Language\Text;
     </div>
   </div>
   <div class="col-6">
-    <div id="selectCategoryBinding" class="card">
+    <div id="selectCategoryShopBinding" class="card">
       <div class="preloader"></div>
       <div class="form-group mt-3 blockSelect">
         <label for="input-oroduct_binding"><?= Text::_('COM_EXPORT_PRODUCT_SHOP') ?></label>
@@ -61,6 +63,28 @@ use Joomla\CMS\Language\Text;
         </div>
       </div>
       <button type="button" id="button-prod-in-cat-binding" class="btn btn-primary">
+        <i class="fa fa-plus"></i> <?= Text::_('COM_EXPORT_BINDING_BTN') ?>
+      </button>
+    </div>
+    <div id="selectCategoryPromBinding" class="card">
+      <div class="preloader"></div>
+      <div class="form-group mt-3 blockSelect">
+        <label for="input-prom_cat_binding"><?= Text::_('COM_EXPORT_PROM_CATEGORY') ?></label>
+        <div class="input-group">
+          <input type="number" id="input-prom_cat_binding" class="form-control" autocomplete="off"
+            placeholder="<?= Text::_('COM_EXPORT_PROM_CATEGORY') ?>">
+        </div>
+      </div>
+      <div class="form-group mt-3 blockSelect">
+        <label for="input-category_binding"><?= Text::_('COM_EXPORT_CATEGORY_SHOP') ?></label>
+        <div class="input-group">
+          <input type="text" id="input-category_binding2" class="form-control" autocomplete="off"
+            placeholder="<?= Text::_('COM_EXPORT_CATEGORY_SHOP') ?>">
+          <ul id="resultJsBinding2" class="result dropdown-menu col-6"></ul>
+          <input type="hidden" name="binding_category_id2" value="">
+        </div>
+      </div>
+      <button type="button" id="button-prom-in-cat-binding" class="btn btn-primary">
         <i class="fa fa-plus"></i> <?= Text::_('COM_EXPORT_BINDING_BTN') ?>
       </button>
     </div>

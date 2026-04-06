@@ -1,13 +1,13 @@
-/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.99.1 | 2026-03-30 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function(tinymce) {
     var Dispatcher = tinymce.util.Dispatcher, Storage = window.localStorage;
-    Storage && (tinymce._beforeUnloadHandler = function(e) {
+    Storage && (tinymce.onBeforeUnload.add(function(tinymce, e) {
         var msg;
-        return tinymce.each(tinymce.editors, function(editor) {
+        tinymce.each(tinymce.editors, function(editor) {
             editor.plugins.autosave && editor.plugins.autosave.storeDraft(), !msg && editor.isDirty() && editor.getParam("autosave_ask_before_unload") && (msg = editor.translate("You have unsaved changes are you sure you want to navigate away?"), 
             "undefined" != typeof Joomla) && Joomla.loadingLayer && Joomla.loadingLayer("hide");
-        }), msg;
-    }, tinymce.PluginManager.add("autosave", function(ed) {
+        }), msg && (e.preventDefault(), e.returnValue = msg);
+    }), tinymce.PluginManager.add("autosave", function(ed) {
         var prefix, started, self = this, settings = ed.settings;
         function parseTime(time, defaultTime) {
             return ((time = /^(\d+)([ms]?)$/.exec("" + (time || defaultTime)))[2] ? {
@@ -71,6 +71,6 @@
             hasDraft() && isEmpty() && restoreDraft();
         }), ed.onSaveContent.add(function() {
             removeDraft();
-        })), self.storeDraft = storeDraft, window.onbeforeunload = tinymce._beforeUnloadHandler;
+        })), self.storeDraft = storeDraft;
     }));
 }(tinymce);

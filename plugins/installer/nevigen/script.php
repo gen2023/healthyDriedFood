@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen Installer Plugin
- * @version    2.3.0
+ * @version    2.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -50,7 +50,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @since  1.1.0
 			 */
-			protected string $minimumJoomla = '4.4';
+			protected string $minimumJoomla = '5.4';
 
 			/**
 			 * Minimum PHP version required to install the extension.
@@ -59,7 +59,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @since  1.1.0
 			 */
-			protected string $minimumPhp = '7.4';
+			protected string $minimumPhp = '8.1';
 
 
 			/**

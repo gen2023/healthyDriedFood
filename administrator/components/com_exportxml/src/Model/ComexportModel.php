@@ -25,9 +25,21 @@ class ComexportModel extends BaseDatabaseModel
     {
         $query = $this->db->getQuery(true)
             ->select($this->db->quoteName(['google_base_category_id', 'name']))
-            ->from($this->db->quoteName('#__google_base_category'))
-            ->where($this->db->quoteName('name') . ' LIKE ' . $this->db->quote('%' . $search . '%'))
-            ->order($this->db->quoteName('name') . ' ASC');
+            ->from($this->db->quoteName('#__google_base_category'));
+
+        if (!empty($search)) {
+            $searchQuoted = $this->db->quote('%' . $search . '%');
+
+            $query->where(
+                '(' .
+                $this->db->quoteName('name') . ' LIKE ' . $searchQuoted .
+                ' OR ' .
+                $this->db->quoteName('google_base_category_id') . ' LIKE ' . $searchQuoted .
+                ')'
+            );
+        }
+
+        $query->order($this->db->quoteName('name') . ' ASC');
 
         return $this->db->setQuery($query)->loadObjectList();
     }
@@ -77,10 +89,11 @@ class ComexportModel extends BaseDatabaseModel
         $added = [];
 
         foreach ($categories as $category) {
-            if ($search === '' || stripos($category['name'], $search) !== false) {
+            if ($search === '' || mb_stripos($category['name'], $search) !== false) {
                 $this->addCategoryWithParents($category, $categoryMap, $result, $added);
             }
         }
+
         return $result;
     }
 
@@ -160,6 +173,7 @@ class ComexportModel extends BaseDatabaseModel
             ->select([
                 'eb.id',
                 'eb.category_id',
+                'eb.prom_base_category_id as prom_cat_id',
                 'eb.product_id',
                 'c.`name_' . $this->lang . '` AS category_name',
                 'p.`name_' . $this->lang . '` AS product_name',
@@ -198,13 +212,22 @@ class ComexportModel extends BaseDatabaseModel
         return $this->executeQuery($query);
     }
 
-    public function addBinding($google_base_category_id, $category_id, $product_id, $export_type)
+    public function addBinding($google_base_category_id, $prom_base_category_id, $category_id, $product_id, $export_type)
     {
         $query = $this->db->getQuery(true)
             ->insert($this->db->quoteName('#__com_export_binding'))
-            ->columns([$this->db->quoteName('google_base_category_id'), $this->db->quoteName('category_id'), $this->db->quoteName('product_id'), $this->db->quoteName('export_type')])
+            ->columns(
+                [
+                    $this->db->quoteName('google_base_category_id'),
+                    $this->db->quoteName('prom_base_category_id'),
+                    $this->db->quoteName('category_id'),
+                    $this->db->quoteName('product_id'),
+                    $this->db->quoteName('export_type')
+                ]
+            )
             ->values(implode(',', [
                 $this->db->quote($google_base_category_id),
+                $this->db->quote($prom_base_category_id),
                 $this->db->quote($category_id),
                 $this->db->quote($product_id),
                 $this->db->quote($export_type)

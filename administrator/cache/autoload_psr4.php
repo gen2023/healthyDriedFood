@@ -245,6 +245,7 @@ return [
 	'Joomla\\Plugin\\System\\GuidedTours\\' => [JPATH_PLUGINS . '/system/guidedtours/src'],
 	'Joomla\\Plugin\\System\\Highlight\\' => [JPATH_PLUGINS . '/system/highlight/src'],
 	'Joomla\\Plugin\\System\\Httpheaders\\' => [JPATH_PLUGINS . '/system/httpheaders/src'],
+	'Joomla\\Plugin\\System\\Jce\\' => [JPATH_PLUGINS . '/system/jce/src'],
 	'Joomla\\Plugin\\System\\Jlsitemap_cron\\' => [JPATH_PLUGINS . '/system/jlsitemap_cron/src'],
 	'Joomla\\Plugin\\System\\Jooa11y\\' => [JPATH_PLUGINS . '/system/jooa11y/src'],
 	'Joomla\\Plugin\\System\\LanguageCode\\' => [JPATH_PLUGINS . '/system/languagecode/src'],

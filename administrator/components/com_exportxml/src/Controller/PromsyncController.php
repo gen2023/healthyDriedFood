@@ -55,17 +55,29 @@ class PromsyncController extends BaseController
         }
 
         unset($param);
-    
+
+        $results_binding = $model->getBinding($this->export_type);
+        foreach ($results_binding as $key => &$value) {
+            if (!$value['product_name']) {
+                $value['product_name'] = '';
+            }
+            if ($value['prom_cat_id']==0){
+                $value['prom_cat_id']='';
+            }
+
+        }
+        unset($value);
+
         $view = $this->getView('Promsync', 'html');
         $view->setModel($model, true);
-        $view->set('results_binding', $model->getBinding($this->export_type));
+        $view->set('results_binding', $results_binding);
         $view->set('results_exclude', $model->getCategoryProductExclude($this->export_type));
         $view->set('extra_fields', $extra_fields);
         $view->set('results_params', $paramsProduct);
 
         return $view->display();
     }
-    
+
     public function options()
     {
         $this->setRedirect('index.php?option=com_config&view=component&component=com_searchtext');
@@ -83,7 +95,8 @@ class PromsyncController extends BaseController
         Factory::getApplication()->close();
     }
 
-    public function getJoomShoppingProduct()  {
+    public function getJoomShoppingProduct()
+    {
         $input = Factory::getApplication()->input;
         $search = $input->getString('search', '');
 
@@ -94,22 +107,23 @@ class PromsyncController extends BaseController
         Factory::getApplication()->close();
     }
 
-    public function addCategoryProductExcludeMapping() {
+    public function addCategoryProductExcludeMapping()
+    {
         $app = Factory::getApplication();
 
         $input = $app->input;
-        $category_id = $input->getInt('category_id',0);
-        $product_id = $input->getInt('product_id',0);
-        if ($category_id !=0 || $product_id !=0) {
+        $category_id = $input->getInt('category_id', 0);
+        $product_id = $input->getInt('product_id', 0);
+        if ($category_id != 0 || $product_id != 0) {
             $model = $this->getModel('Comexport', 'Administrator');
-            $result = $model->addCategoryProductExclude( $category_id,$product_id, $this->export_type);
+            $result = $model->addCategoryProductExclude($category_id, $product_id, $this->export_type);
 
-            
-            if ($category_id !=0){
-                $result['messageSuccess']=Text::_('COM_EXPORTXML_MASSAGE_CATEGORY_ADD_EXCLUDE');
+
+            if ($category_id != 0) {
+                $result['messageSuccess'] = Text::_('COM_EXPORTXML_MASSAGE_CATEGORY_ADD_EXCLUDE');
             }
-            if ($product_id !=0){
-                $result['messageSuccess']=Text::_('COM_EXPORTXML_MASSAGE_PRODUCT_ADD_EXCLUDE');
+            if ($product_id != 0) {
+                $result['messageSuccess'] = Text::_('COM_EXPORTXML_MASSAGE_PRODUCT_ADD_EXCLUDE');
             }
 
             echo json_encode($result);
@@ -118,7 +132,7 @@ class PromsyncController extends BaseController
 
         echo json_encode(['success' => false, 'error' => 'Invalid input']);
         Factory::getApplication()->close();
-    }    
+    }
     public function deleteExcludeMapping()
     {
         $app = Factory::getApplication();
@@ -128,34 +142,37 @@ class PromsyncController extends BaseController
         if ($id) {
             $model = $this->getModel('Comexport', 'Administrator');
             $result = $model->deleteExclude($id);
-    
+
             if ($result) {
-                echo json_encode(['success' => true, 'messageSuccess'=>Text::_('COM_EXPORTXML_MASSAGE_DELETE_EXCLUDE')]);
+                echo json_encode(['success' => true, 'messageSuccess' => Text::_('COM_EXPORTXML_MASSAGE_DELETE_EXCLUDE')]);
                 $app->close();
             }
         }
-    
+
         echo json_encode(['success' => false, Text::_('COM_EXPORTXML_MASSAGE_ERROR_IN_DELETE')]);
         $app->close();
     }
-    public function addBindingMapping(){
+    public function addBindingMapping()
+    {
         $app = Factory::getApplication();
         $input = $app->input;
 
-        $category_id = $input->getInt('category_id',0);
-        $product_id = $input->getInt('product_id',0);
-        if ($category_id !=0 && $product_id !=0) {
+        $prom_cat_id = $input->getInt('prom_cat_id', 0);
+        $category_id = $input->getInt('category_id', 0);
+        $product_id = $input->getInt('product_id', 0);
+        if ($category_id != 0 && $product_id != 0) {
             $model = $this->getModel('Comexport', 'Administrator');
-            $result = $model->addBinding(0,$category_id, $product_id, $this->export_type);
+            $result = $model->addBinding(0, $prom_cat_id, $category_id, $product_id, $this->export_type);
 
             if ($result) {
-                $result['messageSuccess']=Text::_('COM_EXPORTXML_MASSAGE_ADD_TRANSPOTR');
+                $result['messageSuccess'] = Text::_('COM_EXPORTXML_MASSAGE_ADD_TRANSPOTR');
                 echo json_encode($result);
                 $app->close();
             }
         }
     }
-    public function deleteBindingMapping(){
+    public function deleteBindingMapping()
+    {
         $app = Factory::getApplication();
         $input = $app->input;
         $id = $input->getInt('id');
@@ -163,15 +180,15 @@ class PromsyncController extends BaseController
         if ($id) {
             $model = $this->getModel('Comexport', 'Administrator');
             $result = $model->deleteBinding($id);
-    
+
             if ($result) {
-                echo json_encode(['success' => true, 'messageSuccess'=>Text::_('COM_EXPORTXML_MASSAGE_DELETE_TRANSPOTR')]);
+                echo json_encode(['success' => true, 'messageSuccess' => Text::_('COM_EXPORTXML_MASSAGE_DELETE_TRANSPOTR')]);
                 $app->close();
             }
         }
-    
+
         echo json_encode(['success' => false, Text::_('COM_EXPORTXML_MASSAGE_ERROR_IN_DELETE')]);
-        $app->close();      
+        $app->close();
     }
     public function addParamsProductMapping()
     {
@@ -184,7 +201,7 @@ class PromsyncController extends BaseController
             $result = $model->addParamsProduct($params_id, 0, $this->export_type);
 
             if ($result) {
-                $result['messageSuccess']=Text::_('COM_EXPORTXML_MASSAGE_PARAMS_ADD');
+                $result['messageSuccess'] = Text::_('COM_EXPORTXML_MASSAGE_PARAMS_ADD');
                 echo json_encode($result);
                 $app->close();
             }
@@ -194,7 +211,8 @@ class PromsyncController extends BaseController
         $app->close();
     }
 
-    public function deleteParamsProductMapping(){
+    public function deleteParamsProductMapping()
+    {
         $app = Factory::getApplication();
         $input = $app->input;
         $id = $input->getInt('id');
@@ -202,14 +220,14 @@ class PromsyncController extends BaseController
         if ($id) {
             $model = $this->getModel('Comexport', 'Administrator');
             $result = $model->deleteParamsProduct($id);
-    
+
             if ($result) {
-                echo json_encode(['success' => true, 'messageSuccess'=>Text::_('COM_EXPORTXML_MASSAGE_PARAMS_DELETE')]);
+                echo json_encode(['success' => true, 'messageSuccess' => Text::_('COM_EXPORTXML_MASSAGE_PARAMS_DELETE')]);
                 $app->close();
             }
         }
-    
+
         echo json_encode(['success' => false, Text::_('COM_EXPORTXML_MASSAGE_ERROR_IN_DELETE')]);
-        $app->close();      
+        $app->close();
     }
 }

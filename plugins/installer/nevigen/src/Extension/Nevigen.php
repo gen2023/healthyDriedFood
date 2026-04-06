@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen Installer Plugin
- * @version    2.3.0
+ * @version    2.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -13,6 +13,9 @@ namespace Joomla\Plugin\Installer\Nevigen\Extension;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Event\Installer\AddInstallationTabEvent;
+use Joomla\CMS\Event\Installer\BeforePackageDownloadEvent;
+use Joomla\CMS\Event\Installer\BeforeUpdateSiteDownloadEvent;
+use Joomla\CMS\Event\Plugin\AjaxEvent;
 use Joomla\CMS\Http\Http;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Installer\InstallerHelper;
@@ -20,14 +23,14 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Response\JsonResponse;
 use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\ParameterType;
+use Joomla\Event\SubscriberInterface;
 use Joomla\Filesystem\File;
 use Joomla\Plugin\Installer\Nevigen\Helper\ExtensionHelper;
 use Joomla\Registry\Registry;
 
-class Nevigen extends CMSPlugin
+class Nevigen extends CMSPlugin implements SubscriberInterface
 {
 	use DatabaseAwareTrait;
 	use MVCFactoryAwareTrait;
@@ -44,7 +47,7 @@ class Nevigen extends CMSPlugin
 	/**
 	 * List extensions.
 	 *
-	 * @var    string
+	 * @var    string|null
 	 *
 	 * @since  1.1.0
 	 */
@@ -68,6 +71,32 @@ class Nevigen extends CMSPlugin
 	 */
 	protected string $api = 'https://nevigen.com/api/v1/server';
 
+	/**
+	 * Request api alternative.
+	 *
+	 * @var    string
+	 *
+	 * @since  2.4.0
+	 */
+	protected string $apiAlternative = 'https://nevigen.ru/api/v1/server';
+
+	/**
+	 * Returns an array of events this subscriber will listen to.
+	 *
+	 * @return  array
+	 *
+	 * @since   2.4.0
+	 */
+	public static function getSubscribedEvents(): array
+	{
+		return [
+			'onAjaxNevigen'                       => 'onAjax',
+			'onInstallerAddInstallationTab'       => 'onInstallerAddInstallationTab',
+			'onInstallerBeforePackageDownload'    => 'onInstallerBeforePackageDownload',
+			'onInstallerBeforeUpdateSiteDownload' => 'onInstallerBeforeUpdateSiteDownload',
+		];
+	}
+
 
 	/**
 	 * Plugin ajax controller.
@@ -76,12 +105,12 @@ class Nevigen extends CMSPlugin
 	 *
 	 * @return  mixed Action response on success, exception on failure.
 	 *
-	 * @since  1.1.0
+	 * @since  2.4.0
 	 */
-	public function onAjaxNevigen()
+	public function onAjax(AjaxEvent $event)
 	{
 		$app = $this->getApplication();
-		if ($app->isClient('site'))
+		if (!$app->isClient('administrator'))
 		{
 			throw new \Exception('Access is denied', 403);
 		}
@@ -110,11 +139,11 @@ class Nevigen extends CMSPlugin
 
 		try
 		{
-			$this->setJSONResponse($this->$action());
+			$event->addResult($this->$action());
 		}
 		catch (\Exception $e)
 		{
-			$this->setJSONResponse('', $e->getMessage(), true);
+			throw new \Exception($e->getMessage(), $e->getCode());
 		}
 	}
 
@@ -124,18 +153,18 @@ class Nevigen extends CMSPlugin
 	 *
 	 * @param   AddInstallationTabEvent  $event  The event instance
 	 *
-	 * @return  void|array
+	 * @return  void
 	 *
-	 * @since   2.0.0
+	 * @since   2.4.0
 	 */
-	public function onInstallerAddInstallationTab()
+	public function onInstallerAddInstallationTab(AddInstallationTabEvent $event)
 	{
 		// Load language files
 		$this->loadLanguage();
 
 		$app  = $this->getApplication();
 		$doc  = $app->getDocument();
-		$lang = $this->getLanguage();
+		$lang = $app->getLanguage();
 
 		// Load asses
 		/** @var \Joomla\CMS\WebAsset\WebAssetRegistry $assetsRegistry */
@@ -186,7 +215,7 @@ class Nevigen extends CMSPlugin
 		$tab['content'] = '<legend>' . $tab['label'] . '</legend>' . $tab['content'];
 
 
-		return $tab;
+		$event->addResult($tab);
 	}
 
 	public function getListExtensions()
@@ -344,11 +373,13 @@ class Nevigen extends CMSPlugin
 			->bind(':element', $data['element'])
 			->order('extension_id DESC');
 
-		if (!empty($data['type'])){
+		if (!empty($data['type']))
+		{
 			$query->where('type = :type')
 				->bind(':type', $data['type']);
 		}
-		if (!empty($data['folder'])){
+		if (!empty($data['folder']))
+		{
 			$query->where('folder = :folder')
 				->bind(':folder', $data['folder']);
 		}
@@ -426,6 +457,18 @@ class Nevigen extends CMSPlugin
 		try
 		{
 			$nevigenLicense = $this->sendApi('nevigen_license', ['extension' => $data['source']]);
+
+			if (!empty($nevigenLicense['errors']))
+			{
+				$error = $nevigenLicense['errors'][0]['title'];
+				if ($error === 'Forbidden')
+				{
+					$error = Text::_('PLG_INSTALLER_NEVIGEN_ERROR');
+				}
+
+				throw new \Exception($error, 404);
+			}
+
 			if (!empty($nevigenLicense['jsonapi']['code']))
 			{
 				$this->install($urlExtension, $data['source']);
@@ -446,9 +489,20 @@ class Nevigen extends CMSPlugin
 
 	}
 
-	public function onInstallerBeforePackageDownload(&$url, &$headers)
+	public function onInstallerBeforePackageDownload(BeforePackageDownloadEvent $event)
 	{
-		if (strpos($url, 'nevigen.com/api/v1/server/update/paid') !== false)
+		$url     = $event->getUrl();
+		$headers = $event->getHeaders();
+
+		if ($this->params->get('server') === 'alternative'
+			&& str_contains($url, 'nevigen.com'))
+		{
+			$url = str_replace('nevigen.com', 'nevigen.ru', $url);
+			$event->updateUrl($url);
+		}
+
+		if ((str_contains($url, 'nevigen.com/api/v1/server/update/paid')
+			|| str_contains($url, 'nevigen.ru/api/v1/server/update/paid')))
 		{
 			$key = trim($this->params->get('key'));
 			if (!empty($key))
@@ -468,9 +522,24 @@ class Nevigen extends CMSPlugin
 						}
 					}
 				}
+
+				$event->updateUrl($url);
+				$event->updateHeaders($headers);
 			}
 		}
 
+
+	}
+
+	public function onInstallerBeforeUpdateSiteDownload(BeforeUpdateSiteDownloadEvent $event)
+	{
+		$url = $event->getUrl();
+		if ($this->params->get('server') === 'alternative' && str_contains($url, 'nevigen.com'))
+		{
+			$url = str_replace('nevigen.com', 'nevigen.ru/ru', $url);
+
+			$event->updateUrl($url);
+		}
 	}
 
 	protected function createNevigenLicense($code, $extension)
@@ -531,7 +600,6 @@ class Nevigen extends CMSPlugin
 			if (!$package = InstallerHelper::unpack($app->get('tmp_path') . '/' . $p_file, true))
 			{
 				$this->deleteNevigenLicense($extension);
-
 				throw new \Exception(Text::sprintf('COM_INSTALLER_UNPACK_ERROR', $p_file), 404);
 
 			}
@@ -542,8 +610,7 @@ class Nevigen extends CMSPlugin
 				$this->deleteNevigenLicense($extension);
 
 				InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
-
-				return false;
+				throw new \Exception(Text::sprintf('COM_INSTALLER_UNPACK_ERROR', $p_file), 404);
 			}
 
 			// Get an installer instance
@@ -555,7 +622,7 @@ class Nevigen extends CMSPlugin
 
 				InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
-				return false;
+				throw new \Exception(Text::_('JLIB_INSTALLER_ERROR_NOTFINDXMLSETUPFILE'), 404);
 			}
 
 			// Install the package
@@ -565,7 +632,29 @@ class Nevigen extends CMSPlugin
 
 				InstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
 
-				return false;
+				$messages = $app->getMessageQueue();
+				$msg      = Text::sprintf('COM_INSTALLER_INSTALL_ERROR',
+					Text::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($package['type'])));
+				if (!empty($messages))
+				{
+					$msgTMP = [];
+
+					foreach ($messages as $message)
+					{
+						if ($message['type'] === 'error')
+						{
+							$msgTMP[] = $message['message'];
+						}
+					}
+
+					if (!empty($msgTMP))
+					{
+						$msg = implode("<br>", $msgTMP);
+					}
+				}
+
+				throw new \Exception($msg, 404);
+
 			}
 
 			// CleanUp install
@@ -599,7 +688,7 @@ class Nevigen extends CMSPlugin
 			return true;
 		}
 
-		return false;
+		throw new \Exception(Text::_('PLG_INSTALLER_NEVIGEN_ERROR'), 404);
 	}
 
 	protected function sendApi($methodName = '', $data = [], $headers = [], $checkKey = true)
@@ -610,15 +699,17 @@ class Nevigen extends CMSPlugin
 			{
 				return false;
 			}
-			$key = trim($this->params->get('key'));
-			if ($checkKey === true)
+			if (!empty($this->params->get('key')))
 			{
-				if (empty($key))
-				{
-					return false;
-				}
+				$key = trim($this->params->get('key'));
 			}
 
+			if ($checkKey === true && empty($key))
+			{
+				return false;
+			}
+
+			$app = $this->getApplication();
 			if (!empty($key))
 			{
 				$headers['Nevigen-Token'] = $key;
@@ -626,11 +717,11 @@ class Nevigen extends CMSPlugin
 
 			if (!isset($data['domain']))
 			{
-				$data['domain'] = $this->getApplication()->getInput()->server->get('HTTP_HOST', '');
+				$data['domain'] = $app->getInput()->server->get('HTTP_HOST', '');
 			}
 			if (!isset($data['lang']))
 			{
-				$data['lang'] = $this->getLanguage()->getTag();
+				$data['lang'] = $app->getLanguage()->getTag();
 			}
 
 			$data['jshopping'] = ExtensionHelper::getJSVersion();
@@ -644,7 +735,13 @@ class Nevigen extends CMSPlugin
 			$data['joomla']    = JVERSION;
 			$data['installer'] = ExtensionHelper::getJSVersion('installer');
 
-			$url = $this->api . '/' . $methodName;
+			$api = $this->api;
+			if ($this->params->get('server') === 'alternative')
+			{
+				$api = $this->apiAlternative;
+			}
+
+			$url = $api . '/' . $methodName;
 
 
 			$response = (new Http())->post($url, $data, $headers);
@@ -656,27 +753,5 @@ class Nevigen extends CMSPlugin
 			return false;
 		}
 
-	}
-
-	/**
-	 * Method to set json response.
-	 *
-	 * @param   mixed   $response  Response data
-	 * @param   string  $msg       Message.
-	 * @param   bool    $error     Has error.
-	 *
-	 * @throws  \Exception
-	 *
-	 * @return  true True on success, Exception on failure.
-	 *
-	 * @since  2.0.0
-	 */
-	public function setJSONResponse($response = null, $msg = null, $error = false)
-	{
-		header('Content-Type: application/json');
-		echo new JsonResponse($response, $msg, $error);
-		$this->getApplication()->close(($error) ? 500 : 200);
-
-		return (!$error);
 	}
 }

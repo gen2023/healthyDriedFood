@@ -1,4 +1,4 @@
-/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.99.1 | 2026-03-30 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function($, tinyMCEPopup) {
     var anchorElm, currNode, emailRex = /(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})/;
     var LinkDialog = {
@@ -93,7 +93,8 @@
                 try {
                     val = decodeURIComponent(val);
                 } catch (e) {}
-                0 < x && $repeatable.clone(!0).appendTo($repeatable.parent());
+                0 < x && ($repeatable.eq(0).clone(!0).appendTo($repeatable.parent()), 
+                $repeatable = $(".uk-repeatable", "#custom_attributes"));
                 var elements = $repeatable.eq(x).find("input, select");
                 $(elements).eq(0).val(key), $(elements).eq(1).val(val), x++;
             })) : Wf.setDefaults(this.settings.defaults);

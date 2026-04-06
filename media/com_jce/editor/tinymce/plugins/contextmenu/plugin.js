@@ -1,14 +1,18 @@
-/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.99.1 | 2026-03-30 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function() {
     var Event = tinymce.dom.Event, DOM = tinymce.DOM;
     tinymce.PluginManager.add("contextmenu", function(ed) {
+        var showMenu, hideMenu, self = this;
+        function isContentEditable(elm) {
+            return "false" !== ed.dom.getContentEditableParent(elm);
+        }
         function isNativeOverrideKeyEvent(e) {
             return e.ctrlKey && !contextmenuNeverUseNative;
         }
         function isImage(elm) {
-            return elm && "IMG" === elm.nodeName;
+            return elm && "IMG" === elm.nodeName && isContentEditable(elm);
         }
-        var showMenu, hideMenu, self = this, contextmenuNeverUseNative = ed.settings.contextmenu_never_use_native;
+        var contextmenuNeverUseNative = ed.settings.contextmenu_never_use_native;
         if (self.onContextMenu = new tinymce.util.Dispatcher(this), tinymce.isAndroid || tinymce.isIOS) return !1;
         function hide(ed, e) {
             e && 2 == e.button || self._menu && (self._menu.removeAll(), self._menu.destroy(), 
@@ -19,7 +23,7 @@
         }, showMenu = ed.onContextMenu.add(function(ed, e) {
             var elm;
             isNativeOverrideKeyEvent(e) || (Event.cancel(e), tinymce.isMac && tinymce.isWebKit && 2 === e.button && !isNativeOverrideKeyEvent(e) && ed.selection.isCollapsed() && (isImage(e.target) || ed.selection.placeCaretAt(e.clientX, e.clientY)), 
-            (isImage(e.target) || (elm = e.target) && "A" === elm.nodeName) && ed.selection.select(e.target), 
+            (isImage(e.target) || (elm = e.target) && "A" === elm.nodeName && isContentEditable(elm)) && ed.selection.select(e.target), 
             function(ed, e) {
                 var m = self._menu, se = ed.selection, col = se.isCollapsed(), e = e.target;
                 e && "BODY" !== e.nodeName || (e = se.getNode() || ed.getBody());

@@ -18,8 +18,15 @@ $jshopConfig = JSFactory::getConfig();
       Расходники
     </button>
   </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="statistic-tab" data-bs-toggle="tab" data-bs-target="#statistic" type="button" role="tab" aria-controls="statistic" aria-selected="false">
+      Статистика
+    </button>
+  </li>
 </ul>
 <div class="tab-content mt-3" id="reportTabsContent">
   <?php echo $this->loadTemplate('products'); ?>
   <?php echo $this->loadTemplate('consumables'); ?>
+  <?php echo $this->loadTemplate('statistic'); ?>
+
 </div>

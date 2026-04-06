@@ -7,12 +7,12 @@
  * @copyright   Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('JPATH_PLATFORM') or die('RESTRICTED');
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
@@ -198,7 +198,7 @@ class pkg_jceInstallerScript
     }
 
     public function preflight($route, $installer)
-    {
+    {        
         // skip on uninstall etc.
         if ($route == 'remove' || $route == 'uninstall') {
             return true;
@@ -340,7 +340,7 @@ class pkg_jceInstallerScript
             $plugin = PluginHelper::getPlugin($folder, $element);
 
             if ($plugin) {
-                $inst = new Installer();
+                $inst = Installer::getInstance();
 
                 // try uninstall
                 if (!$inst->uninstall('plugin', $plugin->id)) {
@@ -584,6 +584,7 @@ class pkg_jceInstallerScript
             $site . '/editor/libraries/fonts',
             $site . '/editor/libraries/img',
             $site . '/editor/libraries/js',
+            $site . '/editor/libraries/vendor',
             $site . '/editor/libraries/pro/css',
             $site . '/editor/libraries/pro/fonts',
             $site . '/editor/libraries/pro/img',
@@ -614,6 +615,22 @@ class pkg_jceInstallerScript
             $site . '/editor/plugins/source/tmpl',
             $site . '/editor/plugins/templatemanager',
             $site . '/editor/plugins/textpattern'
+        );
+
+        // clean up editor vendor libraries
+        $folders['2.9.96'] = array(
+            $site . '/editor/libraries/vendor',
+            $site . '/editor/libraries/pro'
+        );
+
+        // remove jQuery UI Touch
+        $files['2.9.96'] = array(
+            $media . '/editor/vendor/jquery/js/jquery-ui.touch.min.js'
+        );
+
+        // remove MobileDetect
+        $folders['2.9.98'] = array(
+            $site . '/editor/libraries/classes/vendor/MobileDetect'
         );
 
         // remove pro source plugin

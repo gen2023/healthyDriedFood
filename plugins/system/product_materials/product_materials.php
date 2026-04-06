@@ -122,14 +122,20 @@ class PlgSystemProduct_Materials extends CMSPlugin
             $selected = (array) $data->related_products;
         }
 
-
-
         $xml = new SimpleXMLElement('<form />');
         $fields = $xml->addChild('fields');
+
 
         $fieldset = $fields->addChild('fieldset');
         $fieldset->addAttribute('name', 'params'); // <-- просто уникальное имя
         $fieldset->addAttribute('label', 'Связанные товары');
+
+//         $searchField = $fieldset->addChild('field');
+// $searchField->addAttribute('name', 'related_products_search');
+// $searchField->addAttribute('type', 'text');
+// $searchField->addAttribute('label', 'Поиск товара');
+// $searchField->addAttribute('description', 'Введите часть названия');
+// $searchField->addAttribute('class', 'form-control');
 
         $field = $fieldset->addChild('field');
         $field->addAttribute('name', 'related_products'); // <-- ключ массива

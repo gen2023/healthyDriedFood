@@ -1,4 +1,4 @@
-/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.99.1 | 2026-03-30 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function($) {
     var ImageManagerDialog = {
         settings: {},
@@ -7,8 +7,8 @@
             var w, h, x, ed = tinyMCEPopup.editor, n = ed.selection.getNode(), self = this, params = ed.getParam("imgmanager", {}), src = ($("#insert").on("click", function(e) {
                 self.insert(), e.preventDefault();
             }), decodeURIComponent(ed.dom.getAttrib(n, "src"))), src = ed.convertURL(src);
-            $.each(this.settings.attributes, function(k, v) {
-                parseFloat(v) || $("#attributes-" + k).hide();
+            $.each(this.settings.attributes, function(key, val) {
+                val || $("#attributes-" + key).hide();
             }), $("#onmouseover, #onmouseout").addClass("uk-persistent-focus").on("click focus", function() {
                 $("#onmouseover, #onmouseout").removeClass("uk-active"), $(this).addClass("uk-active");
             }), $("body").on("click.persistent-focus", function(e) {

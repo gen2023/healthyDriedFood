@@ -8,7 +8,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
@@ -176,7 +176,14 @@ class WFLinkExtension extends WFExtension
             $case = ', CASE WHEN ';
             $case .= $query->charLength('alias', '!=', '0');
             $case .= ' THEN ';
-            $a_id = $query->castAsChar('id');
+
+            // Joomla 3 compatibility
+            if (method_exists($query, 'castAsChar')) {
+                $a_id = $query->castAsChar('id');
+            } else {
+                $a_id = $query->castAs('CHAR', 'id');
+            }
+
             $case .= $query->concatenate(array($a_id, 'alias'), ':');
             $case .= ' ELSE ';
             $case .= $a_id . ' END as slug';
@@ -198,12 +205,14 @@ class WFLinkExtension extends WFExtension
      *
      * @return Category list object
      */
-    public function getItemId($component, $needles = array())
+    public static function getItemId($component, $needles = array())
     {
         $match = null;
 
+        $version = new Joomla\CMS\Version();
+
         $app = CMSApplication::getInstance('site');
-        $tag = defined('JPATH_PLATFORM') ? 'component_id' : 'componentid';
+        $tag = $version->isCompatible('4.0') ? 'component_id' : 'componentid';
 
         $component = ComponentHelper::getComponent($component);
         $menu = $app->getMenu('site');

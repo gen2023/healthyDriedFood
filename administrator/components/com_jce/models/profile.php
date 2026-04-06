@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Admin
@@ -8,10 +9,10 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
+use Joomla\Filesystem\File;
 use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
@@ -21,6 +22,7 @@ use Joomla\CMS\Session\Session;
 use Joomla\CMS\Table\Table;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
+use Joomla\Event\DispatcherAwareInterface;
 
 require JPATH_SITE . '/components/com_jce/editor/libraries/classes/editor.php';
 
@@ -51,6 +53,15 @@ class JceModelProfile extends AdminModel
      * @since  1.6
      */
     protected $text_prefix = 'COM_JCE';
+
+    public function __construct($config = array())
+    {
+        if ($this instanceof DispatcherAwareInterface) {
+            $this->setDispatcher(Factory::getApplication()->getDispatcher());
+        }
+
+        parent::__construct($config);
+    }
 
     /**
      * Returns a Table object, always creating it.
@@ -175,7 +186,11 @@ class JceModelProfile extends AdminModel
     }
 
     public function getForm($data = array(), $loadData = true)
-    {        
+    {
+        if ($this instanceof DispatcherAwareInterface) {
+            $this->setDispatcher(Factory::getApplication()->getDispatcher());
+        }
+
         FormHelper::addFieldPath('JPATH_ADMINISTRATOR/components/com_jce/models/fields');
 
         // Get the setup form.
@@ -646,6 +661,67 @@ class JceModelProfile extends AdminModel
     }
 
     /**
+     * Recursively normalizes parameter structures:
+     * - If a string looks like JSON ({...} or [...]) and decodes cleanly, decode it.
+     * - If an array entry is a key/value pair and both are empty, drop it.
+     * - Recurse into arrays and keep original scalar types.
+     */
+    private static function normalizeParams($node)
+    {
+        // 1) Strings: decode JSON-in-strings when safe
+        if (is_string($node)) {
+            $trim = ltrim($node);
+
+            if ($trim !== '' && ($trim[0] === '{' || $trim[0] === '[')) {
+                $decoded = json_decode($node, true);
+
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    return self::normalizeParams($decoded);
+                }
+            }
+
+            return $node;
+        }
+
+        // 2) Arrays: handle key/value pairs & recurse
+        if (is_array($node)) {
+            // Drop empty key/value pair objects
+            if (array_key_exists('name', $node) && array_key_exists('value', $node)) {
+                $name  = trim((string) ($node['name'] ?? ''));
+                $value = $node['value'] ?? '';
+
+                $valueIsEmpty =
+                    (is_string($value) && trim($value) === '') ||
+                    $value === null ||
+                    (is_array($value) && $value === []);
+
+                if ($name === '' && $valueIsEmpty) {
+                    return null; // signal to remove
+                }
+            }
+
+            $result = [];
+
+            // Preserve numeric indexes for lists; associative for objects
+            foreach ($node as $k => $v) {
+                $normalized = self::normalizeParams($v);
+
+                // Skip nulls returned from empty key/value pairs
+                if ($normalized === null) {
+                    continue;
+                }
+
+                $result[$k] = $normalized;
+            }
+
+            return $result;
+        }
+
+        // 3) Other scalars / objects: return as-is
+        return $node;
+    }
+
+    /**
      * Method to save the form data.
      *
      * @param   array  The form data
@@ -722,8 +798,12 @@ class JceModelProfile extends AdminModel
                 // add config data
                 if (array_key_exists($item, $data['params'])) {
                     $value = $data['params'][$item];
-                    // clean and add to json array for merging
-                    $json[$item] = filter_var_array($value, FILTER_SANITIZE_SPECIAL_CHARS);
+
+                    // normalize the value
+                    $value = self::normalizeParams($value);
+                    
+                    // Add to json array for merging
+                    $json[$item] = $value;
                 }
             }
 

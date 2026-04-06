@@ -19,7 +19,7 @@ jQuery(document).ready(function ($) {
               } else if (value.product_id) {
                 resultBox.append('<li class="dropdown-item" data-id="' + value.product_id + '">' + value.name + '</li>');
               } else {
-                resultBox.append('<li class="dropdown-item" data-id="' + value.google_base_category_id + '">' + value.name + '</li>');
+                resultBox.append('<li class="dropdown-item" data-id="' + value.google_base_category_id + '">' + value.google_base_category_id + ' | ' +value.name + '</li>');
               }
             });
           },
@@ -37,6 +37,7 @@ jQuery(document).ready(function ($) {
   searchCategories('#input-product_exclude', '#resultJsExcludeProduct', 'getJoomShoppingProduct');
   searchCategories('#input-category_exclude', '#resultJsExclude', 'getJoomShoppingCategories');
   searchCategories('#input-category_binding', '#resultJsBinding', 'getJoomShoppingCategories');
+  searchCategories('#input-category_binding2', '#resultJsBinding2', 'getJoomShoppingCategories');
   searchCategories('#input-product_binding', '#resultJsBindingProduct', 'getJoomShoppingProduct');
 
   $(document).on('click', '.dropdown-item', function () {
@@ -96,6 +97,25 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  $('#button-prom-in-cat-binding').on('click', function () {
+    const shopCategoryId = $('input[name="binding_category_id2"]').val();
+    const shopCategory = $('#input-category_binding2').val();
+    const shopPromCatId = $('#input-prom_cat_binding').val();
+    const controller = $('input[name="controller"]').val();
+    const url = 'index.php?option=com_exportxml&controller=' + controller + '&task=addBindingMapping';
+
+    if (shopCategoryId && shopPromCatId) {
+      sendAjaxAndAddRow(
+        url,
+        { prom_cat_id: shopPromCatId, category_id: shopCategoryId },
+        'delete-binding',
+        [shopPromCatId, shopCategory, ''],
+        'binding_list',
+        'selectCategoryPromBinding'
+      );
+    }
+  });
+
   $('#button-prod-in-cat-binding').on('click', function () {
     const shopCategoryId = $('input[name="binding_category_id"]').val();
     const shopProductId = $('input[name="binding_product_id"]').val();
@@ -109,9 +129,9 @@ jQuery(document).ready(function ($) {
         url,
         { product_id: shopProductId, category_id: shopCategoryId },
         'delete-binding',
-        [shopCategory, shopProduct],
+        ['', shopCategory, shopProduct],
         'binding_list',
-        'selectCategoryBinding'
+        'selectCategoryShopBinding'
       );
     }
   });

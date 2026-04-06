@@ -24,18 +24,19 @@ class BuhgalteriaController extends BaseadminController
     $app = Factory::getApplication();
 
     $model = JSFactory::getModel("sofonareports");
-    $context = "jshopping.list.admin.products";
+    $context = "jshopping.list.admin.buhgalteria";
 
     $filter_order = $app->getUserStateFromRequest($context . 'filter_order', 'filter_order', 'total_sum', 'cmd');
     $filter_order_Dir = $app->getUserStateFromRequest($context . 'filter_order_Dir', 'filter_order_Dir', 'DESC', 'cmd');
 
 
     $totalProducts = $model->getProductsReportCount();
-    $pageNavProducts = new Pagination($totalProducts, 0, 50, );
+    $pageNavProducts = new Pagination($totalProducts, 0, 100);
 
     $filter = [];
 
-    $productRows = $model->getProductsReport($filter, $pageNavProducts->limitstart, $pageNavProducts->limit, $filter_order, $filter_order_Dir);
+    // $productRows = $model->getProductsReport($filter, $pageNavProducts->limitstart, $pageNavProducts->limit, $filter_order, $filter_order_Dir);
+    $productRows = $model->getProductsReport($filter, 0, 100, $filter_order, $filter_order_Dir);
 
     $db = Factory::getContainer()->get(DatabaseInterface::class);
 
@@ -88,6 +89,55 @@ class BuhgalteriaController extends BaseadminController
       $totalExpenseConsumables += (float) $consumable->total_sum;
     }
 
+    /* миесячная статистика */
+    $query = $db->getQuery(true)
+  ->select([
+    "DATE_FORMAT(e.date, '%Y-%m') AS month",
+    "SUM(CASE WHEN e.product_id > 0 THEN e.expenses ELSE 0 END) AS product_expenses",
+    "SUM(CASE WHEN e.consumable_id > 0 THEN e.expenses ELSE 0 END) AS consumable_expenses"
+  ])
+  ->from($db->quoteName('#__jshopping_expenses', 'e'))
+  ->group("DATE_FORMAT(e.date, '%Y-%m')")
+  ->order("month DESC");
+
+$db->setQuery($query);
+$expensesByMonth = $db->loadObjectList('month');
+
+$query = $db->getQuery(true)
+  ->select([
+    "DATE_FORMAT(o.order_date, '%Y-%m') AS month",
+    "SUM(oi.product_item_price * oi.product_quantity) AS income"
+  ])
+  ->from('#__jshopping_order_item AS oi')
+  ->leftJoin('#__jshopping_orders AS o ON o.order_id = oi.order_id')
+  ->group("DATE_FORMAT(o.order_date, '%Y-%m')")
+  ->order("month DESC");
+
+$db->setQuery($query);
+$incomeByMonth = $db->loadObjectList('month');
+
+$statistics = [];
+
+$allMonths = array_unique(array_merge(
+  array_keys($expensesByMonth),
+  array_keys($incomeByMonth)
+));
+
+foreach ($allMonths as $month) {
+  $statistics[] = (object)[
+    'month' => $month,
+    'product_expenses' => $expensesByMonth[$month]->product_expenses ?? 0,
+    'consumable_expenses' => $expensesByMonth[$month]->consumable_expenses ?? 0,
+    'income' => $incomeByMonth[$month]->income ?? 0,
+  ];
+}
+
+usort($statistics, function ($a, $b) {
+    return strcmp($b->month, $a->month);
+});
+
+    /* миесячная статистика конец */
+
 
 
     $view = $this->getView("buhgalteria", 'html');
@@ -100,6 +150,7 @@ class BuhgalteriaController extends BaseadminController
     $view->set('totalIncome', $totalIncome);
     $view->set('totalExpenseProducts', $totalExpenseProducts);
     $view->set('totalExpenseConsumables', $totalExpenseConsumables);
+    $view->set('statistics', $statistics);
 
     $view->display();
 

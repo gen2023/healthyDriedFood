@@ -1,20 +1,19 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Admin
  *
  * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
+ * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
-use Joomla\CMS\Form\Form;
-use Joomla\CMS\Form\FormField;
-use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\Field\TextField;
 
-class JFormFieldFilesystemPath extends FormField
+class JFormFieldFilesystemPath extends TextField
 {
 
     /**
@@ -56,108 +55,60 @@ class JFormFieldFilesystemPath extends FormField
     protected function getInput()
     {
         $values = $this->value;
+        $path   = '';
 
-        if (is_string($values) && !empty($values)) {
-            $value = htmlspecialchars_decode($this->value);
-
-            $values = json_decode($value, true);
-
-            if (empty($values) && strpos($value, '{') === false) {
-                $values = array();
-
-                $values[] = array(
-                    'path' => $value,
-                    'label' => '',
-                );
+        // Step 1: If it's an array, flatten the "first meaningful" item.
+        if (is_array($values) && !empty($values)) {
+            
+            // If it's an associative array already (eg: ['path' => 'images']), use it as-is.
+            if (array_key_exists('path', $values)) {
+                $values = [$values];
+            } else {
+                // Otherwise take the first non-empty item (eg: first JSON string in the array)
+                $values = reset($values);
             }
         }
 
-        // default
-        if (empty($values)) {
-            $values = array(
-                array(
-                    'path' => '',
-                    'label' => '',
-                ),
-            );
+        // Step 2: If it's a string, try decode JSON; if not JSON, treat as path string.
+        if (is_string($values)) {
+            $value = trim(htmlspecialchars_decode($values));
+
+            if ($value !== '') {
+                $decoded = json_decode($value, true);
+
+                if (json_last_error() === JSON_ERROR_NONE && $decoded !== null && $decoded !== []) {
+                    $values = $decoded;
+                } else {
+                    // Not valid JSON -> it’s a plain path
+                    $values = [['path' => $value]];
+                }
+            } else {
+                $values = [];
+            }
         }
 
-        $subForm = new Form($this->name, array('control' => $this->formControl));
-
-        $label = $this->element['label'];
-
-        $xml = '<form><fields name="' . $this->name . '">';
-
-        $keyName = 'path';
-        $keyLabel = 'WF_PARAM_DIRECTORY_PATH';
-
-        $xml .= '<field name="' . $keyName . '" type="text" label="' . $keyLabel . '" description="" />';
-
-        $valueName = 'label';
-        $valueLabel = 'WF_PARAM_DIRECTORY_LABEL';
-
-        $xml .= '<field name="' . $valueName . '" type="text" label="' . $valueLabel . '" description="" />';
-
-        $xml .= '</fields></form>';
-
-        $subForm->load($xml);
-
-        $fields = $subForm->getFieldset();
-
-        // And finaly build a main container
-        $str = array();
-
-        $str[] = '<div class="form-field-repeatable">';
-
-        foreach ($values as $value) {
-            $str[] = '<div class="form-field-repeatable-item wf-keyvalue">';
-            $str[] = '  <div class="form-field-repeatable-item-group well p-4 card w-100">';
-
-            $n = 0;
-
-            foreach ($fields as $field) {
-                $tmpField = clone $field;
-
-                $tmpField->element['multiple'] = true;
-
-                $name = (string) $tmpField->element['name'];
-
-                $val = is_array($value) && isset($value[$name]) ? $value[$name] : '';
-
-                // escape value
-                $tmpField->value = htmlspecialchars_decode($val);
-
-                $tmpField->setup($tmpField->element, $tmpField->value, $this->group);
-
-                // reset id
-                $tmpField->id .= '_' . $n;
-
-                // reset name
-                $tmpField->name = $name;
-
-                $str[] = $tmpField->renderField(array('description' => $tmpField->description));
-
-                $n++;
+        // Step 3: Extract first path
+        if (is_array($values) && !empty($values)) {
+            // If decoded to a single associative item, normalise to a list.
+            if (array_key_exists('path', $values)) {
+                $values = [$values];
             }
 
-            $str[] = '  </div>';
+            $first = reset($values);
 
-            $str[] = '  <div class="form-field-repeatable-item-control">';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
-            $str[] = '  </div>';
-
-            $str[] = '</div>';
+            if (is_array($first) && isset($first['path'])) {
+                $path = (string) $first['path'];
+            }
         }
 
-        if (!empty($this->value)) {
-            $this->value = htmlspecialchars(json_encode($values));
-        }
+        $this->value = $path;
 
-        $str[] = '<input type="hidden" name="' . $this->name . '" value="' . $this->value . '" />';
+        // collect the layout data...
+        $layoutData = $this->getLayoutData();
 
-        $str[] = '</div>';
+        // ...and reset the value to the processed value
+        $layoutData['value'] = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 
-        return implode("", $str);
+        return $this->getRenderer($this->layout)->render($layoutData);
     }
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="jshoppingadmin" method="upgrade">
+	<name>plg_vchasno_prro</name>
+    <author>Sofona</author>
+    <creationDate>2026-04-02</creationDate>
+    <copyright>(C) Sofona</copyright>
+    <license>GNU General Public License version 2 or later</license>
+    <authorUrl>https://sofona.com/</authorUrl>
+    <version>1.0.0</version>
+    <description>Регистрация чеков в checkbox</description>
+
+    <!-- Файлы -->
+    <files>
+        <filename plugin="vchasno_prro">vchasno_prro.php</filename>
+    </files>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic" label="Настройки">
+
+                <field
+                    name="kassa"
+                    type="text"
+                    label="Касса"
+                    default=""
+                />
+
+                <field
+                    name="token"
+                    type="text"
+                    label="Токен"
+                    default=""
+                />
+
+            </fieldset>
+        </fields>
+    </config>
+</extension>

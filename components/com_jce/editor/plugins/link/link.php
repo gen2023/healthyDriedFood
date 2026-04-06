@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 // Link Plugin Controller
 class WFLinkPlugin extends WFEditorPlugin
@@ -68,6 +68,11 @@ class WFLinkPlugin extends WFEditorPlugin
         $document->addScript(array('link'), 'plugins');
     }
 
+    public function showHelp()
+    {
+        return (bool) $this->getParam('help_button', 1);
+    }
+
     public function getLinks()
     {
         static $links;
@@ -101,8 +106,10 @@ class WFLinkPlugin extends WFEditorPlugin
         $settings = array(
             'file_browser' => $this->getParam('file_browser', 1) && in_array('browser', explode(',', $profile->plugins)),
             'attributes' => array(
-                'target' => $this->getParam('attributes_target', 1),
-                'anchor' => $this->getParam('attributes_anchor', 1),
+                'target'    => $this->getParam('attributes_target', 1),
+                'anchor'    => $this->getParam('attributes_anchor', 1),
+                'classes'   => $this->getParam('attributes_classes', 1),
+                'title'     => $this->getParam('attributes_title', 1),
             ),
         );
 

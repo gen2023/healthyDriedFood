@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen Installer Plugin
- * @version    2.3.0
+ * @version    2.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software

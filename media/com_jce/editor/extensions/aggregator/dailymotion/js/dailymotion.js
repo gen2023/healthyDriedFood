@@ -1,4 +1,4 @@
-/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.99.1 | 2026-03-30 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 WFAggregator.add("dailymotion", {
     params: {
         width: 480,
@@ -34,17 +34,21 @@ WFAggregator.add("dailymotion", {
     isSupported: function(v) {
         return !!v && !!/dai\.?ly(motion)?(\.com)?/.test(v) && "dailymotion";
     },
+    extractSource: function(src) {
+        var matches;
+        return /\/\/(?:[\w-]+\.)?dailymotion\.com\/embed\/video\/[a-z0-9]+/i.test(src) || /\/\/geo\.dailymotion\.com\/player\.html/i.test(src) || ((matches = src.match(/(?:^|\/\/)(?:[\w-]+\.)?dai\.?ly(?:motion\.com)?\/(?:embed\/)?(?:swf\/|video\/)?([a-z0-9]+)_?/i)) && matches[1] || (matches = src.match(/[?&]video=([a-z0-9]+)/i)) && matches[1]) && (src = "https://www.dailymotion.com/embed/video/" + matches[1]), 
+        src;
+    },
     getValues: function(data) {
-        var self = this, args = {}, id = "", src = data.src, m = (-1 !== src.indexOf("=") && $.extend(args, Wf.String.query(src)), 
+        var query, self = this, args = {}, src = data.src;
+        return -1 !== src.indexOf("=") && $.extend(args, Wf.String.query(src)), 
         $("input[id], select[id]", "#dailymotion_options").each(function() {
             var k = $(this).attr("id"), v = $(this).val();
             if (!k) return !0;
             k = k.substr(k.indexOf("_") + 1), $(this).is(":checkbox") && (v = $(this).is(":checked") ? 1 : 0), 
             -1 === k.indexOf("player_size") && self.props[k] !== v && "" !== v && (args[k] = v);
-        }), src.match(/dai\.?ly(motion\.com)?\/(embed)?\/?(swf|video)?\/?([a-z0-9]+)_?/)), m = (src = "https://www.dailymotion.com/embed/video/" + (id = m ? m.pop() : id), 
-        $.param(args));
-        return m && (src = src + (/\?/.test(src) ? "&" : "?") + m), data.src = src, 
-        $.extend(data, {
+        }), (src = this.extractSource(src)) && ((query = $.param(args)) && (src = src + (/\?/.test(src) ? "&" : "?") + query), 
+        data.src = src), $.extend(data, {
             frameborder: 0,
             allowfullscreen: "allowfullscreen"
         }), $(".uk-repeatable", "#dailymotion_attributes").each(function() {
@@ -53,12 +57,12 @@ WFAggregator.add("dailymotion", {
         }), data;
     },
     setValues: function(data) {
-        var query, self = this, src = data.src || data.data || "", id = "";
+        var query, self = this, src = data.src || data.data || "";
         return src && (query = Wf.String.query(src), $.each(query, function(key, val) {
             if (self.props[key] == val) return !0;
             data["dailymotion_" + key] = val;
-        }), (query = (src = src.replace(/&amp;/g, "&")).match(/dai\.?ly(motion\.com)?\/(embed)?\/?(swf|video)?\/?([a-z0-9]+)_?/)) && (id = query.pop()), 
-        data.src = "https://www.dailymotion.com/embed/video/" + id), data;
+        }), src = src.replace(/&amp;/g, "&"), src = this.extractSource(src)) && (data.src = src), 
+        data;
     },
     getAttributes: function(src) {
         var args = {}, data = this.setValues({

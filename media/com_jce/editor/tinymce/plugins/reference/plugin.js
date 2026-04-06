@@ -1,4 +1,4 @@
-/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.99.1 | 2026-03-30 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 !function() {
     var each = tinymce.each, DOM = tinymce.DOM;
     function addZeros(value, len) {
@@ -9,7 +9,10 @@
     tinymce.PluginManager.add("reference", function(ed, url) {
         function openDialog(tag) {
             var cm = ed.controlManager, form = cm.createForm("reference_form");
-            form.add(cm.createTextBox("attributes_title", {
+            "q" == tag ? form.add(cm.createTextBox("reference_cite", {
+                label: ed.getLang("reference.label_cite", "Cite"),
+                name: "cite"
+            })) : form.add(cm.createTextBox("attributes_title", {
                 label: ed.getLang("attributes.label_title", "Title"),
                 name: "title"
             })), "ins" != tag && "del" != tag || (form.add(cm.createTextBox("reference_cite", {
@@ -65,6 +68,11 @@
             onclick: function() {
                 openDialog("cite");
             }
+        }), ed.addButton("q", {
+            title: "reference.q_title",
+            onclick: function() {
+                openDialog("q");
+            }
         }), "html5-strict" !== ed.settings.schema && ed.addButton("acronym", {
             title: "reference.acronym_title",
             onclick: function() {
@@ -86,16 +94,17 @@
                 openDialog("ins");
             }
         }), ed.onNodeChange.add(function(ed, cm, n, co) {
-            var p = ed.dom.getParent(n, "CITE,ACRONYM,ABBR,DEL,INS");
+            var p = ed.dom.getParent(n, "CITE,ACRONYM,ABBR,DEL,INS,Q");
             if (cm.setDisabled("cite", co), cm.setDisabled("acronym", co), cm.setDisabled("abbr", co), 
-            cm.setDisabled("del", co), cm.setDisabled("ins", co), cm.setActive("cite", 0), 
-            cm.setActive("acronym", 0), cm.setActive("abbr", 0), cm.setActive("del", 0), 
-            cm.setActive("ins", 0), p) for (;cm.setDisabled(p.nodeName.toLowerCase(), 0), 
-            cm.setActive(p.nodeName.toLowerCase(), 1), p = p.parentNode; );
+            cm.setDisabled("del", co), cm.setDisabled("ins", co), cm.setDisabled("q", co), 
+            cm.setActive("cite", 0), cm.setActive("acronym", 0), cm.setActive("abbr", 0), 
+            cm.setActive("del", 0), cm.setActive("ins", 0), cm.setActive("q", 0), 
+            p) for (;cm.setDisabled(p.nodeName.toLowerCase(), 0), cm.setActive(p.nodeName.toLowerCase(), 1), 
+            p = p.parentNode; );
         }), ed.onPreInit.add(function() {
             ed.dom.create("abbr");
             var formats = {};
-            each([ "cite", "acronym", "abbr", "del", "ins" ], function(name) {
+            each([ "cite", "acronym", "abbr", "del", "ins", "q" ], function(name) {
                 formats[name] = {
                     inline: name,
                     remove: "all",

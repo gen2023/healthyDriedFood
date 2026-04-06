@@ -8,7 +8,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Helper\RouteHelper;
@@ -81,6 +81,8 @@ class JoomlalinksContent extends CMSObject
 
                     $id = RouteHelper::getCategoryRoute($category->id, $language, 'com_content');
 
+                    $url = $id;
+
                     if (strpos($id, 'index.php?Itemid=') !== false) {
                         $url = self::getMenuLink($id);
                         $id = 'index.php?option=com_content&view=category&id=' . $category->id;
@@ -141,8 +143,8 @@ class JoomlalinksContent extends CMSObject
                             $language = $category->language;
                         }
 
-                        $url = '';
                         $id = RouteHelper::getCategoryRoute($category->id, $language, 'com_content');
+                        $url = $id;
 
                         // get sub-categories
                         if (count($sub)) {
@@ -152,7 +154,7 @@ class JoomlalinksContent extends CMSObject
                         } else {
                             // no com_content, might be link like index.php?ItemId=1
                             if (strpos($id, 'index.php?Itemid=') !== false) {
-                                $url = $id; //$id;
+                                $url = $id;
                                 $id = 'index.php?option=com_content&view=category&id=' . $category->id;
                             }
                         }
@@ -236,12 +238,19 @@ class JoomlalinksContent extends CMSObject
 
         $case = '';
 
-        if ($wf->getParam('links.joomlalinks.article_alias', 1)) {
+        if ($wf->getParam('links.joomlalinks.article_alias', 0)) {
             //sqlsrv changes
             $case_when1 = ' CASE WHEN ';
             $case_when1 .= $query->charLength('a.alias', '!=', '0');
             $case_when1 .= ' THEN ';
-            $a_id = $query->castAsChar('a.id');
+
+            // Joomla 3 compatibility
+            if (method_exists($query, 'castAsChar')) {
+                $a_id = $query->castAsChar('a.id');
+            } else {
+                $a_id = $query->castAs('CHAR', 'a.id');
+            }
+
             $case_when1 .= $query->concatenate(array($a_id, 'a.alias'), ':');
             $case_when1 .= ' ELSE ';
             $case_when1 .= $a_id . ' END as slug';
@@ -249,7 +258,14 @@ class JoomlalinksContent extends CMSObject
             $case_when2 = ' CASE WHEN ';
             $case_when2 .= $query->charLength('b.alias', '!=', '0');
             $case_when2 .= ' THEN ';
-            $c_id = $query->castAsChar('b.id');
+
+            // Joomla 3 compatibility
+            if (method_exists($query, 'castAsChar')) {
+                $c_id = $query->castAsChar('b.id');
+            } else {
+                $c_id = $query->castAs('CHAR', 'b.id');
+            }
+
             $case_when2 .= $query->concatenate(array($c_id, 'b.alias'), ':');
             $case_when2 .= ' ELSE ';
             $case_when2 .= $c_id . ' END as catslug';

@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    Nevigen Installer Plugin
- * @version    2.3.0
+ * @version    2.4.0
  * @author     Nevigen.com - https://nevigen.com
  * @copyright  Copyright © Nevigen.com. All rights reserved.
  * @license    Proprietary. Copyrighted Commercial Software
@@ -10,7 +10,9 @@
 
 defined('_JEXEC') or die;
 
-/** @var PlgInstallerNevigen $this */
+use Joomla\Plugin\Installer\Nevigen\Extension\Nevigen;
+
+/** @var Nevigen $this */
 
 ?>
 <div id="nevigen-container" class="tab-pane">

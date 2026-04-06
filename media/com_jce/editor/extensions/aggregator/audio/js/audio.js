@@ -1,4 +1,4 @@
-/* jce - 2.9.86 | 2025-05-23 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
+/* jce - 2.9.99.1 | 2026-03-30 | https://www.joomlacontenteditor.net | Source: https://github.com/widgetfactory/jce | Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved | GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html */
 WFAggregator.add("audio", {
     params: {},
     props: {
@@ -27,7 +27,11 @@ WFAggregator.add("audio", {
         return !!v && (v = v.split("?")[0], !!/\.(mp3|oga|webm|wav|m4a|aiff)$/.test(v)) && "audio";
     },
     getValues: function(data) {
-        var sources = [], agent = ($('input[name="audio_source[]"]').each(function() {
+        var sources = [], agent = ($("input[id], select[id]", "#video_options").each(function() {
+            var key = $(this).attr("id"), val = $(this).val();
+            if (!key) return !0;
+            "checkbox" === this.type && (val = !!this.checked), data[key] = val;
+        }), $('input[name="audio_source[]"]').each(function() {
             var val = $(this).val();
             val !== data.src && sources.push(val);
         }), sources.length && (data.audio_source = sources), delete data.width, 
@@ -42,7 +46,7 @@ WFAggregator.add("audio", {
         var x = 0;
         return $.each(data, function(key, val) {
             if (-1 === key.indexOf("audio_")) return !0;
-            delete data[key], key = key.substr(key.indexOf("_") + 1);
+            key = key.substr(key.indexOf("_") + 1);
             var $repeatable = $(".uk-repeatable", "#audio_attributes"), $repeatable = (0 < x && ($repeatable.eq(0).clone(!0).appendTo($repeatable.parent()), 
             $repeatable = $(".uk-repeatable", "#audio_attributes")), $repeatable.eq(x).find("input, select"));
             $repeatable.eq(0).val(key), $repeatable.eq(1).val(val), x++;
