@@ -32,97 +32,78 @@ jQuery(document).ready(function () {
 		rules: {},
 		messages: {},
 		submitHandler: function (validator, event) {
-			event.preventDefault();
-			var request = [
-				'option=com_ajax',
-				'module=sfnforms',
-				'method=Sfnforms',
-				'format=jsonpc'
-			];
-			var id = jQuery(validator).find('[name=mod_sfnforms_module_id]').val();
-			var values = jQuery(validator).serializeArray();
+    event.preventDefault();
+    const form = jQuery(validator);
+		
+    const id = form.find('[name=mod_sfnforms_module_id]').val();
 
-			var name;
-			for (var i = 0; i < values.length; i++) {
-				if (values[i].name.indexOf('mod_sfnforms_') === 0) {
-					if (values[i].name.indexOf('[]') > -1) {
-						name = 'data[' + encodeURIComponent(values[i].name.substring(0, values[i].name.length - 2)) + '][]';
-					} else {
-						name = 'data[' + encodeURIComponent(values[i].name) + ']';
-					}
+    const formData = new FormData(form[0]);
 
-					request.push(name + '=' + encodeURIComponent(values[i].value));
-				} else {
-					request.push(encodeURIComponent(values[i].name) + '=' + encodeURIComponent(values[i].value));
-				}
-			}
+    form.find('#mod-sfnforms-submit-btn-' + id).attr("disabled", "disabled");
+    form.find('.icon').removeAttr('class').addClass('icon icon-refresh rstpl-rotating');
+    form.addClass('preloader');
 
-			jQuery(validator).find('#mod-sfnforms-submit-btn-' + id).attr("disabled", "disabled");
-			jQuery(validator).find('.icon').removeAttr('class').addClass('icon icon-refresh rstpl-rotating');
-			jQuery('#mod-sfnforms-contact-form-' + id).addClass('preloader');
+    jQuery.ajax({
+        url: 'index.php?option=com_ajax&module=sfnforms&method=Sfnforms&format=jsonpc',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            response = JSON.parse(response);
 
-			jQuery.ajax({
-				type: 'POST',
-				data: request.join('&'),
-				success: function (response) {
-					response = JSON.parse(response);
-					if (response.status == 0) {
-						jQuery('#mod-sfnforms-error-msg-' + id).hide().html('<div class="alert alert-error alert-danger">' + response.message + '</div>').fadeIn().delay(1000).fadeOut(5000);
-						jQuery(validator).find('#mod-sfnforms-submit-btn-' + id).removeAttr("disabled");
-						jQuery(validator).find('.icon').removeAttr('class').addClass('icon icon-envelope');
-						jQuery('#mod-sfnforms-contact-form-' + id).removeClass('preloader');
-					}
+            if (response.status == 0) {
+                form.find('#mod-sfnforms-error-msg-' + id).hide().html('<div class="alert alert-error alert-danger">' + response.message + '</div>').fadeIn().delay(1000).fadeOut(5000);
+                form.find('#mod-sfnforms-submit-btn-' + id).removeAttr("disabled");
+                form.find('.icon').removeAttr('class').addClass('icon icon-envelope');
+                form.removeClass('preloader');
+            }
 
-					if (response.status == 1) {
-						const modal = jQuery(validator).nextAll('#mod-sfnforms-modal-' + id);
+            if (response.status == 1) {
+                const modal = form.nextAll('#mod-sfnforms-modal-' + id);
+                if (modal.length > 0) {
+                    modal.find('.message-container').html(response.message).fadeIn();
+                    modal.fadeIn();
+                    form[0].reset();
+                    form.find('#mod-sfnforms-submit-btn-' + id).removeAttr("disabled");
+                    form.find('.icon').removeAttr('class').addClass('icon icon-envelope');
+                    form.removeClass('preloader');
 
-						if (modal.length > 0) {
-							const container_message = modal.find('.message-container');
-							container_message.html(response.message).fadeIn();
-							modal.fadeIn();
+                    modal.find('.close-btn').on('click', function () {
+                        modal.fadeOut();
+                    });
+                } else {
+                    form.nextAll('#mod-sfnforms-msg-' + id).hide()
+                        .html('<div class="alert alert-success">' + response.message + '</div>')
+                        .delay(500).fadeIn();
+                    form.fadeOut(500, function () {
+                        jQuery(this).remove();
+                    });
+                }
 
-							jQuery(validator).find('input, textarea').not('input[type="checkbox"], input[type="radio"], input[type="hidden"], input[name="mod_sfnforms_nospam"]').val('');
-							jQuery(validator).find('input:checkbox, input:radio').prop('checked', false);
-							jQuery(validator).find('#mod-sfnforms-submit-btn-' + id).removeAttr("disabled");
-							jQuery(validator).find('.icon').removeAttr('class').addClass('icon icon-envelope');
-							jQuery('#mod-sfnforms-contact-form-' + id).removeClass('preloader');
+                if (response.warnings.length > 0) {
+                    form.nextAll('#mod-sfnforms-warning-msg-' + id).hide().html('<div class="alert alert-warning"></div>').delay(500).fadeIn();
+                    form.find('.icon').removeAttr('class').addClass('icon icon-envelope');
+                    jQuery.each(response.warnings, function (i, value) {
+                        jQuery(".alert-warning").append(value + '<br />');
+                    });
+                }
 
-							modal.find('.close-btn').on('click', function () {
-								modal.fadeOut();
-							});
-
-						} else {
-							jQuery(validator).nextAll('#mod-sfnforms-msg-' + id).hide()
-								.html('<div class="alert alert-success">' + response.message + '</div>')
-								.delay(500).fadeIn();
-
-							jQuery(validator).fadeOut(500, function () {
-								jQuery(this).remove();
-							});
-						}
-
-
-						if (response.warnings.length > 0) {
-							jQuery(validator).nextAll('#mod-sfnforms-warning-msg-' + id).hide().html('<div class="alert alert-warning"></div>').delay(500).fadeIn();
-							jQuery(validator).find('.icon').removeAttr('class').addClass('icon icon-envelope');
-							jQuery.each(response.warnings, function (i, value) {
-								jQuery(".alert-warning").append(value + '<br />');
-							});
-						}
-
-						jQuery('html, body').animate({
-							scrollTop: jQuery(validator).offset().top - 10
-						}, 2000);
-					}
-				},
-				error: function (response) {
-					response = JSON.parse(response);
-					jQuery(validator).find('#mod-sfnforms-error-msg-' + id).hide().html('<div class="alert alert-error alert-danger">' + response.message + '</div>').fadeIn().delay(2000).fadeOut(5000);
-					jQuery(validator).find('.icon').removeAttr('class').addClass('icon icon-envelope');
-				}
-			});
-			return false;
-		}
+                const animationFinish = parseInt(form.data('animation'), 10);
+                if (animationFinish) {
+                    jQuery('html, body').animate({
+                        scrollTop: form.offset().top - 10
+                    }, 2000);
+                }
+            }
+        },
+        error: function (response) {
+            form.find('#mod-sfnforms-error-msg-' + id).hide().html('<div class="alert alert-error alert-danger">' + response.message + '</div>').fadeIn().delay(2000).fadeOut(5000);
+            form.find('.icon').removeAttr('class').addClass('icon icon-envelope');
+        }
+    });
+    return false;
+}
 	});
 
 	jQuery('.sfnforms form').each(function () {
@@ -187,4 +168,27 @@ jQuery(document).ready(function () {
 			messages: messages
 		});
 	});
+});
+
+jQuery(document).on('click', '.upload-btn', function () {
+    const btn = jQuery(this);
+    const uniq = btn.data('uniq');
+    const fileInput = jQuery('#mod-sfnforms-file-' + uniq)[0];
+    fileInput.click();
+});
+
+jQuery(document).on('change', 'input[type="file"]', function () {
+    const input = this;
+    const uniq = jQuery(input).attr('id').replace('mod-sfnforms-file-', '');
+    const btn = jQuery('.upload-btn[data-uniq="' + uniq + '"]');
+
+    const count = input.files.length;
+
+    let countSpan = btn.find('span.count');
+    if (countSpan.length === 0) {
+        countSpan = jQuery('<span class="count"></span>');
+        btn.append(countSpan);
+    }
+
+    countSpan.text(count);
 });

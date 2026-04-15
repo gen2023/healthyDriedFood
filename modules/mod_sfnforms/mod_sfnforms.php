@@ -52,6 +52,7 @@ $show_display_consent = $params->get('display_consent');
 $moduleclass_sfx = $params->get('moduleclass_sfx');
 $thank_you_modal = $params->get('thank_you_modal');
 $consent_text = $params->get('consent_text',Text::_('MOD_SFNFORMS_DISPLAY_CONSENT_FRONT'));
+$animation_finish = $params->get('animation_finish', 1);
 
 $options = '';
 

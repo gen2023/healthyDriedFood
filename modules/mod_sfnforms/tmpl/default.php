@@ -12,9 +12,9 @@ use Joomla\CMS\Helper\ModuleHelper;
 <?php $class_form = $moduleclass_sfx ? $moduleclass_sfx : ""; ?>
 
 <div id="mod-sfnforms-container-<?= $uniqid; ?>" class="sfnforms">
-	<form id="mod-sfnforms-contact-form-<?= $uniqid; ?>" name="mod-sfnforms-contact-form-<?= $uniqid; ?>"
+	<form id="mod-sfnforms-contact-form-<?php echo $uniqid; ?>" name="mod-sfnforms-contact-form-<?php echo $uniqid; ?>"
 		enctype="multipart/form-data" method="post" action="<?php echo modSFNFormsHelper::cleanInput(Uri::current()); ?>"
-		class="<?= $class_form ?>">
+		class="<?php echo $class_form ?>" data-animation="<?php echo $animation_finish ?>">
 		<fieldset>
 			<?php echo HTMLHelper::_('form.token'); ?>
 			<input type="hidden" name="mod_sfnforms_module_id" value="<?php echo $module->id; ?>" />

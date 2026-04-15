@@ -6,7 +6,7 @@ class JConfig {
 	public $offline_image = '';
 	public $sitename = 'HealthyDriedFood';
 	public $editor = 'tinymce';
-	public $captcha = '0';
+	public $captcha = 'powcaptcha';
 	public $list_limit = 30;
 	public $access = 1;
 	public $debug = true;

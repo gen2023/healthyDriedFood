@@ -1176,7 +1176,7 @@ $.extend( $.validator, {
 		},
 
 		textonly: function(value, element) {
-		return this.optional(element) || /^[A-Za-zА-Яа-яЁё\s]+$/.test(value);
+			return this.optional(element) || /^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ\s]+$/.test(value);
 		},
 
 		phoneUA: function(phone_number, element) {

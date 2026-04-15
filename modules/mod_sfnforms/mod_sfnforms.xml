@@ -1,27 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <extension type="module" client="site" method="upgrade" version="3.9.0">
     <name>SFNForms</name>
+    <version>1.0.5.1</version>
+    <creationDate>06.04.2026</creationDate>
     <author>Sofona</author>
-    <creationDate>22.12.2024</creationDate>
-    <version>1.0.2</version>
+    <authorUrl>https://sofona.com/</authorUrl>
+    <copyright>Copyright © All rights reserved.</copyright>
+    <license>Proprietary. Copyrighted Commercial Software</license>		
     <description>MOD_SFNFORMS_DESC</description>	
 	<files>
 		<filename module="mod_sfnforms">mod_sfnforms.php</filename>
 		<filename>helper.php</filename>
-		<filename>index.html</filename>
 		<folder>tmpl</folder>
 		<folder>forms</folder>
 	</files>
 	<media destination="mod_sfnforms" folder="media">
 			<folder>css</folder>
 			<folder>js</folder>
-		<filename>index.html</filename>
 	</media>
 	<languages>
 		<language tag="en-GB">language/en-GB/mod_sfnforms.ini</language>
 		<language tag="en-GB">language/en-GB/mod_sfnforms.sys.ini</language>
 		<language tag="ru-RU">language/ru-RU/mod_sfnforms.ini</language>
 		<language tag="ru-RU">language/ru-RU/mod_sfnforms.sys.ini</language>		
+		<language tag="uk-UA">language/uk-UA/mod_sfnforms.ini</language>
+		<language tag="uk-UA">language/uk-UA/mod_sfnforms.sys.ini</language>		
 	</languages>
 	<config>
 		<fields name="params">
@@ -93,6 +96,10 @@
 				</field>
 			</fieldset>
 			<fieldset name="mod_sfnforms_setting" label="MOD_SFNFORMS_SETTING">
+				<field name="animation_finish" class="btn-group" type="radio" label="MOD_SFNFORMS_ANIMATION_FINISH" default="1" description="MOD_SFNFORMS_ANIMATION_FINISH_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>			
 				<field name="send_mail" class="btn-group" type="radio" label="MOD_SFNFORMS_SEND_MAIL" default="1" description="MOD_SFNFORMS_SEND_MAIL_DESCRIPTION">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>

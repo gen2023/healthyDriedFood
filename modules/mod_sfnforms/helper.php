@@ -23,6 +23,13 @@ Text::script('MOD_SFNFORMS_ERROR_PHONE_NUMBER');
 Text::script('MOD_SFNFORMS_ERROR_NUMBER');
 Text::script('MOD_SFNFORMS_ERROR_TEXT');
 Text::script('MOD_SFNFORMS_ERROR_TEXT_NUMBER');
+Text::script('MOD_SFNFORMS_ERR_SELECT_FILE');
+Text::script('MOD_SFNFORMS_FILE_ERR_FORMAT');
+Text::script('MOD_SFNFORMS_FILE_ERR_LENGTH');
+Text::script('MOD_SFNFORMS_PROCESS_DOWNLOAD');
+Text::script('MOD_SFNFORMS_DOWNLOAD_YES');
+Text::script('MOD_SFNFORMS_FILE_ERR_DOWNLOAD');
+Text::script('MOD_SFNFORMS_FILE_ERR_INTERNET');
 
 class modSFNFormsHelper
 {
@@ -62,16 +69,13 @@ class modSFNFormsHelper
 
 	protected static function replacePlaceholders($text, $placeholders, $escapeCallable = null)
 	{
-		// Performance check
 		if (strpos($text, '{') === false) {
 			return $text;
 		}
 
 		array_walk($placeholders, array('modSFNFormsHelper', 'flatten'));
 
-		// Escape placeholders with user supplied function
 		if ($escapeCallable) {
-			// Built-in "HTML" encoding function
 			if (strtolower($escapeCallable) == 'html') {
 				$escapeCallable = array('modSFNFormsHelper', 'encodeHTML');
 			}
@@ -81,15 +85,33 @@ class modSFNFormsHelper
 			}
 		}
 
-		return str_replace(array_keys($placeholders), array_values($placeholders), $text);
+		foreach ($placeholders as $key => $value) {
+			if ($value === null || $value === '' || $value === []) {
+
+				$text = preg_replace('/^.*' . preg_quote($key, '/') . '.*$\n?/mi', '', $text);
+				$text = str_replace($key, '', $text);
+
+			}
+		}
+
+		$text = str_replace(array_keys($placeholders), array_values($placeholders), $text);
+		$text = preg_replace("/\n{2,}/", "\n\n", $text);
+
+		return trim($text);
 	}
+
 	protected static function convertHtmlToTextWithLineBreaks($html)
 	{
+		$html = str_replace(['<br>', '<br/>', '<br />'], "\n", $html);
+		$html = preg_replace('/<\/p>\s*/i', "\n", $html);
+		$html = preg_replace('/<p[^>]*>/i', '', $html);
+		$html = preg_replace('/<hr[^>]*>/i', "\n-----\n", $html);
+		$html = preg_replace("/\n\s+\n/", "\n\n", $html);
+		$html = strip_tags($html, '<a><b><strong><i><em><code><pre>');
 
-		$html = strip_tags($html);
-
-		return $html;
+		return trim($html);
 	}
+
 	protected static function sendLogged($message)
 	{
 
@@ -166,17 +188,17 @@ class modSFNFormsHelper
 
 	public static function SfnformsAjax()
 	{
+		$app = Factory::getApplication();
 
-		Factory::getLanguage()->load('mod_sfnforms');
+		$app->getLanguage()->load('mod_sfnforms');
 		$warning = array();
-		$jInput = Factory::getApplication()->input;
-		// var_dump($jInput);die;
+		$jInput = $app->input;
 
 		//ajax submit
-		$inputs = $jInput->get('data', array(), 'array');
+		$inputs = $jInput->post->getArray();
 
-		$user = Factory::getUser();
-		$config = Factory::getConfig();
+		$user = $app->getIdentity();
+		$config = $app->getConfig();
 
 		$user_id = $user->get('id');
 		$username = $user->get('username');
@@ -192,6 +214,7 @@ class modSFNFormsHelper
 		} else {
 			$module = ModuleHelper::getModule('sfnforms', $inputs['mod_sfnforms_module_name']);
 		}
+
 		$params = new Registry();
 		$params->loadString($module->params);
 
@@ -217,13 +240,74 @@ class modSFNFormsHelper
 		$send_mail = $params->get('send_mail', '1');
 
 		$email = '';
-
 		$result = [];
+		$warnings = [];
+
 		foreach ($new_field as $key => $value) {
-			$result[$value->field_name] = $inputs['mod_sfnforms_' . $value->field_name];
+
 			if ($value->type_input == 'email') {
 				$email = $inputs['mod_sfnforms_' . $value->field_name];
+				$result[$value->field_name] = $inputs['mod_sfnforms_' . $value->field_name];
+
+			} elseif ($value->type_input == 'file' && isset($_FILES['mod_sfnforms_' . $value->field_name])) {
+
+				$fieldName = 'mod_sfnforms_' . $value->field_name;
+				$result[$value->field_name] = [];
+
+				$uploadDir = JPATH_SITE . '/images/uploads/sfnforms/';
+				if (!is_dir($uploadDir))
+					mkdir($uploadDir, 0755, true);
+
+				$allowedExts = array_map('trim', explode(',', $value->field_file_types));
+				$maxSizeMb = (float) $value->field_file_maxsize;
+				$maxSizeBytes = $maxSizeMb * 1024 * 1024;
+
+				$filesCount = count($_FILES[$fieldName]['name']);
+
+				for ($i = 0; $i < $filesCount; $i++) {
+					if (!empty($_FILES[$fieldName]['name'][$i])) {
+						$fileTmp = $_FILES[$fieldName]['tmp_name'][$i];
+						$originalName = $_FILES[$fieldName]['name'][$i];
+						$fileSize = $_FILES[$fieldName]['size'][$i];
+
+						if ($maxSizeMb > 0 && $fileSize > $maxSizeBytes) {
+							$warnings[] = Text::_('MOD_SFNFORMS_FILE_ERR_LENGTH') . " {$originalName}";
+							if ($sendloggen != 0)
+								self::sendLogged(Text::_('MOD_SFNFORMS_FILE_ERR_LENGTH') . " {$originalName}");
+							continue;
+						}
+
+						$fileExt = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+						if (!in_array($fileExt, $allowedExts)) {
+							$warnings[] = Text::_('MOD_SFNFORMS_FILE_ERR_FORMAT') . " {$originalName}";
+							if ($sendloggen != 0)
+								self::sendLogged(Text::_('MOD_SFNFORMS_FILE_ERR_FORMAT') . " {$originalName}");
+							continue;
+						}
+
+						$baseName = preg_replace('/[^a-zA-Z0-9_-]/', '', pathinfo($originalName, PATHINFO_FILENAME));
+						$fileName = uniqid() . '-' . $baseName . '.' . $fileExt;
+						$filePath = $uploadDir . $fileName;
+
+						if (move_uploaded_file($fileTmp, $filePath)) {
+							$result[$value->field_name][] = Uri::root() . 'images/uploads/sfnforms/' . $fileName;
+						} else {
+							$warnings[] = Text::_('MOD_SFNFORMS_FILE_ERR_DOWNLOAD') . " {$originalName}";
+							if ($sendloggen != 0)
+								self::sendLogged(Text::_('MOD_SFNFORMS_FILE_ERR_DOWNLOAD') . " {$originalName}");
+						}
+					}
+				}
+
+				$result[$value->field_name] = implode(', ', $result[$value->field_name]);
+			} else {
+				$result[$value->field_name] = $inputs['mod_sfnforms_' . $value->field_name];
+
 			}
+		}
+
+		if (!empty($warnings)) {
+			self::showResponse(0, implode('<br>', $warnings));
 		}
 
 		$selfcopy = !empty($inputs['mod_sfnforms_selfcopy']) ? $inputs['mod_sfnforms_selfcopy'] : '';
@@ -240,7 +324,7 @@ class modSFNFormsHelper
 				}
 			}
 
-			if (!$recipient) {
+			if (!$recipient && !$send_mail) {
 				throw new Exception(Text::_('MOD_SFNFORMS_EMAIL_TO_ERROR'));
 			}
 
@@ -276,12 +360,14 @@ class modSFNFormsHelper
 				'{your-website}' => $config->get('sitename'),
 				'{your-website-url}' => Uri::root()
 			);
+
 			foreach ($new_field as $key => $value) {
 				$placeholders['{' . $value->field_name . '}'] = $result[$value->field_name];
 			}
 
+
 			// Replace placeholders for the email body
-			$msg = self::replacePlaceholders($message_set, $placeholders, 'html');
+			$msg = self::replacePlaceholders($message_set, $placeholders);
 
 			$msg_telegram = self::convertHtmlToTextWithLineBreaks($msg);
 
@@ -314,8 +400,8 @@ class modSFNFormsHelper
 			if ($send_mail) {
 				// send admin email
 				$sent_admin = Factory::getMailer()->sendMail($config->get('mailfrom'), $sender, $recipient, $subject_predef, $msg, true, $cc, $bcc, null, $replyTo, $replyToName);
-			}else{
-				$sent_admin=true;
+			} else {
+				$sent_admin = true;
 			}
 
 			//send message telegram
@@ -411,4 +497,5 @@ class modSFNFormsHelper
 			self::showResponse(0, $e->getMessage());
 		}
 	}
+
 }

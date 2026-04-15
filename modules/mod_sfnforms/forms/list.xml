@@ -12,6 +12,7 @@
 			<option value="radio">MOD_SFNFORMS_FIELD_RADIO</option>
 			<option value="checkbox">MOD_SFNFORMS_FIELD_CHECKBOX</option>
 			<option value="number">MOD_SFNFORMS_FIELD_NUMBER</option>
+			<option value="file">MOD_SFNFORMS_FIELD_FILES</option>
     </field>
           
     <field 
@@ -19,7 +20,7 @@
       type="text" 
       label="MOD_SFNFORMS_LABEL_FOR_INPUT" 
       description="MOD_SFNFORMS_LABEL_FOR_INPUT_DESCRIPTION" 
-      showon="type_input:tel[OR]type_input:email[OR]type_input:text[OR]type_input:textarea[OR]type_input:select[OR]type_input:radio[OR]type_input:checkbox[OR]type_input:number"/>
+      showon="type_input:tel[OR]type_input:email[OR]type_input:text[OR]type_input:textarea[OR]type_input:select[OR]type_input:radio[OR]type_input:checkbox[OR]type_input:number[OR]type_input:file"/>
 
     <field name="field_name" type="text" label="MOD_SFNFORMS_NAME_INPUT" description="MOD_SFNFORMS_NAME_INPUT_DESCRIPTION" required="true"/>
     <field name="field_value" type="text" label="MOD_SFNFORMS_VALUE_INPUT" showon="type_input:hidden"/>
@@ -27,7 +28,7 @@
     <field 
       name="field_placeholder" 
       type="text" 
-      showon="type_input:tel[OR]type_input:email[OR]type_input:text[OR]type_input:textarea[OR]type_input:number[OR]type_input:select"
+      showon="type_input:tel[OR]type_input:email[OR]type_input:text[OR]type_input:textarea[OR]type_input:number[OR]type_input:select[OR]type_input:file"
       label="MOD_SFNFORMS_PLACEHOLDER"
       description="MOD_SFNFORMS_LABEL_FOR_INPUT_DESCRIPTION" />
 
@@ -71,5 +72,8 @@
     <field name="input_len_min" type="number" label="MOD_SFNFORMS_VALIDATE_OPTION_MIN" showon="field_validate:1" />
     <field name="input_len_max" type="number" label="MOD_SFNFORMS_VALIDATE_OPTION_MAX" showon="field_validate:1" />
           
+    <field name="field_file_types" type="text" label="MOD_SFNFORMS_FILE_TYPES" default="png,jpg,pdf" description="MOD_SFNFORMS_FILE_TYPES_DESC" showon="type_input:file" />
+    <field name="field_file_maxsize" type="number" label="MOD_SFNFORMS_FILE_MAXSIZE" default="10" description="MOD_SFNFORMS_FILE_MAXSIZE_DESC" showon="type_input:file" />
+
   </fieldset>
 </form>
